@@ -44,7 +44,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
   Vector2 fBulletVelocity() {
     _oneTimeVelocity.setFrom(world.direction);
-    _oneTimeVelocity.scale(-2 * world.everythingScale);
+    _oneTimeVelocity.scale(-2 * radius);
     _oneTimeVelocity.add(velocity);
     return _oneTimeVelocity;
   }
@@ -113,7 +113,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   setHealth(double h) {
-    h = h.clamp(0.01, 1000);
+    h = h.clamp(0.01, double.infinity);
     super.setHealth(h);
     setSize(defaultShipRadius * h);
   }
@@ -180,7 +180,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
       sprite?.sprite = shipSpriteFlame;
       //add(flameDot);
       acceleration.setFrom(world.direction);
-      acceleration.scale(-world.everythingScale); //* 1.4
+      acceleration.scale(-radius); //* 1.4
     } else {
       //flameDot.removeFromParent();
       sprite?.sprite = shipSprite;

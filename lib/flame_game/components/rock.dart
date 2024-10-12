@@ -71,16 +71,16 @@ class Rock extends SpaceBody {
 
   void _addSubRock() {
     world.asteroidsWrapper.add(RecycledRock(
-        position: position, // + cvRandomNoMiddle(radius * 0.3),
-        velocity: velocity + velocityNoise(12 * world.everythingScale),
+        position: position,
+        velocity: velocity + velocityNoise(2 * radius),
         radius: radius * _breakupSizeFactor(),
         numberExplosionsLeft: numberExplosionsLeft - 1));
   }
 
   void _addSubHeart() {
     world.asteroidsWrapper.add(Heart(
-      position: position, // + cvRandomNoMiddle(radius * 0.3),
-      velocity: velocity + velocityNoise(12 * world.everythingScale),
+      position: position,
+      velocity: velocity + velocityNoise(2 * radius),
       radius: ship.radius,
     ));
   }

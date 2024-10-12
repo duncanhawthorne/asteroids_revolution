@@ -59,26 +59,24 @@ class AsteroidsWrapper extends WrapperNoEvents
   static const _alienLimit = kDebugMode ? 0 : 1; //1;
   static const _cherryLimit = 4;
 
-  get _allRocks => children.whereType<Rock>();
-  get _visibleRocks =>
+  Iterable<Rock> get _allRocks => children.whereType<Rock>();
+  Iterable<Rock> get _visibleRocks =>
       children.whereType<Rock>().where((item) => item.opacity == 1);
-  get _transparentRocks =>
+  Iterable<Rock> get _transparentRocks =>
       children.whereType<Rock>().where((item) => item.opacity != 1);
-  get hearts => children.whereType<Heart>();
-  get _aliens => children.whereType<Alien>();
-  get _cherries => children.whereType<Cherry>();
-  get _spaceBodies => children.whereType<SpaceBody>();
+  Iterable<Heart> get hearts => children.whereType<Heart>();
+  Iterable<Alien> get _aliens => children.whereType<Alien>();
+  Iterable<Cherry> get _cherries => children.whereType<Cherry>();
+  Iterable<SpaceBody> get _spaceBodies => children.whereType<SpaceBody>();
 
-  get _mappedUniverseRadius =>
-      maze.mazeWidth *
-      flameGameZoom /
-      30 *
-      _kHubbleLimitMult *
-      ship.radius /
-      _cameraManager.overZoomError;
+  double get mappedUniverseRadius =>
+      maze.mazeWidth * flameGameZoom / 30 * _kHubbleLimitMult * ship.radius;
+  // / min(1, _cameraManager.overZoomError);
 
   double get _fullUniverseRadius =>
-      _mappedUniverseRadius * (1 + _twilightZoneWidth);
+      mappedUniverseRadius *
+      (1 + _twilightZoneWidth) /
+      _cameraManager.overZoomError;
 
   bool isOutsideUniverse(Vector2 target) {
     return target.distanceTo(ship.position) > _fullUniverseRadius;
@@ -90,7 +88,7 @@ class AsteroidsWrapper extends WrapperNoEvents
         center: ship.position,
         ringWidth: _twilightZoneWidth,
         ignoredRing: 1,
-        overallScale: _mappedUniverseRadius);
+        overallScale: mappedUniverseRadius);
   }
 
   Vector2 _randomPositionInMappedUniverse() {
@@ -98,7 +96,7 @@ class AsteroidsWrapper extends WrapperNoEvents
         center: ship.position,
         ringWidth: 0.9,
         ignoredRing: 0.1,
-        overallScale: _mappedUniverseRadius);
+        overallScale: mappedUniverseRadius);
   }
 
   @override

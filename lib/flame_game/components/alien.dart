@@ -70,6 +70,6 @@ class Alien extends SpaceBody {
       ..y = ship.position.y - position.y;
     double oneTimeGoalLength = _oneTimeGoal.length;
     acceleration.setFrom(_oneTimeGoal);
-    acceleration.scale(1 / oneTimeGoalLength * 5 * world.everythingScale);
+    acceleration.scale(1 / oneTimeGoalLength * 5 * radius);
   }
 }
