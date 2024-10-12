@@ -177,7 +177,6 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   }
 
   void reset({firstRun = false}) {
-    pauseEngineIfNoActivity();
     _userString = _getRandomString(random, 15);
     cleanDialogs();
     stopwatch.pause();
@@ -194,8 +193,6 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   }
 
   void start() {
-    //resumeEngine();
-    pauseEngineIfNoActivity();
     world.start();
   }
 
@@ -211,7 +208,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       } else if (stopwatch.isRunning()) {
         //some game activity has happened, no need to pause, just cancel timer
         timer.cancel();
-      } else if (!(world.isMounted)) {
+      } else if (!(world.isMounted && world.asteroidsWrapper.ship.isMounted)) {
         //core components haven't loaded yet, so wait before start frame count
         _framesRendered = 0;
       } else if (_framesRendered <= 5) {
