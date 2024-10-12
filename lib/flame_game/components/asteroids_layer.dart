@@ -35,7 +35,7 @@ class AsteroidsWrapper extends WrapperNoEvents
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier(0);
 
   final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
-  final CameraWrapper cameraManager = CameraWrapper();
+  final CameraWrapper _cameraManager = CameraWrapper();
 
   async.Timer? _timerTopUpSpaceBodies;
   void _startTimerTopUpSpaceBodies() {
@@ -75,7 +75,7 @@ class AsteroidsWrapper extends WrapperNoEvents
   double get _universeRadius =>
       _mappedUniverseRadius *
       (1 + _twilightZoneWidth) /
-      cameraManager.overZoomError;
+      _cameraManager.overZoomError;
 
   bool isOutsideUniverse(Vector2 target) {
     return target.distanceTo(ship.position) > _universeRadius;
@@ -108,6 +108,7 @@ class AsteroidsWrapper extends WrapperNoEvents
     removeWhere((item) => item is Alien);
 
     ship.reset();
+    _cameraManager.reset();
     _addStarterSpaceBodyField();
 
     _timerTopUpSpaceBodies?.cancel();
@@ -163,7 +164,7 @@ class AsteroidsWrapper extends WrapperNoEvents
     if (game.paused) {
       return;
     }
-    if (cameraManager.tooZoomedOut) {
+    if (_cameraManager.tooZoomedOut) {
       return; //risk adding spaceBodies that you can see being added
     }
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
@@ -208,17 +209,14 @@ class AsteroidsWrapper extends WrapperNoEvents
     for (SpaceBody item in _spaceBodies) {
       item.tidy();
     }
-    cameraManager.fixSpaceDots();
+    _cameraManager.fixSpaceDots();
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     add(ship);
-    add(cameraManager);
-    if (!kDebugMode || kPanTrackingCamera) {
-      game.camera.follow(ship);
-    }
+    add(_cameraManager);
     reset();
   }
 }

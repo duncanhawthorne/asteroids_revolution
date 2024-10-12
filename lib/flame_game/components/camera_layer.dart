@@ -12,8 +12,8 @@ import 'ship.dart';
 import 'space_dot.dart';
 import 'wrapper_no_events.dart';
 
-bool kPanTrackingCamera = true;
-bool kZoomTrackingCamera = true;
+bool _kPanTrackingCamera = true;
+bool _kZoomTrackingCamera = true;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
@@ -25,35 +25,35 @@ class CameraWrapper extends WrapperNoEvents
     _zoomTimer?.cancel();
     startZoomTimer();
 
-    if (!kDebugMode || kZoomTrackingCamera) {
-      game.camera.viewfinder.zoom = optimalZoom();
+    if (!kDebugMode || _kZoomTrackingCamera) {
+      game.camera.viewfinder.zoom = _optimalZoom;
     }
   }
 
-  double optimalZoom() {
-    return 30 / world.everythingScale;
-  }
+  double get _optimalZoom => 30 / world.everythingScale;
 
-  int get zoomOrderOfMagnitude => logMaze(world.everythingScale * 2).floor();
+  int get _zoomOrderOfMagnitude => logMaze(world.everythingScale * 2).floor();
 
   get overZoomError =>
-      !kZoomTrackingCamera ? 1 : game.camera.viewfinder.zoom / optimalZoom();
+      !_kZoomTrackingCamera ? 1 : game.camera.viewfinder.zoom / _optimalZoom;
 
   Ship get ship => world.asteroidsWrapper.ship;
 
   int _zoomOrderOfMagnitudeLast = -100;
 
+  get tooZoomedOut => overZoomError < 0.75;
+
   async.Timer? _zoomTimer;
   void startZoomTimer() {
     _zoomTimer =
         async.Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      if (!kDebugMode || kZoomTrackingCamera) {
-        if (game.camera.viewfinder.zoom < optimalZoom() * 0.95) {
+      if (!kDebugMode || _kZoomTrackingCamera) {
+        if (game.camera.viewfinder.zoom < _optimalZoom * 0.95) {
           //debug("zoom in");
           game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
           //game.camera.viewfinder.zoom *= (1 + zoomAdjustmentSpeed / 300);
         }
-        if (game.camera.viewfinder.zoom > optimalZoom() * 1.05) {
+        if (game.camera.viewfinder.zoom > _optimalZoom * 1.05) {
           //debug("zoom out");
           game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
           //game.camera.viewfinder.zoom /= (1 + zoomAdjustmentSpeed / 300);
@@ -62,15 +62,15 @@ class CameraWrapper extends WrapperNoEvents
     });
   }
 
-  Vector2 shipPositionLast = Vector2(0, 0);
+  final Vector2 _shipPositionLast = Vector2(0, 0);
   void fixSpaceDots() {
     // ignore: dead_code
     if (false &&
-        (zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast ||
+        (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast ||
             // ignore: dead_code
-            ship.position.distanceTo(shipPositionLast) > maze.mazeWidth / 3)) {
-      shipPositionLast.setFrom(ship.position);
-      _zoomOrderOfMagnitudeLast = zoomOrderOfMagnitude;
+            ship.position.distanceTo(_shipPositionLast) > maze.mazeWidth / 3)) {
+      _shipPositionLast.setFrom(ship.position);
+      _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
 
       debug("Start");
 
@@ -86,10 +86,10 @@ class CameraWrapper extends WrapperNoEvents
 
         double x1a = ship.position.x /
             2 /
-            pow(maze.mazeAcross, zoomOrderOfMagnitude + magicNum);
+            pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum);
         double y1a = ship.position.y /
             2 /
-            pow(maze.mazeAcross, zoomOrderOfMagnitude + magicNum);
+            pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum);
 
         int x11 = x1a.round();
         int y11 = y1a.round();
@@ -99,14 +99,14 @@ class CameraWrapper extends WrapperNoEvents
         // for (int y1 = y11 - 1; y1 <= y11 + 1; y1++) {
 
         double xr =
-            (x1 * 2 * pow(maze.mazeAcross, zoomOrderOfMagnitude + magicNum))
+            (x1 * 2 * pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum))
                 .toDouble(); //FIXME doesn't work
         double yr =
-            (y1 * 2 * pow(maze.mazeAcross, zoomOrderOfMagnitude + magicNum))
+            (y1 * 2 * pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum))
                 .toDouble();
 
         List<SpaceDot> spaceDotsToAdd = maze.spaceDots(
-            scaleFactor: zoomOrderOfMagnitude + magicNum - 1,
+            scaleFactor: _zoomOrderOfMagnitude + magicNum - 1,
             positionOffset: Vector2(xr, yr),
             game: game);
 
@@ -122,11 +122,12 @@ class CameraWrapper extends WrapperNoEvents
     }
   }
 
-  get tooZoomedOut => overZoomError < 0.75;
-
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    if (!kDebugMode || _kPanTrackingCamera) {
+      game.camera.follow(ship);
+    }
     reset();
   }
 }
