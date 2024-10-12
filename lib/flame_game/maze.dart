@@ -9,6 +9,8 @@ import 'pacman_game.dart';
 final Map<int, String> mazeNames = {-1: "T", 0: "A", 1: "B", 2: "C"};
 const _bufferColumns = 2;
 
+double logMaze(num x) => log(x) / log(maze.mazeAcross);
+
 class Maze {
   Maze({
     required mazeId,

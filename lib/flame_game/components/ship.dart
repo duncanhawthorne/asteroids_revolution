@@ -215,7 +215,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
       velocity.scale(-1);
     } else if (other is Cherry) {
       addMultiGun();
-      other.position = world.asteroidsWrapper.positionInsideKnownWorld();
+      other.position = world.asteroidsWrapper.randomPositionInsideKnownWorld();
     }
   }
 }
