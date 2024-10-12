@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,19 +6,14 @@ import '../../settings/settings.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
 import '../game_screen.dart';
-import '../icons/circle_icon.dart';
-import '../icons/pacman_icons.dart';
 import '../pacman_game.dart';
 
 const double _statusWidgetHeightFactor = 1.0;
 const _widgetSpacing = 8 * _statusWidgetHeightFactor;
 const _clockSpacing = 8 * _statusWidgetHeightFactor;
-const _pacmanOuterSpacing = 8 * _statusWidgetHeightFactor;
-const _pacmanSpacing = 6 * _statusWidgetHeightFactor;
 const pacmanIconSize = 21 * _statusWidgetHeightFactor;
 const gIconSize = pacmanIconSize * 4 / 3;
 const circleIconSize = 10 * _statusWidgetHeightFactor;
-const _pelletsSpacing = 2 * _statusWidgetHeightFactor;
 
 Widget topOverlayWidget(BuildContext context, PacmanGame game) {
   return Center(
@@ -66,7 +59,6 @@ Widget _topRightWidget(BuildContext context, PacmanGame game) {
     mainAxisSize: MainAxisSize.min,
     spacing: _widgetSpacing,
     children: [
-      _pelletsWidget(context, game),
       _pelletsCounterWidget(game),
     ],
   );
@@ -78,38 +70,6 @@ Widget _mainMenuButtonWidget(BuildContext context, PacmanGame game) {
       game.toggleOverlay(GameScreen.startDialogKey);
     },
     icon: const Icon(Icons.menu, color: Palette.textColor),
-  );
-}
-
-// ignore: unused_element
-Widget _livesWidget(BuildContext context, PacmanGame game) {
-  return Padding(
-    padding: const EdgeInsets.only(
-        left: _pacmanOuterSpacing, right: _pacmanOuterSpacing),
-    child: ValueListenableBuilder<int>(
-      valueListenable: game.world.pacmans.numberOfDeathsNotifier,
-      builder: (BuildContext context, int value, Widget? child) {
-        return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: _pacmanSpacing,
-            children: List.generate(game.level.maxAllowedDeaths,
-                (index) => animatedPacmanIcon(game, index)));
-      },
-    ),
-  );
-}
-
-Widget _pelletsWidget(BuildContext context, PacmanGame game) {
-  return ValueListenableBuilder<int>(
-    valueListenable: game.world.pellets.pelletsRemainingNotifier,
-    builder: (BuildContext context, int value, Widget? child) {
-      return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: _pelletsSpacing,
-          children: List.generate(
-              min(15, game.world.pellets.pelletsRemainingNotifier.value),
-              (index) => circleIcon()));
-    },
   );
 }
 

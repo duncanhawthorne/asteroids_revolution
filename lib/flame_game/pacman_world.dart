@@ -11,9 +11,6 @@ import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import 'components/asteroids_layer.dart';
 import 'components/blocking_bar_layer.dart';
-import 'components/ghost_layer.dart';
-import 'components/pacman.dart';
-import 'components/pacman_layer.dart';
 import 'components/pellet_layer.dart';
 import 'components/tutorial_layer.dart';
 import 'components/wall_layer.dart';
@@ -57,8 +54,6 @@ class PacmanWorld extends Forge2DWorld
   final PlayerProgress playerProgress;
 
   final noEventsWrapper = WrapperNoEvents();
-  final pacmans = Pacmans();
-  final ghosts = Ghosts();
   final pellets = PelletWrapper();
   final walls = WallWrapper();
   final _tutorial = TutorialWrapper();
@@ -94,47 +89,6 @@ class PacmanWorld extends Forge2DWorld
   void resetAfterGameWin() {
     game.audioController.stopSfx(SfxType.ghostsScared);
     play(SfxType.endMusic);
-    ghosts.resetAfterGameWin();
-  }
-
-  static const bool _slideCharactersAfterPacmanDeath = true;
-
-  void resetAfterPacmanDeath(Pacman dyingPacman) {
-    _resetSlideAfterPacmanDeath(dyingPacman);
-  }
-
-  void _resetSlideAfterPacmanDeath(Pacman dyingPacman) {
-    //reset ghost scared status. Shouldn't be relevant as just died
-    game.audioController.stopSfx(SfxType.ghostsScared);
-    if (!gameWonOrLost) {
-      if (_slideCharactersAfterPacmanDeath) {
-        _cameraRotatableOnPacmanDeathFlourish = false;
-        dyingPacman.resetSlideAfterDeath();
-        ghosts.resetSlideAfterPacmanDeath();
-        resetSlideAngle(game.camera.viewfinder,
-            onComplete: _resetInstantAfterPacmanDeath);
-      } else {
-        _resetInstantAfterPacmanDeath();
-      }
-    } else {
-      doingLevelResetFlourish = false;
-    }
-  }
-
-  void _resetInstantAfterPacmanDeath() {
-    // ignore: dead_code
-    if (true || doingLevelResetFlourish) {
-      // must test doingLevelResetFlourish
-      // as could have been removed by reset during delay x 2
-      // but this code is only run from resetSlide,
-      // so if we have got here (accidentally) then resetSlide has run
-      // and rotation will be wrong
-      // so should clean up anyway
-      pacmans.resetInstantAfterPacmanDeath();
-      ghosts.resetInstantAfterPacmanDeath();
-      _cameraAndTimersReset();
-      game.pauseEngineIfNoActivity();
-    }
   }
 
   void _cameraAndTimersReset() {
@@ -256,8 +210,6 @@ class PacmanWorld extends Forge2DWorld
         if (!gameWonOrLost) {
           game.stopwatch.resume();
         }
-        ghosts.addSpawner();
-        ghosts.sirenVolumeUpdatedTimer();
       }
     }
   }

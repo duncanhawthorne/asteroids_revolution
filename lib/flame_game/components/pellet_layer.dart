@@ -1,7 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
-import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'wrapper_no_events.dart';
@@ -19,12 +18,7 @@ class PelletWrapper extends WrapperNoEvents
   final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier(1);
 
   @override
-  void reset() {
-    if (children.isNotEmpty) {
-      removeAll(children);
-    }
-    addAll(maze.pellets(world.level.superPelletsEnabled));
-  }
+  void reset() {}
 
   @override
   Future<void> onLoad() async {

@@ -2,10 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
-import 'components/mini_pellet.dart';
-import 'components/pellet.dart';
 import 'components/space_dot.dart';
-import 'components/super_pellet.dart';
 import 'components/wall.dart';
 import 'pacman_game.dart';
 
@@ -142,41 +139,6 @@ class Maze {
       }
     }
     return Vector2.zero();
-  }
-
-  bool _pelletCodeAtCell(int i, int j) {
-    return _mazeLayout[i][j] == _kMiniPellet ||
-        _mazeLayout[i][j] == _kSuperPellet;
-  }
-
-  bool _pelletAt(int i, int j) {
-    return i >= 0 &&
-        j >= 0 &&
-        i + 1 < _mazeLayout.length &&
-        j + 1 < _mazeLayout[0].length &&
-        _pelletCodeAtCell(i, j) &&
-        _pelletCodeAtCell(i, j + 1) &&
-        _pelletCodeAtCell(i + 1, j) &&
-        _pelletCodeAtCell(i + 1, j + 1);
-  }
-
-  List<Pellet> pellets(bool superPelletsEnabled) {
-    final List<Pellet> result = [];
-    for (int i = 0; i < _mazeLayout.length; i++) {
-      for (int j = 0; j < _mazeLayout[i].length; j++) {
-        Vector2 center = _vectorOfMazeListIndex(i, j,
-            ioffset: _largeSprites ? 1 / 2 : 0,
-            joffset: _largeSprites ? 1 / 2 : 0);
-        if (_pelletAt(i, j)) {
-          if (_mazeLayout[i][j] == _kSuperPellet && superPelletsEnabled) {
-            result.add(SuperPellet(position: center));
-          } else {
-            result.add(MiniPellet(position: center));
-          }
-        }
-      }
-    }
-    return result;
   }
 
   static const _mazeInnerWallWidthFactor = 1;
@@ -332,12 +294,12 @@ class Maze {
     return result;
   }
 
-  static const _kMiniPellet = "0"; //quad of dots
+//quad of dots
   static const _kWall = "1";
 
   // ignore: unused_field
   static const _kLair = "2";
-  static const _kSuperPellet = "3"; //quad top
+//quad top
   // ignore: unused_field
   static const _kEmpty = "4";
   static const _kGhostStart = "7";

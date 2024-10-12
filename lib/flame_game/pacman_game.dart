@@ -72,11 +72,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   static const deathPenaltyMillis = 5000;
   final Timer stopwatch = Timer(double.infinity);
-  int get stopwatchMilliSeconds =>
-      (stopwatch.current * 1000).toInt() +
-      min(world.level.maxAllowedDeaths - 1,
-              world.pacmans.numberOfDeathsNotifier.value) *
-          deathPenaltyMillis;
+  int get stopwatchMilliSeconds => (stopwatch.current * 1000).toInt();
   bool get levelStarted => stopwatchMilliSeconds > 0;
 
   bool get isGameLive =>
@@ -215,9 +211,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       } else if (stopwatch.isRunning()) {
         //some game activity has happened, no need to pause, just cancel timer
         timer.cancel();
-      } else if (!(world.isMounted &&
-          world.ghosts.ghostList.isNotEmpty &&
-          world.ghosts.ghostList[0].isLoaded)) {
+      } else if (!(world.isMounted)) {
         //core components haven't loaded yet, so wait before start frame count
         _framesRendered = 0;
       } else if (_framesRendered <= 5) {
