@@ -16,6 +16,11 @@ final Paint _wallGroundPaint = Paint()
 ////..color = Color.fromARGB(50, 100, 100, 100)
 //..isAntiAlias = false
   ..color = Palette.seed.color;
+final Paint _wallBackgroundPaint = Paint()
+//..filterQuality = FilterQuality.none
+////..color = Color.fromARGB(50, 100, 100, 100)
+//..isAntiAlias = false
+  ..color = Palette.background.color;
 
 class MazeWallRectangleVisual extends RectangleComponent with IgnoreEvents {
   MazeWallRectangleVisual(
@@ -38,9 +43,14 @@ class MazeWallRectangleVisual extends RectangleComponent with IgnoreEvents {
   }
 }
 
-class MazeVisualBlockingBar extends MazeWallRectangleVisual {
+class MazeVisualBlockingBar extends RectangleComponent with IgnoreEvents {
   MazeVisualBlockingBar(
-      {required super.position, required super.width, required super.height});
+      {required super.position, required width, required height})
+      : super(
+            size: Vector2(width, height),
+            anchor: Anchor.center,
+            paint: _wallBackgroundPaint);
+
   @override
   final priority = 1000;
 }

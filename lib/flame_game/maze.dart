@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 
 import 'components/mini_pellet.dart';
 import 'components/pellet.dart';
+import 'components/space_dot.dart';
 import 'components/super_pellet.dart';
 import 'components/wall.dart';
 import 'pacman_game.dart';
@@ -17,6 +18,8 @@ class Maze {
   }) {
     setMazeId(mazeId);
   }
+
+  int get mazeAcross => _mazeLayoutHorizontalLength();
 
   int get mazeId => _mazeId;
 
@@ -179,6 +182,48 @@ class Maze {
   static const _mazeInnerWallWidthFactor = 1;
   static const double _pixelationBuffer = 0.03;
 
+  double _vectorOfMazeListIndexI(int icore, int jcore, {double joffset = 0}) {
+    double j = joffset + jcore;
+    return (j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth;
+  }
+
+  double _vectorOfMazeListIndexJ(int icore, int jcore, {double ioffset = 0}) {
+    double i = ioffset + icore;
+    return (i + 1 / 2 - _mazeLayout.length / 2) * blockWidth;
+  }
+
+  List<SpaceDot> spaceDots(
+      {required int scaleFactor,
+      required Vector2 positionOffset,
+      required PacmanGame game}) {
+    final List<SpaceDot> result = [];
+    double scale = blockWidth * pow(mazeAcross, scaleFactor);
+    Vector2 center = Vector2.all(0);
+    double bigScale = pow(maze.mazeAcross, scaleFactor).toDouble();
+    for (int i = 0; i < _mazeLayout.length; i++) {
+      for (int j = 0; j < _mazeLayout[i].length; j++) {
+        center.x = _vectorOfMazeListIndexI(i, j);
+        center.y = _vectorOfMazeListIndexJ(i, j);
+        center.scale(bigScale);
+        center
+          ..x += positionOffset.x
+          ..y += positionOffset.y;
+        //final Vector2 center = _vectorOfMazeListIndex(i, j) *
+        //        pow(maze.mazeAcross, scaleFactor).toDouble() +
+        //    positionOffset;
+
+        if (!(center.x == 0 && center.y == 0)) {
+          // &&
+          //!game.world.asteroidsWrapper.isOutsideKnownWorld(center)) {
+          //!existingSpaceDot(center, game.world.asteroidsWrapper.ship)
+          result.add(RecycledSpaceDot(
+              position: center, width: scale * 0.05, height: scale * 0.05));
+        }
+      }
+    }
+    return result;
+  }
+
   List<Component> mazeWalls() {
     final List<Component> result = [];
     double scale = blockWidth;
@@ -300,7 +345,7 @@ class Maze {
   static const _kCage = "9";
 
   static const _borders = [
-    '4111111111111111111111111111114',
+    '4111111111111144411111111111114',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
@@ -313,9 +358,9 @@ class Maze {
     '4144444444444444444444444444414',
     '4144444444444449444444444444414',
     '4144444444444442444444444444414',
-    '4144444444444444444444444444414',
-    '4144444444444444444444444444414',
-    '4144444444444444444444444444414',
+    '4444444444444444444444444444444',
+    '4444444444444444444444444444444',
+    '4444444444444444444444444444444',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
@@ -328,7 +373,7 @@ class Maze {
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',
-    '4111111111111111111111111111114'
+    '4111111111111144411111111111114'
   ];
 
   // ignore: unused_field

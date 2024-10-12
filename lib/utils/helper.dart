@@ -1,5 +1,10 @@
+import 'dart:async' as async;
 import 'dart:core';
+import 'dart:math';
 
+import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// This file has utilities used by other bits of code
@@ -8,3 +13,34 @@ void debug(x) {
   debugPrint("D ${DateTime.now()} $x");
 }
 
+async.Timer makePeriodicTimer(
+  Duration duration,
+  void Function(async.Timer timer) callback, {
+  bool fireNow = false,
+}) {
+  var timer = async.Timer.periodic(duration, callback);
+  if (fireNow) {
+    callback(timer);
+  }
+  return timer;
+}
+
+final random = Random();
+
+double centeredRandom() {
+  return random.nextDouble() - 0.5;
+}
+
+// ignore: unused_element
+double _centeredRandomNoMiddle() {
+  double a = 0;
+  a = centeredRandom() * 0.25;
+  a = a < 0 ? a - (1 - 0.25 / 2) : a + (1 - 0.25 / 2);
+  return a;
+}
+
+Vector2 velocityNoise(double scale) {
+  double ringRadius = (0.5 + random.nextDouble() * 0.5) * scale;
+  double ringAngle = tau * random.nextDouble();
+  return Vector2(ringRadius * cos(ringAngle), ringRadius * sin(ringAngle));
+}

@@ -9,12 +9,12 @@ import 'package:flutter/foundation.dart';
 import '../../audio/sounds.dart';
 import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
+import 'components/asteroids_layer.dart';
 import 'components/blocking_bar_layer.dart';
 import 'components/ghost_layer.dart';
 import 'components/pacman.dart';
 import 'components/pacman_layer.dart';
 import 'components/pellet_layer.dart';
-import 'components/snake_wrapper.dart';
 import 'components/tutorial_layer.dart';
 import 'components/wall_layer.dart';
 import 'components/wrapper_no_events.dart';
@@ -60,7 +60,7 @@ class PacmanWorld extends Forge2DWorld
   final pacmans = Pacmans();
   final ghosts = Ghosts();
   final pellets = PelletWrapper();
-  final _walls = WallWrapper();
+  final walls = WallWrapper();
   final _tutorial = TutorialWrapper();
   // ignore: unused_field
   final _blocking = BlockingBarWrapper();
@@ -68,7 +68,13 @@ class PacmanWorld extends Forge2DWorld
 
   bool get gameWonOrLost =>
       pellets.pelletsRemainingNotifier.value <= 0 ||
-      snakeWrapper.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
+      asteroidsWrapper.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
+
+  double get everythingScale =>
+      asteroidsWrapper.ship.scaledRadius /
+      neutralShipRadius *
+      30 /
+      flameGameZoom;
 
   final Map<int, double?> _fingersLastDragAngle = {};
 
@@ -155,7 +161,7 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  final snakeWrapper = SnakeWrapper();
+  final asteroidsWrapper = AsteroidsWrapper();
 
   void start() {
     play(SfxType.startMusic);
@@ -168,16 +174,27 @@ class PacmanWorld extends Forge2DWorld
   Future<void> onLoad() async {
     super.onLoad();
     add(noEventsWrapper);
-    wrappers.addAll([snakeWrapper, _walls, _tutorial]);
+    wrappers.addAll([asteroidsWrapper, walls, _tutorial]); //_blocking
     for (WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }
     reset(firstRun: true);
   }
 
+  final Map<int, bool> _boostFingers = {};
+
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
+    if (event.canvasPosition.y > game.canvasSize.y * 3 / 4 &&
+        event.canvasPosition.x < game.canvasSize.x * 1 / 2) {
+      asteroidsWrapper.ship.accelerating = true;
+      _boostFingers[event.pointerId] = true;
+      game.resumeGame();
+      _moveMazeAngleByDelta(0); //to start timer
+      return;
+    }
+
     if (_iOSWeb) {
       _fingersLastDragAngle[event.pointerId] = null;
     } else {
@@ -190,6 +207,11 @@ class PacmanWorld extends Forge2DWorld
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
+
+    if (_boostFingers.containsKey(event.pointerId)) {
+      return;
+    }
+
     game.resumeGame();
     final eventVectorLengthProportion =
         (event.canvasStartPosition - game.canvasSize / 2).length /
@@ -215,6 +237,12 @@ class PacmanWorld extends Forge2DWorld
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
+
+    if (_boostFingers.containsKey(event.pointerId)) {
+      asteroidsWrapper.ship.accelerating = false;
+      return;
+    }
+
     if (_fingersLastDragAngle.containsKey(event.pointerId)) {
       _fingersLastDragAngle.remove(event.pointerId);
     }
@@ -238,7 +266,7 @@ class PacmanWorld extends Forge2DWorld
   final direction = Vector2.zero();
 
   final _tmpGravity = Vector2.zero();
-  late final double _gravityScale = 50 * (30 / flameGameZoom) * _levelSpeed;
+  late final double _gravityScale = 50 * _levelSpeed;
   void _setMazeAngle(double angle) {
     //using tmpGravity to avoid creating a new Vector2 on each update / frame
     //could instead directly do gravity = Vector2(calc, calc);

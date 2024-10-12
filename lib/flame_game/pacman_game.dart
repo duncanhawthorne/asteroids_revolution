@@ -35,7 +35,7 @@ import 'pacman_world.dart';
 // flame_forge2d has a maximum allowed speed for physical objects.
 // Reducing map size 30x, scaling up gravity 30x, & zooming 30x changes nothing,
 // but reduces chance of hitting maximum allowed speed
-const flameGameZoom = 30.0;
+const flameGameZoom = 1.0;
 const _visualZoomMultiplier = 1; //0.92;
 const double kVirtualGameSize = 1700; //determines speed of game
 
@@ -121,8 +121,8 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   void _winOrLoseGameListener() {
     assert(world.pellets.pelletsRemainingNotifier.value > 0 || !levelStarted);
-    world.snakeWrapper.numberOfDeathsNotifier.addListener(() {
-      if (world.snakeWrapper.numberOfDeathsNotifier.value >=
+    world.asteroidsWrapper.numberOfDeathsNotifier.addListener(() {
+      if (world.asteroidsWrapper.numberOfDeathsNotifier.value >=
               level.maxAllowedDeaths &&
           levelStarted) {
         _handleLoseGame();
@@ -241,7 +241,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     super.onLoad();
     _bugFixes();
     reset(firstRun: true);
-    overlays.add(GameScreen.startDialogKey);
+
     _winOrLoseGameListener(); //isn't disposed so run once, not on start()
     _lifecycleChangeListener(); //isn't disposed so run once, not on start()
   }

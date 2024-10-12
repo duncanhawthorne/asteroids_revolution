@@ -10,7 +10,8 @@ import '../utils/helper.dart';
 
 class FBase {
   static const bool firebaseOn =
-      true && firebaseOnReal; //!(windows && !kIsWeb);
+      // ignore: dead_code
+      false && firebaseOnReal; //!(windows && !kIsWeb);
 
   static const String mainDB = "records";
   static const String userSaves = "userSaves";

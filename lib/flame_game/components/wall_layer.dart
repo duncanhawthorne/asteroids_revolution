@@ -13,6 +13,12 @@ class WallWrapper extends WrapperNoEvents
       removeAll(children);
     }
     addAll(maze.mazeWalls());
+    addAll(maze.spaceDots(
+        scaleFactor: 0,
+        positionOffset: Vector2(0, 0),
+        game: game)); //FIXME scaleFactor is fudge
+    addAll(maze.spaceDots(
+        scaleFactor: 1, positionOffset: Vector2(0, 0), game: game));
   }
 
   @override

@@ -18,6 +18,8 @@ class TutorialWrapper extends WrapperNoEvents
 
   @override
   void start() {
+    return;
+    // ignore: dead_code
     Future.delayed(tutorialDelay, () {
       if (!game.levelStarted &&
           !_tutorialEverManuallyHidden &&

@@ -13,7 +13,7 @@ import '../icons/pacman_icons.dart';
 import '../pacman_game.dart';
 
 const double _statusWidgetHeightFactor = 1.0;
-const _widgetSpacing = 10 * _statusWidgetHeightFactor;
+const _widgetSpacing = 8 * _statusWidgetHeightFactor;
 const _clockSpacing = 8 * _statusWidgetHeightFactor;
 const _pacmanOuterSpacing = 8 * _statusWidgetHeightFactor;
 const _pacmanSpacing = 6 * _statusWidgetHeightFactor;
@@ -52,7 +52,6 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
     spacing: _widgetSpacing,
     children: [
       _mainMenuButtonWidget(context, game),
-      _audioOnOffButtonWidget(context, game),
       game.level.isTutorial
           ? SizedBox.shrink()
           : g.loginLogoutWidget(context, gIconSize, Palette.textColor),
@@ -108,7 +107,7 @@ Widget _pelletsWidget(BuildContext context, PacmanGame game) {
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: _pelletsSpacing,
           children: List.generate(
-              min(20, game.world.pellets.pelletsRemainingNotifier.value),
+              min(15, game.world.pellets.pelletsRemainingNotifier.value),
               (index) => circleIcon()));
     },
   );
