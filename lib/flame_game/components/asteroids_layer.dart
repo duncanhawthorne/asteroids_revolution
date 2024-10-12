@@ -19,7 +19,6 @@ import 'heart.dart';
 import 'rock.dart';
 import 'ship.dart';
 import 'space_body.dart';
-import 'space_dot.dart';
 import 'wrapper_no_events.dart';
 
 final Paint snakePaint = Paint()..color = Palette.seed.color;
@@ -43,7 +42,7 @@ class AsteroidsWrapper extends WrapperNoEvents
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier(0);
 
   final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
-  final CameraWrapper camera = CameraWrapper();
+  final CameraWrapper cameraManager = CameraWrapper();
 
   async.Timer? _timerTopUpSpaceBodies;
   void _startTimerTopUpSpaceBodies() {
@@ -61,18 +60,11 @@ class AsteroidsWrapper extends WrapperNoEvents
     });
   }
 
-  get _hubbleLimit =>
-      maze.mazeWidth *
-      flameGameZoom /
-      30 *
-      _kHubbleLimitMult *
-      ship.radius; // / zoomError;
-
   get _visibleRockLimit => 30 * pow(_kHubbleLimitMult, 2);
-  get heartLimit => _visibleRockLimit / 4 / 6 / 2;
-  get _alienLimit => kDebugMode ? 0 : 1; //1;
-  get _cherryLimit => 4;
   get _transparentrockLimit => _visibleRockLimit;
+  get heartLimit => _visibleRockLimit / 4 / 6 / 2;
+  static const _alienLimit = kDebugMode ? 0 : 1; //1;
+  static const _cherryLimit = 4;
 
   get _allRocks => children.whereType<Rock>();
   get _visibleRocks =>
@@ -82,33 +74,25 @@ class AsteroidsWrapper extends WrapperNoEvents
   get hearts => children.whereType<Heart>();
   get _aliens => children.whereType<Alien>();
   get _cherries => children.whereType<Cherry>();
-  // ignore: unused_element
-  get _bullets => children.whereType<Bullet>();
   get _spaceBodies => children.whereType<SpaceBody>();
-  Iterable<SpaceDot> get spaceDots =>
-      world.walls.children.whereType<SpaceDot>();
 
-  bool isOutsideKnownWorld(Vector2 target) {
-    return target.distanceTo(ship.position) > _hubbleLimit;
+  get _mappedUniverseLimit =>
+      maze.mazeWidth * flameGameZoom / 30 * _kHubbleLimitMult * ship.radius;
+
+  double get _universeRadius =>
+      _mappedUniverseLimit *
+      (1 + _twilightZoneWidth) /
+      cameraManager.overZoomError;
+
+  bool isOutsideUniverse(Vector2 target) {
+    return target.distanceTo(ship.position) > _universeRadius;
   }
 
-  bool isVeryOutsideKnownWorld(Vector2 target) {
-    return target.distanceTo(ship.position) >
-        _hubbleLimit * (1 + _ringJustOutsideKnownWorld) / camera.overZoomError;
-  }
-
-  final Vector2 _oneTimeVelocity = Vector2(0, 0);
-  Vector2 randomVelocityOffset({double scale = 1}) {
-    _oneTimeVelocity.x = centeredRandom() * scale;
-    _oneTimeVelocity.y = centeredRandom() * scale;
-    return _oneTimeVelocity;
-  }
-
-  static const double _ringJustOutsideKnownWorld = 0.3;
+  static const double _twilightZoneWidth = 0.3;
   final Vector2 _oneTimePosition = Vector2(0, 0);
-  Vector2 randomPositionJustOutsideKnownWorld() {
+  Vector2 _randomPositionInTwilightZone() {
     double ringRadius =
-        (1 + random.nextDouble() * _ringJustOutsideKnownWorld) * _hubbleLimit;
+        (1 + random.nextDouble() * _twilightZoneWidth) * _mappedUniverseLimit;
     double ringAngle = tau * random.nextDouble();
     _oneTimePosition.setFrom(ship.position);
     _oneTimePosition
@@ -117,8 +101,9 @@ class AsteroidsWrapper extends WrapperNoEvents
     return _oneTimePosition;
   }
 
-  Vector2 randomPositionInsideKnownWorld() {
-    double ringRadius = (0.1 + random.nextDouble() * 0.9) * _hubbleLimit;
+  Vector2 _randomPositionInMappedUniverse() {
+    double ringRadius =
+        (0.1 + random.nextDouble() * 0.9) * _mappedUniverseLimit;
     double ringAngle = tau * random.nextDouble();
     _oneTimePosition.setFrom(ship.position);
     _oneTimePosition
@@ -150,28 +135,28 @@ class AsteroidsWrapper extends WrapperNoEvents
   void _addStarterSpaceBodyField() {
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       add(RecycledRock(
-          position: randomPositionInsideKnownWorld(),
+          position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
           numberExplosionsLeft: randomStartingHits(),
           radius: ship.radius * 0.8 * randomRadiusFactor()));
     }
     for (int i = 0; i < heartLimit - hearts.length; i++) {
       add(Heart(
-        position: randomPositionInsideKnownWorld(),
+        position: _randomPositionInMappedUniverse(),
         velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
         radius: ship.radius,
       ));
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
       add(Cherry(
-        position: randomPositionInsideKnownWorld(),
+        position: _randomPositionInMappedUniverse(),
         velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
         radius: ship.radius,
       ));
     }
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
       add(Alien(
-        position: randomPositionInsideKnownWorld(),
+        position: _randomPositionInMappedUniverse(),
         velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
         radius: ship.radius,
       ));
@@ -181,7 +166,7 @@ class AsteroidsWrapper extends WrapperNoEvents
   void addSmallRocksOnDamage() {
     for (int i = 0; i < _transparentrockLimit - _transparentRocks.length; i++) {
       add(RecycledRock(
-          position: randomPositionInsideKnownWorld(),
+          position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
           numberExplosionsLeft: randomStartingHits(),
           radius: ship.radius * transpThreshold * 1.15));
@@ -192,12 +177,12 @@ class AsteroidsWrapper extends WrapperNoEvents
     if (game.paused) {
       return;
     }
-    if (camera.tooZoomedOut) {
+    if (cameraManager.tooZoomedOut) {
       return; //risk adding spaceBodies that you can see being added
     }
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       add(RecycledRock(
-          position: randomPositionJustOutsideKnownWorld(),
+          position: _randomPositionInTwilightZone(),
           velocity: randomVelocityOffset(scale: 10 * world.everythingScale),
           ensureVelocityTowardsCenter: true,
           radius: ship.radius * randomRadiusFactor(),
@@ -205,14 +190,14 @@ class AsteroidsWrapper extends WrapperNoEvents
     }
     for (int i = 0; i < heartLimit - hearts.length; i++) {
       add(Heart(
-          position: randomPositionJustOutsideKnownWorld(),
+          position: _randomPositionInTwilightZone(),
           velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
           radius: ship.radius,
           ensureVelocityTowardsCenter: true));
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
       add(Cherry(
-        position: randomPositionJustOutsideKnownWorld(),
+        position: _randomPositionInTwilightZone(),
         velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
         ensureVelocityTowardsCenter: true,
         radius: ship.radius,
@@ -220,7 +205,7 @@ class AsteroidsWrapper extends WrapperNoEvents
     }
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
       add(Alien(
-        position: randomPositionJustOutsideKnownWorld(),
+        position: _randomPositionInTwilightZone(),
         velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
         radius: ship.radius,
       ));
@@ -237,14 +222,14 @@ class AsteroidsWrapper extends WrapperNoEvents
     for (SpaceBody item in _spaceBodies) {
       item.tidy();
     }
-    camera.fixSpaceDots();
+    cameraManager.fixSpaceDots();
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     add(ship);
-    add(camera);
+    add(cameraManager);
     if (!kDebugMode || kPanTrackingCamera) {
       game.camera.follow(ship);
     }

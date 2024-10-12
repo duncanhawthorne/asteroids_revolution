@@ -17,6 +17,9 @@ bool kZoomTrackingCamera = true;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
+  Iterable<SpaceDot> get spaceDots =>
+      world.walls.children.whereType<SpaceDot>();
+
   @override
   void reset() {
     _zoomTimer?.cancel();
@@ -71,8 +74,8 @@ class CameraWrapper extends WrapperNoEvents
 
       debug("Start");
 
-      for (SpaceDot dot in world.asteroidsWrapper.spaceDots) {
-        if (true || world.asteroidsWrapper.isOutsideKnownWorld(dot.position)) {
+      for (SpaceDot dot in spaceDots) {
+        if (true || world.asteroidsWrapper.isOutsideUniverse(dot.position)) {
           //debug("kill dot");
           dot.removeFromParent();
         }

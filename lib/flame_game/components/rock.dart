@@ -69,7 +69,7 @@ class Rock extends SpaceBody {
     setHealth(health - d / 3 * 2);
   }
 
-  void addSubRock() {
+  void _addSubRock() {
     world.asteroidsWrapper.add(RecycledRock(
         position: position, // + cvRandomNoMiddle(radius * 0.3),
         velocity: velocity + velocityNoise(12 * world.everythingScale),
@@ -77,7 +77,7 @@ class Rock extends SpaceBody {
         numberExplosionsLeft: numberExplosionsLeft - 1));
   }
 
-  void addSubHeart() {
+  void _addSubHeart() {
     world.asteroidsWrapper.add(Heart(
       position: position, // + cvRandomNoMiddle(radius * 0.3),
       velocity: velocity + velocityNoise(12 * world.everythingScale),
@@ -85,7 +85,7 @@ class Rock extends SpaceBody {
     ));
   }
 
-  bool isLuckyHeart() {
+  bool _isLuckyHeart() {
     return random.nextDouble() < 0.05 &&
         world.asteroidsWrapper.hearts.length <
             world.asteroidsWrapper.heartLimit * 1.5;
@@ -95,15 +95,15 @@ class Rock extends SpaceBody {
     bool shouldSplit = !isSmall && numberExplosionsLeft >= 1;
     if (shouldSplit) {
       for (int i = 0; i < 2; i++) {
-        if (isLuckyHeart()) {
-          addSubHeart();
+        if (_isLuckyHeart()) {
+          _addSubHeart();
         } else {
-          addSubRock();
+          _addSubRock();
         }
       }
     } else {
-      if (isLuckyHeart()) {
-        addSubHeart();
+      if (_isLuckyHeart()) {
+        _addSubHeart();
       }
     }
     removeFromParent();
@@ -136,14 +136,6 @@ class Rock extends SpaceBody {
     } else {
       hole.position.setAll(radius);
     }
-
-    /*
-    //i-frames
-    hitbox.collisionType = CollisionType.inactive;
-    Future.delayed(Duration(milliseconds: 500), () {
-      hitbox.collisionType = CollisionType.passive;
-    });
-     */
   }
 
   Sprite? rock1Sprite;

@@ -32,8 +32,6 @@ class SpaceBody extends CircleComponent
   final Vector2 acceleration = Vector2(0, 0);
   double friction = 1;
   double health = 1;
-  bool everOnScreen = false;
-  final cleanBasedOnBeingEverOnScreen = true;
   final cleanIfTiny = true;
   bool ensureVelocityTowardsCenter = false;
   final bool canAccelerate = false;
@@ -46,19 +44,16 @@ class SpaceBody extends CircleComponent
   bool get isTiny => radius < ship.radius * transpThreshold;
 
   fixVelocityTowardsCenter() {
-    if (velocity.x.sign == (position - ship.position).x.sign) {
+    if (velocity.x.sign == (position.x - ship.position.x).sign) {
       velocity.x = -velocity.x;
     }
-    if (velocity.y.sign == (position - ship.position).y.sign) {
+    if (velocity.y.sign == (position.y - ship.position.y).sign) {
       velocity.y = -velocity.y;
     }
   }
 
-  bool get isOutsideKnownWorld =>
-      world.asteroidsWrapper.isOutsideKnownWorld(position);
-
-  bool get isVeryOutsideKnownWorld =>
-      world.asteroidsWrapper.isVeryOutsideKnownWorld(position);
+  bool get isOutsideUniverse =>
+      world.asteroidsWrapper.isOutsideUniverse(position);
 
   @mustCallSuper
   void setSize(double h) {
@@ -81,7 +76,6 @@ class SpaceBody extends CircleComponent
   @override
   Future<void> onMount() async {
     isActive = true; //already set sync but set here anyway
-    everOnScreen = false; //reset this
     super.onMount();
     if (ensureVelocityTowardsCenter) {
       fixVelocityTowardsCenter();
@@ -103,15 +97,7 @@ class SpaceBody extends CircleComponent
         removeFromParent();
       }
     }
-    if (cleanBasedOnBeingEverOnScreen) {
-      if (!everOnScreen && !isOutsideKnownWorld) {
-        everOnScreen = true;
-      }
-      if (everOnScreen && isOutsideKnownWorld) {
-        removeFromParent();
-      }
-    }
-    if (isVeryOutsideKnownWorld) {
+    if (isOutsideUniverse) {
       removeFromParent();
     }
   }

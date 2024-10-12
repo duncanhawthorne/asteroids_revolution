@@ -12,10 +12,6 @@ class Bullet extends SpaceBody with CollisionCallbacks {
       : super(paint: snakePaint, priority: 100);
 
   @override
-  // ignore: overridden_fields
-  final cleanBasedOnBeingEverOnScreen = false;
-
-  @override
   Future<void> onLoad() async {
     super.onLoad();
     hitbox.collisionType = CollisionType.active;

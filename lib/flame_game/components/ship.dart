@@ -120,6 +120,12 @@ class Ship extends SpaceBody with CollisionCallbacks {
     if (d > 0) {
       world.asteroidsWrapper.addSmallRocksOnDamage();
     }
+
+    //i-frames
+    hitbox.collisionType = CollisionType.inactive;
+    Future.delayed(Duration(milliseconds: 250), () {
+      hitbox.collisionType = CollisionType.active;
+    });
   }
 
   void addMultiGun() {
@@ -215,7 +221,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
       velocity.scale(-1);
     } else if (other is Cherry) {
       addMultiGun();
-      other.position = world.asteroidsWrapper.randomPositionInsideKnownWorld();
+      other.removeFromParent();
     }
   }
 }

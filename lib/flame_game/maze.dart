@@ -178,7 +178,7 @@ class Maze {
 
         if (!(center.x == 0 && center.y == 0)) {
           // &&
-          //!game.world.asteroidsWrapper.isOutsideKnownWorld(center)) {
+          //!game.world.asteroidsWrapper.isVeryOutsideKnownWorld(center)) {
           //!existingSpaceDot(center, game.world.asteroidsWrapper.ship)
           result.add(RecycledSpaceDot(
               position: center, width: scale * 0.05, height: scale * 0.05));

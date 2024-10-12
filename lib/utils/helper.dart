@@ -44,3 +44,10 @@ Vector2 velocityNoise(double scale) {
   double ringAngle = tau * random.nextDouble();
   return Vector2(ringRadius * cos(ringAngle), ringRadius * sin(ringAngle));
 }
+
+final Vector2 _oneTimeVelocity = Vector2(0, 0);
+Vector2 randomVelocityOffset({double scale = 1}) {
+  _oneTimeVelocity.x = centeredRandom() * scale;
+  _oneTimeVelocity.y = centeredRandom() * scale;
+  return _oneTimeVelocity;
+}
