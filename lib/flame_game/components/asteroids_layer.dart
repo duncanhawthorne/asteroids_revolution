@@ -2,7 +2,6 @@ import 'dart:async' as async;
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -89,27 +88,20 @@ class AsteroidsWrapper extends WrapperNoEvents
   }
 
   static const double _twilightZoneWidth = 0.3;
-  final Vector2 _oneTimePosition = Vector2(0, 0);
   Vector2 _randomPositionInTwilightZone() {
-    double ringRadius =
-        (1 + random.nextDouble() * _twilightZoneWidth) * _mappedUniverseLimit;
-    double ringAngle = tau * random.nextDouble();
-    _oneTimePosition.setFrom(ship.position);
-    _oneTimePosition
-      ..x += ringRadius * cos(ringAngle)
-      ..y += ringRadius * sin(ringAngle);
-    return _oneTimePosition;
+    return randomRThetaRing(
+        center: ship.position,
+        ringWidth: _twilightZoneWidth,
+        ignoredRing: 1,
+        overallScale: _mappedUniverseLimit);
   }
 
   Vector2 _randomPositionInMappedUniverse() {
-    double ringRadius =
-        (0.1 + random.nextDouble() * 0.9) * _mappedUniverseLimit;
-    double ringAngle = tau * random.nextDouble();
-    _oneTimePosition.setFrom(ship.position);
-    _oneTimePosition
-      ..x += ringRadius * cos(ringAngle)
-      ..y += ringRadius * sin(ringAngle);
-    return _oneTimePosition;
+    return randomRThetaRing(
+        center: ship.position,
+        ringWidth: 0.9,
+        ignoredRing: 0.1,
+        overallScale: _mappedUniverseLimit);
   }
 
   @override

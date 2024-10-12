@@ -51,3 +51,16 @@ Vector2 randomVelocityOffset({double scale = 1}) {
   _oneTimeVelocity.y = centeredRandom() * scale;
   return _oneTimeVelocity;
 }
+
+final Vector2 _oneTimePosition = Vector2(0, 0);
+Vector2 randomRThetaRing(
+    {required center, required ringWidth, ignoredRing = 0, overallScale = 1}) {
+  double ringRadius =
+      (ignoredRing + random.nextDouble() * ringWidth) * overallScale;
+  double ringAngle = tau * random.nextDouble();
+  _oneTimePosition.setFrom(center);
+  _oneTimePosition
+    ..x += ringRadius * cos(ringAngle)
+    ..y += ringRadius * sin(ringAngle);
+  return _oneTimePosition;
+}
