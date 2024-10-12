@@ -10,7 +10,6 @@ import '../../audio/sounds.dart';
 import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import 'components/asteroids_layer.dart';
-import 'components/blocking_bar_layer.dart';
 import 'components/pellet_layer.dart';
 import 'components/tutorial_layer.dart';
 import 'components/wall_layer.dart';
@@ -57,8 +56,6 @@ class PacmanWorld extends Forge2DWorld
   final pellets = PelletWrapper();
   final walls = WallWrapper();
   final _tutorial = TutorialWrapper();
-  // ignore: unused_field
-  final _blocking = BlockingBarWrapper();
   final List<WrapperNoEvents> wrappers = [];
 
   bool get gameWonOrLost =>
