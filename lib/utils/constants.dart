@@ -1,1 +1,1 @@
-const String appTitle = "Snake LOOP";
+const String appTitle = "Asteroids Revolution";
