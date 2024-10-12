@@ -70,15 +70,18 @@ class AsteroidsWrapper extends WrapperNoEvents
   get _spaceBodies => children.whereType<SpaceBody>();
 
   get _mappedUniverseRadius =>
-      maze.mazeWidth * flameGameZoom / 30 * _kHubbleLimitMult * ship.radius;
-
-  double get _universeRadius =>
-      _mappedUniverseRadius *
-      (1 + _twilightZoneWidth) /
+      maze.mazeWidth *
+      flameGameZoom /
+      30 *
+      _kHubbleLimitMult *
+      ship.radius /
       _cameraManager.overZoomError;
 
+  double get _fullUniverseRadius =>
+      _mappedUniverseRadius * (1 + _twilightZoneWidth);
+
   bool isOutsideUniverse(Vector2 target) {
-    return target.distanceTo(ship.position) > _universeRadius;
+    return target.distanceTo(ship.position) > _fullUniverseRadius;
   }
 
   static const double _twilightZoneWidth = 0.3;

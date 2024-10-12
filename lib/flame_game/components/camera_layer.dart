@@ -49,14 +49,12 @@ class CameraWrapper extends WrapperNoEvents
         async.Timer.periodic(const Duration(milliseconds: 10), (timer) {
       if (!kDebugMode || _kZoomTrackingCamera) {
         if (game.camera.viewfinder.zoom < _optimalZoom * 0.95) {
-          //debug("zoom in");
+          //zoom in
           game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
-          //game.camera.viewfinder.zoom *= (1 + zoomAdjustmentSpeed / 300);
         }
         if (game.camera.viewfinder.zoom > _optimalZoom * 1.05) {
-          //debug("zoom out");
+          //zoom out
           game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
-          //game.camera.viewfinder.zoom /= (1 + zoomAdjustmentSpeed / 300);
         }
       }
     });
