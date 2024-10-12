@@ -21,12 +21,6 @@ import 'space_body.dart';
 import 'wrapper_no_events.dart';
 
 final Paint snakePaint = Paint()..color = Palette.seed.color;
-final Paint rockPaint = Paint()..color = Palette.text.color;
-final Paint pebblePaint = Paint()..color = Palette.dull.color;
-final Paint heartPaint = Paint()..color = Palette.warning.color;
-final Paint wallBackgroundPaint = Paint()..color = Palette.background.color;
-final double neutralShipRadius =
-    maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
 
 const double greyThreshold = 0.5;
 const double transpThreshold = 0.5 * 0.2;

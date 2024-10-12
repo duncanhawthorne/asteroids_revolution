@@ -11,6 +11,7 @@ import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import 'components/asteroids_layer.dart';
 import 'components/pellet_layer.dart';
+import 'components/ship.dart';
 import 'components/tutorial_layer.dart';
 import 'components/wall_layer.dart';
 import 'components/wrapper_no_events.dart';

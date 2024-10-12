@@ -6,6 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 
 import '../../style/palette.dart';
+import '../maze.dart';
 import 'alien.dart';
 import 'asteroids_layer.dart';
 import 'bullet.dart';
@@ -14,6 +15,11 @@ import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
 import 'wall.dart';
+
+final Paint _wallBackgroundPaint = Paint()..color = Palette.background.color;
+
+final double neutralShipRadius =
+    maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
 
 double defaultShipRadius =
     neutralShipRadius / 18; //18; //5; //18; //18; //9; //9
@@ -80,7 +86,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   late final CircleComponent gunDot = CircleComponent(
       radius: 1,
       anchor: Anchor.center,
-      paint: wallBackgroundPaint,
+      paint: _wallBackgroundPaint,
       position: Vector2(1, 1));
 
   late final CircleComponent flameDot = CircleComponent(

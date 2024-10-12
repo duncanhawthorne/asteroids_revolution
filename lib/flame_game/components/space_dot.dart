@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 
-import 'asteroids_layer.dart';
+import '../../style/palette.dart';
+
+final Paint _spaceDotPaint = Paint()..color = Palette.dull.color;
 
 class SpaceDot extends RectangleComponent with IgnoreEvents {
   SpaceDot({required super.position, required width, required height})
       : super(
             size: Vector2(width, height),
             anchor: Anchor.center,
-            paint: pebblePaint);
+            paint: _spaceDotPaint);
 
   bool isActive = true; //so not in sparebits
 
