@@ -59,9 +59,9 @@ class AsteroidsWrapper extends WrapperNoEvents
     });
   }
 
-  get _visibleRockLimit => 30 * pow(_kHubbleLimitMult, 2);
-  get _transparentrockLimit => _visibleRockLimit;
-  get heartLimit => _visibleRockLimit / 4 / 6 / 2;
+  final _visibleRockLimit = 30 * pow(_kHubbleLimitMult, 2);
+  late final _transparentrockLimit = _visibleRockLimit;
+  late final heartLimit = _visibleRockLimit / 4 / 6 / 2;
   static const _alienLimit = kDebugMode ? 0 : 1; //1;
   static const _cherryLimit = 4;
 
@@ -75,11 +75,11 @@ class AsteroidsWrapper extends WrapperNoEvents
   get _cherries => children.whereType<Cherry>();
   get _spaceBodies => children.whereType<SpaceBody>();
 
-  get _mappedUniverseLimit =>
+  get _mappedUniverseRadius =>
       maze.mazeWidth * flameGameZoom / 30 * _kHubbleLimitMult * ship.radius;
 
   double get _universeRadius =>
-      _mappedUniverseLimit *
+      _mappedUniverseRadius *
       (1 + _twilightZoneWidth) /
       cameraManager.overZoomError;
 
@@ -93,7 +93,7 @@ class AsteroidsWrapper extends WrapperNoEvents
         center: ship.position,
         ringWidth: _twilightZoneWidth,
         ignoredRing: 1,
-        overallScale: _mappedUniverseLimit);
+        overallScale: _mappedUniverseRadius);
   }
 
   Vector2 _randomPositionInMappedUniverse() {
@@ -101,7 +101,7 @@ class AsteroidsWrapper extends WrapperNoEvents
         center: ship.position,
         ringWidth: 0.9,
         ignoredRing: 0.1,
-        overallScale: _mappedUniverseLimit);
+        overallScale: _mappedUniverseRadius);
   }
 
   @override
