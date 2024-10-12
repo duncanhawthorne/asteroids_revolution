@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
-import 'components/space_dot.dart';
 import 'components/wall.dart';
 import 'pacman_game.dart';
 
@@ -145,48 +144,6 @@ class Maze {
 
   static const _mazeInnerWallWidthFactor = 1;
   static const double _pixelationBuffer = 0.03;
-
-  double _vectorOfMazeListIndexI(int icore, int jcore, {double joffset = 0}) {
-    double j = joffset + jcore;
-    return (j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth;
-  }
-
-  double _vectorOfMazeListIndexJ(int icore, int jcore, {double ioffset = 0}) {
-    double i = ioffset + icore;
-    return (i + 1 / 2 - _mazeLayout.length / 2) * blockWidth;
-  }
-
-  List<SpaceDot> spaceDots(
-      {required int scaleFactor,
-      required Vector2 positionOffset,
-      required PacmanGame game}) {
-    final List<SpaceDot> result = [];
-    double scale = blockWidth * pow(mazeAcross, scaleFactor);
-    Vector2 center = Vector2.all(0);
-    double bigScale = pow(maze.mazeAcross, scaleFactor).toDouble();
-    for (int i = 0; i < _mazeLayout.length; i++) {
-      for (int j = 0; j < _mazeLayout[i].length; j++) {
-        center.x = _vectorOfMazeListIndexI(i, j);
-        center.y = _vectorOfMazeListIndexJ(i, j);
-        center.scale(bigScale);
-        center
-          ..x += positionOffset.x
-          ..y += positionOffset.y;
-        //final Vector2 center = _vectorOfMazeListIndex(i, j) *
-        //        pow(maze.mazeAcross, scaleFactor).toDouble() +
-        //    positionOffset;
-
-        if (!(center.x == 0 && center.y == 0)) {
-          // &&
-          //!game.world.asteroidsWrapper.isVeryOutsideKnownWorld(center)) {
-          //!existingSpaceDot(center, game.world.asteroidsWrapper.ship)
-          result.add(RecycledSpaceDot(
-              position: center, width: scale * 0.05, height: scale * 0.05));
-        }
-      }
-    }
-    return result;
-  }
 
   List<Component> mazeWalls() {
     final List<Component> result = [];

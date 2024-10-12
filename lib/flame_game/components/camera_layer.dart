@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../utils/helper.dart';
 import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
@@ -39,8 +38,6 @@ class CameraWrapper extends WrapperNoEvents
 
   Ship get ship => world.asteroidsWrapper.ship;
 
-  int _zoomOrderOfMagnitudeLast = -100;
-
   get tooZoomedOut => overZoomError < 0.75;
 
   async.Timer? _zoomTimer;
@@ -60,62 +57,49 @@ class CameraWrapper extends WrapperNoEvents
     });
   }
 
-  final Vector2 _shipPositionLast = Vector2(0, 0);
+  Map<Vector2, SpaceDot> spaceDotsCoords2 = {};
+  List<SpaceDot> dots = [];
+
   void fixSpaceDots() {
-    // ignore: dead_code
-    if (false &&
-        (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast ||
-            // ignore: dead_code
-            ship.position.distanceTo(_shipPositionLast) > maze.mazeWidth / 3)) {
-      _shipPositionLast.setFrom(ship.position);
-      _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
+    double scale =
+        maze.blockWidth * pow(maze.mazeAcross, _zoomOrderOfMagnitude);
 
-      debug("Start");
+    double rounding = scale; //maze.blockWidth
+    int howFarAway = 3;
 
-      for (SpaceDot dot in spaceDots) {
-        if (true || world.asteroidsWrapper.isOutsideUniverse(dot.position)) {
-          //debug("kill dot");
-          dot.removeFromParent();
+    for (int i = -howFarAway; i <= howFarAway; i++) {
+      for (int j = -howFarAway; j <= howFarAway; j++) {
+        Vector2 basePos = Vector2(
+            ((ship.position.x / rounding).round() + i) * rounding,
+            ((ship.position.y / rounding).round() + j) * rounding);
+
+        bool found = false;
+        for (SpaceDot testDot in dots) {
+          if (testDot.position.x == basePos.x &&
+              testDot.position.y == basePos.y) {
+            found = true;
+          }
+        }
+
+        if (!found) {
+          SpaceDot newDot = RecycledSpaceDot(
+              position: basePos, width: scale * 0.05, height: scale * 0.05);
+          if (!dots.contains(newDot)) {
+            dots.add(newDot);
+          }
+          if (!newDot.isMounted && !newDot.isMounting) {
+            add(newDot);
+          }
         }
       }
+    }
 
-      for (int magicNum = 1; magicNum <= 2; magicNum++) {
-        debug("for start");
-
-        double x1a = ship.position.x /
-            2 /
-            pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum);
-        double y1a = ship.position.y /
-            2 /
-            pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum);
-
-        int x11 = x1a.round();
-        int y11 = y1a.round();
-        int x1 = x11;
-        int y1 = y11;
-        // for (int x1 = x11 - 1; x1 <= x11 + 1; x1++) {
-        // for (int y1 = y11 - 1; y1 <= y11 + 1; y1++) {
-
-        double xr =
-            (x1 * 2 * pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum))
-                .toDouble(); //FIXME doesn't work
-        double yr =
-            (y1 * 2 * pow(maze.mazeAcross, _zoomOrderOfMagnitude + magicNum))
-                .toDouble();
-
-        List<SpaceDot> spaceDotsToAdd = maze.spaceDots(
-            scaleFactor: _zoomOrderOfMagnitude + magicNum - 1,
-            positionOffset: Vector2(xr, yr),
-            game: game);
-
-        debug("Mid");
-        debug(spaceDotsToAdd.length);
-
-        for (SpaceDot dot in spaceDotsToAdd) {
-          world.walls.add(dot);
+    for (var item in children) {
+      if (item is SpaceDot) {
+        if (item.position.distanceTo(ship.position) >
+            scale * (howFarAway + 1)) {
+          item.removeFromParent();
         }
-
-        debug("end");
       }
     }
   }

@@ -24,33 +24,17 @@ class SpaceDot extends RectangleComponent with IgnoreEvents {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    //spaceDotsCoords[position] = this;
   }
 
   @override
   Future<void> onRemove() async {
     isActive = false;
     super.onRemove();
-    //spaceDotsCoords.remove(position);
   }
 }
 
-/*
-bool existingSpaceDot(Vector2 position, Ship ship) {
-  for (Vector2 item in spaceDotsCoords.keys) {
-    if ((item.x - position.x).abs() < ship.radius &&
-        (item.y - position.y).abs() < ship.radius) {
-      return true;
-    }
-  }
-  return false;
-}
-
-
- */
 final List<SpaceDot> _allBits = [];
 Iterable<SpaceDot> get _spareBits => _allBits.where((item) => !item.isActive);
-//Map<Vector2, SpaceDot> spaceDotsCoords = {};
 
 // ignore: non_constant_identifier_names
 SpaceDot RecycledSpaceDot(

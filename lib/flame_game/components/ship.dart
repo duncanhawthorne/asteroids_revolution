@@ -21,8 +21,7 @@ final Paint _wallBackgroundPaint = Paint()..color = Palette.background.color;
 final double neutralShipRadius =
     maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
 
-double defaultShipRadius =
-    neutralShipRadius / 18; //18; //5; //18; //18; //9; //9
+double defaultShipRadius = neutralShipRadius / 18;
 
 class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})
