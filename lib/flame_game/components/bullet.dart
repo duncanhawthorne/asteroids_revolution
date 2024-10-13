@@ -2,14 +2,14 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import 'alien.dart';
-import 'asteroids_layer.dart';
 import 'rock.dart';
 import 'space_body.dart';
+import 'space_layer.dart';
 
 class Bullet extends SpaceBody with CollisionCallbacks {
   Bullet(
       {required super.position, required super.velocity, required super.radius})
-      : super(paint: seedPaint, priority: 100);
+      : super(paint: seedPaint);
 
   @override
   Future<void> onLoad() async {

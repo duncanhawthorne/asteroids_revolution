@@ -11,11 +11,6 @@ class Cherry extends SpaceBody {
     this.ensureVelocityTowardsCenter = true,
     required super.radius,
   }) : super(paint: _cherryPaint);
-  /*
-  @override
-  // ignore: overridden_fields
-  final debugMode = true;
-   */
 
   @override
   // ignore: overridden_fields

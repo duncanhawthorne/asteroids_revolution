@@ -14,7 +14,7 @@ class Alien extends SpaceBody {
     required super.position,
     required super.velocity,
     required super.radius,
-  }) : super(paint: _alienPaint, priority: 100);
+  }) : super(paint: _alienPaint);
 
   late final CircleComponent hole = CircleComponent(
       radius: 0,

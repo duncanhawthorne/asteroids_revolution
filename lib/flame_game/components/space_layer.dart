@@ -24,11 +24,8 @@ final Paint seedPaint = Paint()..color = Palette.seed.color;
 
 const _kHubbleLimitMult = 1.6;
 
-class AsteroidsWrapper extends WrapperNoEvents
+class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
-  @override
-  final priority = 1;
-
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier(0);
 
   final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
@@ -75,7 +72,7 @@ class AsteroidsWrapper extends WrapperNoEvents
       (1 + _twilightZoneWidth) /
       _cameraManager.overZoomError;
 
-  bool isOutsideUniverse(Vector2 target) {
+  bool isOutsideFullUniverse(Vector2 target) {
     return target.distanceTo(ship.position) > _fullUniverseRadius;
   }
 

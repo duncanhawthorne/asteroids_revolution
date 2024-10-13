@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'ship.dart';
-import 'space_dot.dart';
 import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
@@ -16,9 +15,6 @@ bool _kZoomTrackingCamera = true;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
-  Iterable<SpaceDot> get spaceDots =>
-      world.walls.children.whereType<SpaceDot>();
-
   double get zoom => game.camera.viewfinder.zoom;
   set zoom(double z) => game.camera.viewfinder.zoom = z;
 
@@ -37,7 +33,7 @@ class CameraWrapper extends WrapperNoEvents
 
   get overZoomError => !_kZoomTrackingCamera ? 1 : zoom / _optimalZoom;
 
-  Ship get ship => world.asteroidsWrapper.ship;
+  Ship get ship => world.space.ship;
 
   get tooZoomedOut => overZoomError < 0.75;
 

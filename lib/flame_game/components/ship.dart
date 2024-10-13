@@ -8,12 +8,12 @@ import 'package:flame/geometry.dart';
 import '../../style/palette.dart';
 import '../maze.dart';
 import 'alien.dart';
-import 'asteroids_layer.dart';
 import 'bullet.dart';
 import 'cherry.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
+import 'space_layer.dart';
 import 'wall.dart';
 
 final Paint _wallBackgroundPaint = Paint()..color = Palette.background.color;
@@ -28,8 +28,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})
       : super(
             paint: _transparentPaint, //
-            radius: defaultShipRadius,
-            priority: 100);
+            radius: defaultShipRadius);
 
   bool accelerating = false;
   @override
@@ -109,7 +108,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
       ..y = radius * 8 / 4;
     sprite?.position.setAll(radius);
     sprite?.size.setAll(radius * 2);
-    world.asteroidsWrapper.updateAllRockOpacities();
+    world.space.updateAllRockOpacities();
   }
 
   @override
@@ -124,7 +123,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     super.damage(d);
     setHealth(health * (1 - d));
     if (d > 0) {
-      world.asteroidsWrapper.addSmallRocksOnDamage();
+      world.space.addSmallRocksOnDamage();
     }
 
     //i-frames
@@ -135,8 +134,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   void addMultiGun() {
-    world.asteroidsWrapper.add(gunR);
-    world.asteroidsWrapper.add(gunL);
+    world.space.add(gunR);
+    world.space.add(gunL);
     multiGunTimer.reset();
     multiGunTimer.start();
   }
@@ -151,7 +150,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     hitbox.collisionType = CollisionType.active;
     //add(gunDot);
 
-    world.asteroidsWrapper.add(gun);
+    world.space.add(gun);
 
     shipSprite = await Sprite.load("ship.png");
     shipSpriteFlame = await Sprite.load("ship_flame.png");

@@ -36,7 +36,7 @@ class Rock extends SpaceBody {
             paint: _useSprite
                 ? (Paint()..color = Palette.transp.color)
                 : (Paint()..color = Palette.text.color),
-            priority: 100);
+            priority: 0);
 
   @override
   // ignore: overridden_fields
@@ -69,7 +69,7 @@ class Rock extends SpaceBody {
   }
 
   void _addSubRock() {
-    world.asteroidsWrapper.add(RecycledRock(
+    world.space.add(RecycledRock(
         position: position,
         velocity: velocity + velocityNoise(2 * radius),
         radius: radius * _breakupSizeFactor(),
@@ -77,7 +77,7 @@ class Rock extends SpaceBody {
   }
 
   void _addSubHeart() {
-    world.asteroidsWrapper.add(Heart(
+    world.space.add(Heart(
       position: position,
       velocity: velocity + velocityNoise(2 * radius),
       radius: ship.radius,
@@ -86,8 +86,7 @@ class Rock extends SpaceBody {
 
   bool _isLuckyHeart() {
     return random.nextDouble() < 0.05 &&
-        world.asteroidsWrapper.hearts.length <
-            world.asteroidsWrapper.heartLimit * 1.5;
+        world.space.hearts.length < world.space.heartLimit * 1.5;
   }
 
   void explode() {

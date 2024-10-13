@@ -117,9 +117,8 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   void _winOrLoseGameListener() {
     assert(world.pellets.pelletsRemainingNotifier.value > 0 || !levelStarted);
-    world.asteroidsWrapper.numberOfDeathsNotifier.addListener(() {
-      if (world.asteroidsWrapper.numberOfDeathsNotifier.value >=
-              level.maxAllowedDeaths &&
+    world.space.numberOfDeathsNotifier.addListener(() {
+      if (world.space.numberOfDeathsNotifier.value >= level.maxAllowedDeaths &&
           levelStarted) {
         _handleLoseGame();
       }
@@ -208,7 +207,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       } else if (stopwatch.isRunning()) {
         //some game activity has happened, no need to pause, just cancel timer
         timer.cancel();
-      } else if (!(world.isMounted && world.asteroidsWrapper.ship.isMounted)) {
+      } else if (!(world.isMounted && world.space.ship.isMounted)) {
         //core components haven't loaded yet, so wait before start frame count
         _framesRendered = 0;
       } else if (_framesRendered <= 5) {

@@ -9,9 +9,9 @@ import 'package:flutter/foundation.dart';
 import '../../audio/sounds.dart';
 import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
-import 'components/asteroids_layer.dart';
 import 'components/pellet_layer.dart';
 import 'components/ship.dart';
+import 'components/space_layer.dart';
 import 'components/tutorial_layer.dart';
 import 'components/wall_layer.dart';
 import 'components/wrapper_no_events.dart';
@@ -61,13 +61,10 @@ class PacmanWorld extends Forge2DWorld
 
   bool get gameWonOrLost =>
       pellets.pelletsRemainingNotifier.value <= 0 ||
-      asteroidsWrapper.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
+      space.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
 
   double get everythingScale =>
-      asteroidsWrapper.ship.scaledRadius /
-      neutralShipRadius *
-      30 /
-      flameGameZoom;
+      space.ship.scaledRadius / neutralShipRadius * 30 / flameGameZoom;
 
   final Map<int, double?> _fingersLastDragAngle = {};
 
@@ -113,7 +110,7 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  final asteroidsWrapper = AsteroidsWrapper();
+  final space = SpaceWrapper();
 
   void start() {
     play(SfxType.startMusic);
@@ -126,7 +123,7 @@ class PacmanWorld extends Forge2DWorld
   Future<void> onLoad() async {
     super.onLoad();
     add(noEventsWrapper);
-    wrappers.addAll([asteroidsWrapper, walls, _tutorial]); //_blocking
+    wrappers.addAll([space, walls]); //_blocking, _tutorial
     for (WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }
@@ -140,7 +137,7 @@ class PacmanWorld extends Forge2DWorld
     super.onDragStart(event);
     if (event.canvasPosition.y > game.canvasSize.y * 3 / 4 &&
         event.canvasPosition.x < game.canvasSize.x * 1 / 2) {
-      asteroidsWrapper.ship.accelerating = true;
+      space.ship.accelerating = true;
       _boostFingers[event.pointerId] = true;
       game.resumeGame();
       _moveMazeAngleByDelta(0); //to start timer
@@ -191,7 +188,7 @@ class PacmanWorld extends Forge2DWorld
     super.onDragEnd(event);
 
     if (_boostFingers.containsKey(event.pointerId)) {
-      asteroidsWrapper.ship.accelerating = false;
+      space.ship.accelerating = false;
       return;
     }
 

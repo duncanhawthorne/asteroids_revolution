@@ -39,7 +39,7 @@ class SpaceBody extends CircleComponent
   final bool canAccelerate = false;
   bool isActive = true; //do not in spareBits
 
-  Ship get ship => world.asteroidsWrapper.ship;
+  Ship get ship => world.space.ship;
 
   bool get isSmall => radius < ship.radius * greyThreshold;
 
@@ -54,8 +54,7 @@ class SpaceBody extends CircleComponent
     }
   }
 
-  bool get isOutsideUniverse =>
-      world.asteroidsWrapper.isOutsideUniverse(position);
+  bool get isOutsideFullUniverse => world.space.isOutsideFullUniverse(position);
 
   @mustCallSuper
   void setSize(double h) {
@@ -99,7 +98,7 @@ class SpaceBody extends CircleComponent
         removeFromParent();
       }
     }
-    if (isOutsideUniverse) {
+    if (isOutsideFullUniverse) {
       removeFromParent();
     }
   }
