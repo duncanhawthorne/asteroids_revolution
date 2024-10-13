@@ -23,6 +23,7 @@ class CameraWrapper extends WrapperNoEvents
   void reset() {
     _zoomTimer?.cancel();
     startZoomTimer();
+    fixSpaceDots();
 
     if (!kDebugMode || _kZoomTrackingCamera) {
       game.camera.viewfinder.zoom = _optimalZoom;
@@ -60,7 +61,6 @@ class CameraWrapper extends WrapperNoEvents
   SpaceDotWrapper bigDot = SpaceDotWrapper(
       position: Vector2(0, 0), orderMagnitude: 1, fullGrid: false);
 
-  double logOrder(num x) => log(x) / log(kOrderOfMagnitudeOrder);
   int get _zoomOrderOfMagnitude =>
       logOrder(world.everythingScale * 2).floor(); //FIXME should be off zoom
 
