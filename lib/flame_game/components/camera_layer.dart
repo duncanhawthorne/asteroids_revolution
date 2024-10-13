@@ -4,11 +4,11 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
-import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'ship.dart';
 import 'space_dot.dart';
+import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
 bool _kPanTrackingCamera = true;
@@ -55,55 +55,23 @@ class CameraWrapper extends WrapperNoEvents
     });
   }
 
-  int kOrderOfMagnitudeOrder = 5;
-  List<SpaceDot> dots = [];
+  SpaceDotWrapper smallDots = SpaceDotWrapper(
+      position: Vector2(0, 0), orderMagnitude: 0, fullGrid: true);
+  SpaceDotWrapper bigDot = SpaceDotWrapper(
+      position: Vector2(0, 0), orderMagnitude: 1, fullGrid: false);
+
   double logOrder(num x) => log(x) / log(kOrderOfMagnitudeOrder);
   int get _zoomOrderOfMagnitude =>
       logOrder(world.everythingScale * 2).floor(); //FIXME should be off zoom
+
   void fixSpaceDots() {
-    double scale =
-        maze.blockWidth * pow(5, _zoomOrderOfMagnitude); //maze.mazeAcross
-    double rounding = scale; //maze.blockWidth
-    int howFarAway = 3;
-    assert(howFarAway < kOrderOfMagnitudeOrder);
-
-    for (int i = -howFarAway; i <= howFarAway; i++) {
-      for (int j = -howFarAway; j <= howFarAway; j++) {
-        Vector2 basePos = Vector2(
-            ((ship.position.x / rounding).round() + i) * rounding,
-            ((ship.position.y / rounding).round() + j) * rounding);
-
-        bool found = false;
-        for (SpaceDot testDot in dots) {
-          if (testDot.position.x == basePos.x &&
-              testDot.position.y == basePos.y) {
-            found = true;
-          }
-        }
-
-        if (!found) {
-          SpaceDot newDot = RecycledSpaceDot(
-              position: basePos, width: scale * 0.05, height: scale * 0.05);
-          if (!dots.contains(newDot)) {
-            dots.add(newDot);
-          }
-          if (!newDot.isMounted && !newDot.isMounting) {
-            add(newDot);
-          }
-        }
-      }
-    }
-
-    for (var item in children) {
-      if (item is SpaceDot) {
-        if (item.position.distanceTo(ship.position) >
-                item.width / 0.05 * (howFarAway + 1) ||
-            item.width != scale * 0.05 ||
-            world.asteroidsWrapper.isOutsideUniverse(item.position)) {
-          item.removeFromParent();
-        }
-      }
-    }
+    smallDots.tidyUpdate(
+        newOrderMagnitude: _zoomOrderOfMagnitude + 0,
+        shipPosition: ship.position);
+    bigDot.tidyUpdate(
+        newOrderMagnitude: _zoomOrderOfMagnitude + 1,
+        shipPosition: ship.position);
+    return;
   }
 
   @override
@@ -112,6 +80,8 @@ class CameraWrapper extends WrapperNoEvents
     if (!kDebugMode || _kPanTrackingCamera) {
       game.camera.follow(ship);
     }
+    add(smallDots);
+    add(bigDot);
     reset();
   }
 }
