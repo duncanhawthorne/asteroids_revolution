@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
-import 'asteroids_layer.dart';
 import 'ship.dart';
 import 'space_dot.dart';
 import 'wrapper_no_events.dart';
@@ -31,9 +30,6 @@ class CameraWrapper extends WrapperNoEvents
   }
 
   double get _optimalZoom => 30 / world.everythingScale;
-
-  int get _zoomOrderOfMagnitude =>
-      logMaze(world.everythingScale * 2).floor(); //FIXME should be off zoom
 
   get overZoomError =>
       !_kZoomTrackingCamera ? 1 : game.camera.viewfinder.zoom / _optimalZoom;
@@ -59,14 +55,17 @@ class CameraWrapper extends WrapperNoEvents
     });
   }
 
+  int kOrderOfMagnitudeOrder = 5;
   List<SpaceDot> dots = [];
-
+  double logOrder(num x) => log(x) / log(kOrderOfMagnitudeOrder);
+  int get _zoomOrderOfMagnitude =>
+      logOrder(world.everythingScale * 2).floor(); //FIXME should be off zoom
   void fixSpaceDots() {
     double scale =
-        maze.blockWidth * pow(maze.mazeAcross, _zoomOrderOfMagnitude);
-
+        maze.blockWidth * pow(5, _zoomOrderOfMagnitude); //maze.mazeAcross
     double rounding = scale; //maze.blockWidth
     int howFarAway = 3;
+    assert(howFarAway < kOrderOfMagnitudeOrder);
 
     for (int i = -howFarAway; i <= howFarAway; i++) {
       for (int j = -howFarAway; j <= howFarAway; j++) {
@@ -99,7 +98,8 @@ class CameraWrapper extends WrapperNoEvents
       if (item is SpaceDot) {
         if (item.position.distanceTo(ship.position) >
                 item.width / 0.05 * (howFarAway + 1) ||
-            item.width / 2 < ship.radius * transpThreshold) {
+            item.width != scale * 0.05 ||
+            world.asteroidsWrapper.isOutsideUniverse(item.position)) {
           item.removeFromParent();
         }
       }
