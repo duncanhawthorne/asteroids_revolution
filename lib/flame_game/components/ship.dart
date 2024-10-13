@@ -148,7 +148,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   Future<void> onLoad() async {
     super.onLoad();
     hitbox.collisionType = CollisionType.active;
-    add(gunDot);
+    //add(gunDot);
 
     world.asteroidsWrapper.add(gun);
 

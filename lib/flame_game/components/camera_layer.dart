@@ -19,6 +19,9 @@ class CameraWrapper extends WrapperNoEvents
   Iterable<SpaceDot> get spaceDots =>
       world.walls.children.whereType<SpaceDot>();
 
+  double get zoom => game.camera.viewfinder.zoom;
+  set zoom(double z) => game.camera.viewfinder.zoom = z;
+
   @override
   void reset() {
     _zoomTimer?.cancel();
@@ -26,14 +29,13 @@ class CameraWrapper extends WrapperNoEvents
     fixSpaceDots();
 
     if (!kDebugMode || _kZoomTrackingCamera) {
-      game.camera.viewfinder.zoom = _optimalZoom;
+      zoom = _optimalZoom;
     }
   }
 
   double get _optimalZoom => 30 / world.everythingScale;
 
-  get overZoomError =>
-      !_kZoomTrackingCamera ? 1 : game.camera.viewfinder.zoom / _optimalZoom;
+  get overZoomError => !_kZoomTrackingCamera ? 1 : zoom / _optimalZoom;
 
   Ship get ship => world.asteroidsWrapper.ship;
 
@@ -44,13 +46,13 @@ class CameraWrapper extends WrapperNoEvents
     _zoomTimer =
         async.Timer.periodic(const Duration(milliseconds: 10), (timer) {
       if (!kDebugMode || _kZoomTrackingCamera) {
-        if (game.camera.viewfinder.zoom < _optimalZoom * 0.95) {
+        if (zoom < _optimalZoom * 0.95) {
           //zoom in
-          game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
+          zoom *= pow(1 / overZoomError, 1 / 300);
         }
-        if (game.camera.viewfinder.zoom > _optimalZoom * 1.05) {
+        if (zoom > _optimalZoom * 1.05) {
           //zoom out
-          game.camera.viewfinder.zoom *= pow(1 / overZoomError, 1 / 300);
+          zoom *= pow(1 / overZoomError, 1 / 300);
         }
       }
     });
@@ -61,8 +63,7 @@ class CameraWrapper extends WrapperNoEvents
   SpaceDotWrapper bigDot = SpaceDotWrapper(
       position: Vector2(0, 0), orderMagnitude: 1, fullGrid: false);
 
-  int get _zoomOrderOfMagnitude =>
-      logOrder(world.everythingScale * 2).floor(); //FIXME should be off zoom
+  int get _zoomOrderOfMagnitude => logOrder(1 / zoom * 75).floor();
 
   void fixSpaceDots() {
     smallDots.tidyUpdate(
