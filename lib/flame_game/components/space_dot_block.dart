@@ -21,6 +21,9 @@ class SpaceDotWrapper extends PositionComponent
     required this.fullGrid,
   });
 
+  @override
+  int priority = -100;
+
   bool fullGrid;
   int orderMagnitude;
   double roundingUnscaled = -1; //maze.mazeAcross

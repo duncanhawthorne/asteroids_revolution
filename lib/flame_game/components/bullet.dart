@@ -9,7 +9,7 @@ import 'space_body.dart';
 class Bullet extends SpaceBody with CollisionCallbacks {
   Bullet(
       {required super.position, required super.velocity, required super.radius})
-      : super(paint: snakePaint, priority: 100);
+      : super(paint: seedPaint, priority: 100);
 
   @override
   Future<void> onLoad() async {

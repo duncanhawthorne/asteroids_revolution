@@ -5,7 +5,6 @@ import 'package:flame/geometry.dart';
 
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
-import 'asteroids_layer.dart';
 import 'heart.dart';
 import 'space_body.dart';
 
@@ -116,8 +115,9 @@ class Rock extends SpaceBody {
       removeFromParent();
     } else {
       double rFactor = radius / ship.radius;
-      double n25 = transpThreshold;
-      opacity = ((rFactor - n25) / (1 - n25)).clamp(0, 1);
+      opacity =
+          ((rFactor - transpThreshold) / (greyThreshold - transpThreshold))
+              .clamp(0, 1);
     }
     if (_useSprite) {
       //sprite!.opacity = opacity;

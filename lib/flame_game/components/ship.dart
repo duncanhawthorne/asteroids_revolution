@@ -17,6 +17,7 @@ import 'space_body.dart';
 import 'wall.dart';
 
 final Paint _wallBackgroundPaint = Paint()..color = Palette.background.color;
+final Paint _transparentPaint = Paint()..color = Palette.transp.color;
 
 final double neutralShipRadius =
     maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
@@ -26,7 +27,7 @@ double defaultShipRadius = neutralShipRadius / 18;
 class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})
       : super(
-            paint: Paint()..color = Palette.transp.color, //
+            paint: _transparentPaint, //
             radius: defaultShipRadius,
             priority: 100);
 
@@ -91,7 +92,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   late final CircleComponent flameDot = CircleComponent(
       radius: 1,
       anchor: Anchor.center,
-      paint: snakePaint,
+      paint: seedPaint,
       position: Vector2(1, 1))
     ..scale = Vector2(2, 5);
 
@@ -206,19 +207,15 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   void _onCollideWith(PositionComponent other) {
     if (other is Rock) {
-      if (other.radius > radius * greyThreshold) {
+      if (!other.isSmall) {
         damage(0.2);
         other.explode();
       } else {
         other.velocity.scale(-1);
       }
     } else if (other is Alien) {
-      if (other.radius > radius * greyThreshold) {
-        damage(0.75); //huge
-        other.damage(1);
-      } else {
-        other.velocity.scale(-1);
-      }
+      damage(0.75); //huge
+      other.damage(1);
     } else if (other is Heart) {
       other.removeFromParent();
       damage(-0.2);

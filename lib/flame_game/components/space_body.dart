@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 
 import '../pacman_game.dart';
 import '../pacman_world.dart';
-import 'asteroids_layer.dart';
 import 'ship.dart';
+
+const double greyThreshold = 0.5;
+const double transpThreshold = 0.5 * 0.2;
 
 class SpaceBody extends CircleComponent
     with

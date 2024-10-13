@@ -4,20 +4,22 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../../style/palette.dart';
-import 'asteroids_layer.dart';
 import 'space_body.dart';
+
+final Paint _alienPaint = Paint()..color = Palette.warning.color;
+final Paint _alienCorePaint = Paint()..color = Palette.dull.color;
 
 class Alien extends SpaceBody {
   Alien({
     required super.position,
     required super.velocity,
     required super.radius,
-  }) : super(paint: Paint()..color = Palette.warning.color, priority: 100);
+  }) : super(paint: _alienPaint, priority: 100);
 
   late final CircleComponent hole = CircleComponent(
       radius: 0,
       anchor: Anchor.center,
-      paint: Paint()..color = Palette.dull.color,
+      paint: _alienCorePaint,
       position: Vector2.all(radius));
 
   @override
@@ -38,26 +40,10 @@ class Alien extends SpaceBody {
     }
   }
 
-  void updateOpacity() {
-    if (isTiny) {
-      removeFromParent();
-      return;
-    }
-    if (radius > ship.radius * greyThreshold) {
-      opacity = 1;
-    } else {
-      double rFactor = radius / ship.radius;
-      double n25 = transpThreshold / greyThreshold;
-      opacity = ((rFactor - n25) / (1 - n25)).clamp(0, 1);
-    }
-    hole.opacity = opacity;
-  }
-
   @override
   Future<void> onLoad() async {
     super.onLoad();
     add(hole);
-    updateOpacity();
     hitbox.collisionType = CollisionType.passive;
   }
 

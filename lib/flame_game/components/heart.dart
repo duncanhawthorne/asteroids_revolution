@@ -7,7 +7,7 @@ class Heart extends SpaceBody {
     required super.velocity,
     this.ensureVelocityTowardsCenter = false,
     required super.radius,
-  }) : super(paint: snakePaint, priority: 100);
+  }) : super(paint: seedPaint, priority: 100);
 
   /*
   @override

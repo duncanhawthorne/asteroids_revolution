@@ -20,10 +20,7 @@ import 'ship.dart';
 import 'space_body.dart';
 import 'wrapper_no_events.dart';
 
-final Paint snakePaint = Paint()..color = Palette.seed.color;
-
-const double greyThreshold = 0.5;
-const double transpThreshold = 0.5 * 0.2;
+final Paint seedPaint = Paint()..color = Palette.seed.color;
 
 const _kHubbleLimitMult = 1.6;
 
