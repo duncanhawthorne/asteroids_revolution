@@ -9,7 +9,7 @@ import 'space_dot.dart';
 
 int _kOrderBase = maze.mazeAcross; //number of dot in grid
 double logOrder(num x) => log(x) / log(_kOrderBase);
-
+ 
 class SpaceDotWrapper extends PositionComponent
     with
         IgnoreEvents,
