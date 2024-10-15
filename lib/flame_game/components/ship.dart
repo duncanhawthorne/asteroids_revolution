@@ -37,35 +37,37 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   // ignore: overridden_fields
-  final canAccelerate = true;
+  final bool canAccelerate = true;
 
   Timer multiGunTimer = Timer(15);
 
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
   Vector2 fBulletVelocity() {
-    _oneTimeVelocity.setFrom(world.direction);
-    _oneTimeVelocity.scale(-2 * radius);
-    _oneTimeVelocity.add(velocity);
+    _oneTimeVelocity
+      ..setFrom(world.direction)
+      ..scale(-2 * radius)
+      ..add(velocity);
     return _oneTimeVelocity;
   }
 
   final Vector2 _oneTimePosition = Vector2(0, 0);
   Vector2 fBulletPosition(double offset) {
-    _oneTimePosition.setFrom(position);
-    _oneTimePosition.x += radius * cos(angle) * offset;
-    _oneTimePosition.y += radius * sin(angle) * offset;
+    _oneTimePosition
+      ..setFrom(position)
+      ..x += radius * cos(angle) * offset
+      ..y += radius * sin(angle) * offset;
     return _oneTimePosition;
   }
 
-  late final gun = SpawnComponent(
-    factory: (i) => RecycledBullet(
+  late final SpawnComponent gun = SpawnComponent(
+    factory: (int i) => RecycledBullet(
         position: position, velocity: fBulletVelocity(), radius: radius * 0.25),
     selfPositioning: true,
     period: 0.15,
   );
 
-  late final gunR = SpawnComponent(
-    factory: (i) => RecycledBullet(
+  late final SpawnComponent gunR = SpawnComponent(
+    factory: (int i) => RecycledBullet(
         position: fBulletPosition(0.5),
         velocity: fBulletVelocity(),
         radius: radius * 0.25),
@@ -73,8 +75,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
     period: 0.15,
   );
 
-  late final gunL = SpawnComponent(
-    factory: (i) => RecycledBullet(
+  late final SpawnComponent gunL = SpawnComponent(
+    factory: (int i) => RecycledBullet(
         position: fBulletPosition(-0.5),
         velocity: fBulletVelocity(),
         radius: radius * 0.25),
@@ -112,7 +114,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   @override
-  setHealth(double h) {
+  void setHealth(double h) {
     h = h.clamp(0.01, double.infinity);
     super.setHealth(h);
     setSize(defaultShipRadius * h);
@@ -128,7 +130,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
     //i-frames
     hitbox.collisionType = CollisionType.inactive;
-    Future.delayed(Duration(milliseconds: 250), () {
+    Future<void>.delayed(const Duration(milliseconds: 250), () {
       hitbox.collisionType = CollisionType.active;
     });
   }
@@ -136,8 +138,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
   void addMultiGun() {
     world.space.add(gunR);
     world.space.add(gunL);
-    multiGunTimer.reset();
-    multiGunTimer.start();
+    multiGunTimer
+      ..reset()
+      ..start();
   }
 
   SpriteComponent? sprite;
@@ -146,7 +149,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     hitbox.collisionType = CollisionType.active;
     //add(gunDot);
 
@@ -179,8 +182,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
     if (accelerating) {
       sprite?.sprite = shipSpriteFlame;
       //add(flameDot);
-      acceleration.setFrom(world.direction);
-      acceleration.scale(-radius); //* 1.4
+      acceleration
+        ..setFrom(world.direction)
+        ..scale(-radius); //* 1.4
     } else {
       //flameDot.removeFromParent();
       sprite?.sprite = shipSprite;
@@ -192,7 +196,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
       gunL.removeFromParent();
       multiGunTimer.pause();
     }
-    super.update(dt);
+    await super.update(dt);
   }
 
   @override

@@ -15,7 +15,7 @@ class PelletWrapper extends WrapperNoEvents
   @override
   final int priority = -2;
 
-  final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier(1);
+  final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier<int>(1);
 
   @override
   void reset() {}

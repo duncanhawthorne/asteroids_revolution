@@ -16,7 +16,7 @@ class SpaceBody extends CircleComponent
         IgnoreEvents {
   SpaceBody({
     required super.position,
-    required velocity,
+    required Vector2 velocity,
     required super.radius,
     super.paint,
     super.priority = 1,
@@ -34,7 +34,7 @@ class SpaceBody extends CircleComponent
   final Vector2 acceleration = Vector2(0, 0);
   double friction = 1;
   double health = 1;
-  final cleanIfTiny = true;
+  final bool cleanIfTiny = true;
   bool ensureVelocityTowardsCenter = false;
   final bool canAccelerate = false;
   bool isActive = true; //do not in spareBits
@@ -45,7 +45,7 @@ class SpaceBody extends CircleComponent
 
   bool get isTiny => radius < ship.radius * transpThreshold;
 
-  fixVelocityTowardsCenter() {
+  void fixVelocityTowardsCenter() {
     if (velocity.x.sign == (position.x - ship.position.x).sign) {
       velocity.x = -velocity.x;
     }
@@ -88,11 +88,11 @@ class SpaceBody extends CircleComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     reset();
   }
 
-  void tidy() async {
+  void tidy() {
     if (cleanIfTiny) {
       if (isTiny) {
         removeFromParent();

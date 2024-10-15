@@ -20,7 +20,7 @@ class TutorialWrapper extends WrapperNoEvents
   void start() {
     return;
     // ignore: dead_code
-    Future.delayed(tutorialDelay, () {
+    Future<void>.delayed(tutorialDelay, () {
       if (!game.levelStarted &&
           !_tutorialEverManuallyHidden &&
           world.level.number == Levels.levelToShowInstructions) {

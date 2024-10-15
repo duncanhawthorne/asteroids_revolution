@@ -38,7 +38,7 @@ class StartDialog extends StatelessWidget {
         mazeSelector(context, game),
         bottomRowWidget(
           children: game.levelStarted || true
-              ? [
+              ? <Widget>[
                   TextButton(
                       style: buttonStyle(borderColor: Palette.warning.color),
                       onPressed: () {

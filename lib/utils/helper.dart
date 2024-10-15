@@ -18,14 +18,14 @@ async.Timer makePeriodicTimer(
   void Function(async.Timer timer) callback, {
   bool fireNow = false,
 }) {
-  var timer = async.Timer.periodic(duration, callback);
+  final async.Timer timer = async.Timer.periodic(duration, callback);
   if (fireNow) {
     callback(timer);
   }
   return timer;
 }
 
-final random = Random();
+final Random random = Random();
 
 double centeredRandom() {
   return random.nextDouble() - 0.5;
@@ -40,8 +40,8 @@ double _centeredRandomNoMiddle() {
 }
 
 Vector2 velocityNoise(double scale) {
-  double ringRadius = (0.5 + random.nextDouble() * 0.5) * scale;
-  double ringAngle = tau * random.nextDouble();
+  final double ringRadius = (0.5 + random.nextDouble() * 0.5) * scale;
+  final double ringAngle = tau * random.nextDouble();
   return Vector2(ringRadius * cos(ringAngle), ringRadius * sin(ringAngle));
 }
 
@@ -54,12 +54,15 @@ Vector2 randomVelocityOffset({double scale = 1}) {
 
 final Vector2 _oneTimePosition = Vector2(0, 0);
 Vector2 randomRThetaRing(
-    {required center, required ringWidth, ignoredRing = 0, overallScale = 1}) {
-  double ringRadius =
+    {required Vector2 center,
+    required double ringWidth,
+    double ignoredRing = 0,
+    double overallScale = 1}) {
+  final double ringRadius =
       (ignoredRing + random.nextDouble() * ringWidth) * overallScale;
-  double ringAngle = tau * random.nextDouble();
-  _oneTimePosition.setFrom(center);
+  final double ringAngle = tau * random.nextDouble();
   _oneTimePosition
+    ..setFrom(center)
     ..x += ringRadius * cos(ringAngle)
     ..y += ringRadius * sin(ringAngle);
   return _oneTimePosition;

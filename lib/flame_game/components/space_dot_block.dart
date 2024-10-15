@@ -39,8 +39,9 @@ class SpaceDotWrapper extends PositionComponent
       setScale();
     }
 
-    double roundingScaled = maze.blockWidth * pow(_kOrderBase, orderMagnitude);
-    Vector2 centerPos = Vector2(
+    final double roundingScaled =
+        maze.blockWidth * pow(_kOrderBase, orderMagnitude);
+    final Vector2 centerPos = Vector2(
         ((shipPosition.x / roundingScaled).round()) * roundingScaled,
         ((shipPosition.y / roundingScaled).round()) * roundingScaled);
     position.setFrom(centerPos);
@@ -49,13 +50,13 @@ class SpaceDotWrapper extends PositionComponent
   void reset() {
     removeAll(children);
     roundingUnscaled = maze.blockWidth * pow(_kOrderBase, 0);
-    int halfGridSize = fullGrid ? (_kOrderBase / 2).ceil() : 0;
+    final int halfGridSize = fullGrid ? (_kOrderBase / 2).ceil() : 0;
     for (int i = -halfGridSize; i <= halfGridSize; i++) {
       for (int j = -halfGridSize; j <= halfGridSize; j++) {
-        Vector2 dotPos = Vector2(
+        final Vector2 dotPos = Vector2(
             ((0 / roundingUnscaled).round() + i) * roundingUnscaled,
             ((0 / roundingUnscaled).round() + j) * roundingUnscaled);
-        SpaceDot newDot = RecycledSpaceDot(
+        final SpaceDot newDot = RecycledSpaceDot(
             position: dotPos,
             width: roundingUnscaled * 0.05,
             height: roundingUnscaled * 0.05);

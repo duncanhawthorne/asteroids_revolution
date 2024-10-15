@@ -22,42 +22,42 @@ import 'wrapper_no_events.dart';
 
 final Paint seedPaint = Paint()..color = Palette.seed.color;
 
-const _kHubbleLimitMult = 1.6;
+const double _kHubbleLimitMult = 1.6;
 
 class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
-  final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier(0);
+  final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);
 
   final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
   final CameraWrapper _cameraManager = CameraWrapper();
 
   async.Timer? _timerTopUpSpaceBodies;
   void _startTimerTopUpSpaceBodies() {
-    _timerTopUpSpaceBodies =
-        async.Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+    _timerTopUpSpaceBodies = async.Timer.periodic(
+        const Duration(milliseconds: 1000), (async.Timer timer) {
       _topUpSpaceBodies();
     });
   }
 
   async.Timer? _timerTidySpaceBodies;
   void _startTimerTidySpaceBodies() {
-    _timerTidySpaceBodies =
-        async.Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+    _timerTidySpaceBodies = async.Timer.periodic(
+        const Duration(milliseconds: 1000), (async.Timer timer) {
       _tidySpaceBodies();
     });
   }
 
-  final _visibleRockLimit = 30 * pow(_kHubbleLimitMult, 2);
-  late final _transparentrockLimit = _visibleRockLimit;
-  late final heartLimit = _visibleRockLimit / 4 / 6 / 2;
-  static const _alienLimit = kDebugMode ? 0 : 1; //1;
-  static const _cherryLimit = 4;
+  final num _visibleRockLimit = 30 * pow(_kHubbleLimitMult, 2);
+  late final num _transparentrockLimit = _visibleRockLimit;
+  late final double heartLimit = _visibleRockLimit / 4 / 6 / 2;
+  static const int _alienLimit = kDebugMode ? 0 : 1; //1;
+  static const int _cherryLimit = 4;
 
   Iterable<Rock> get _allRocks => children.whereType<Rock>();
   Iterable<Rock> get _visibleRocks =>
-      children.whereType<Rock>().where((item) => item.opacity == 1);
+      children.whereType<Rock>().where((Rock item) => item.opacity == 1);
   Iterable<Rock> get _transparentRocks =>
-      children.whereType<Rock>().where((item) => item.opacity != 1);
+      children.whereType<Rock>().where((Rock item) => item.opacity != 1);
   Iterable<Heart> get hearts => children.whereType<Heart>();
   Iterable<Alien> get _aliens => children.whereType<Alien>();
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
@@ -96,11 +96,11 @@ class SpaceWrapper extends WrapperNoEvents
   @override
   void reset() {
     debug("reset start");
-    removeWhere((item) => item is Rock);
-    removeWhere((item) => item is Bullet);
-    removeWhere((item) => item is Heart);
-    removeWhere((item) => item is Cherry);
-    removeWhere((item) => item is Alien);
+    removeWhere((Component item) => item is Rock);
+    removeWhere((Component item) => item is Bullet);
+    removeWhere((Component item) => item is Heart);
+    removeWhere((Component item) => item is Cherry);
+    removeWhere((Component item) => item is Alien);
 
     ship.reset();
     _cameraManager.reset();

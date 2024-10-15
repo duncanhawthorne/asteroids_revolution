@@ -13,7 +13,7 @@ class Bullet extends SpaceBody with CollisionCallbacks {
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     hitbox.collisionType = CollisionType.active;
   }
 
@@ -37,18 +37,23 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   }
 }
 
-final List<Bullet> _allBits = [];
-Iterable<Bullet> get _spareBits => _allBits.where((item) => !item.isActive);
+final List<Bullet> _allBits = <Bullet>[];
+Iterable<Bullet> get _spareBits =>
+    _allBits.where((Bullet item) => !item.isActive);
 
 // ignore: non_constant_identifier_names
-Bullet RecycledBullet({required position, required velocity, required radius}) {
+Bullet RecycledBullet(
+    {required Vector2 position,
+    required Vector2 velocity,
+    required double radius}) {
   if (_spareBits.isEmpty) {
-    Bullet newBit =
+    final Bullet newBit =
         Bullet(position: position, velocity: velocity, radius: radius);
     _allBits.add(newBit);
     return newBit;
   } else {
-    Bullet recycledBit = _spareBits.first;
+    final Bullet recycledBit = _spareBits.first;
+    // ignore: cascade_invocations
     recycledBit.isActive = true;
     assert(_spareBits.isEmpty || _spareBits.first != recycledBit);
     recycledBit.position.setFrom(position);

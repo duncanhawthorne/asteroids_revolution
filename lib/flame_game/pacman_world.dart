@@ -53,11 +53,11 @@ class PacmanWorld extends Forge2DWorld
   /// progress if a level is finished.
   final PlayerProgress playerProgress;
 
-  final noEventsWrapper = WrapperNoEvents();
-  final pellets = PelletWrapper();
-  final walls = WallWrapper();
-  final _tutorial = TutorialWrapper();
-  final List<WrapperNoEvents> wrappers = [];
+  final WrapperNoEvents noEventsWrapper = WrapperNoEvents();
+  final PelletWrapper pellets = PelletWrapper();
+  final WallWrapper walls = WallWrapper();
+  final TutorialWrapper _tutorial = TutorialWrapper();
+  final List<WrapperNoEvents> wrappers = <WrapperNoEvents>[];
 
   bool get gameWonOrLost =>
       pellets.pelletsRemainingNotifier.value <= 0 ||
@@ -107,7 +107,7 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  final space = SpaceWrapper();
+  final SpaceWrapper space = SpaceWrapper();
 
   void start() {
     play(SfxType.startMusic);
@@ -120,14 +120,14 @@ class PacmanWorld extends Forge2DWorld
   Future<void> onLoad() async {
     super.onLoad();
     add(noEventsWrapper);
-    wrappers.addAll([space, walls]); //_blocking, _tutorial
+    wrappers.addAll(<WrapperNoEvents>[space, walls]); //_blocking, _tutorial
     for (WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }
     reset(firstRun: true);
   }
 
-  final Map<int, bool> _boostFingers = {};
+  final Map<int, bool> _boostFingers = <int, bool>{};
 
   @override
   void onDragStart(DragStartEvent event) {
@@ -209,7 +209,7 @@ class PacmanWorld extends Forge2DWorld
   late final double _levelSpeed = 0.5 * 0.5 * pow(1.1, level.number).toDouble();
   final Vector2 direction = Vector2.zero();
 
-  final _tmpGravity = Vector2.zero();
+  final Vector2 _tmpGravity = Vector2.zero();
   late final double _gravityScale = 50 * _levelSpeed;
   void _setMazeAngle(double angle) {
     //using tmpGravity to avoid creating a new Vector2 on each update / frame

@@ -9,11 +9,11 @@ import '../game_screen.dart';
 import '../pacman_game.dart';
 
 const double _statusWidgetHeightFactor = 1.0;
-const _widgetSpacing = 8 * _statusWidgetHeightFactor;
-const _clockSpacing = 8 * _statusWidgetHeightFactor;
-const pacmanIconSize = 21 * _statusWidgetHeightFactor;
-const gIconSize = pacmanIconSize * 4 / 3;
-const circleIconSize = 10 * _statusWidgetHeightFactor;
+const double _widgetSpacing = 8 * _statusWidgetHeightFactor;
+const double _clockSpacing = 8 * _statusWidgetHeightFactor;
+const double pacmanIconSize = 21 * _statusWidgetHeightFactor;
+const double gIconSize = pacmanIconSize * 4 / 3;
+const double circleIconSize = 10 * _statusWidgetHeightFactor;
 
 Widget topOverlayWidget(BuildContext context, PacmanGame game) {
   return Center(
@@ -58,7 +58,7 @@ Widget _topRightWidget(BuildContext context, PacmanGame game) {
     mainAxisAlignment: MainAxisAlignment.end,
     mainAxisSize: MainAxisSize.min,
     spacing: _widgetSpacing,
-    children: [
+    children: <Widget>[
       _pelletsCounterWidget(game),
     ],
   );

@@ -24,11 +24,11 @@ class Alien extends SpaceBody {
 
   @override
   // ignore: overridden_fields
-  final friction = 0.98;
+  final double friction = 0.98;
 
   @override
   // ignore: overridden_fields
-  final canAccelerate = true;
+  final bool canAccelerate = true;
 
   @override
   void damage(double d) {
@@ -42,7 +42,7 @@ class Alien extends SpaceBody {
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     add(hole);
     hitbox.collisionType = CollisionType.passive;
   }
@@ -50,12 +50,13 @@ class Alien extends SpaceBody {
   final Vector2 _oneTimeGoal = Vector2(0, 0);
   @override
   Future<void> update(double dt) async {
-    super.update(dt);
+    await super.update(dt);
     _oneTimeGoal
       ..x = ship.position.x - position.x
       ..y = ship.position.y - position.y;
-    double oneTimeGoalLength = _oneTimeGoal.length;
-    acceleration.setFrom(_oneTimeGoal);
-    acceleration.scale(1 / oneTimeGoalLength * 5 * radius);
+    final double oneTimeGoalLength = _oneTimeGoal.length;
+    acceleration
+      ..setFrom(_oneTimeGoal)
+      ..scale(1 / oneTimeGoalLength * 5 * radius);
   }
 }

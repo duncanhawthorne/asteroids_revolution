@@ -147,7 +147,7 @@ class Maze {
     return Vector2.zero();
   }
 
-  static const _mazeInnerWallWidthFactor = 1;
+  static const int _mazeInnerWallWidthFactor = 1;
   static const double _pixelationBuffer = 0.03;
 
   List<Component> mazeWalls() {
@@ -260,10 +260,10 @@ class Maze {
   }
 
 //quad of dots
-  static const _kWall = "1";
+  static const String _kWall = "1";
 
   // ignore: unused_field
-  static const _kLair = "2";
+  static const String _kLair = "2";
 //quad top
   // ignore: unused_field
   static const String _kEmpty = "4";
@@ -271,7 +271,7 @@ class Maze {
   static const String _kPacmanStart = "8";
   static const String _kCage = "9";
 
-  static const _borders = [
+  static const List<String> _borders = <String>[
     '4111111111111144411111111111114',
     '4144444444444444444444444444414',
     '4144444444444444444444444444414',

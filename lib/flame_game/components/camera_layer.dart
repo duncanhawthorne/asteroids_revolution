@@ -31,16 +31,16 @@ class CameraWrapper extends WrapperNoEvents
 
   double get _optimalZoom => 30 / world.everythingScale;
 
-  get overZoomError => !_kZoomTrackingCamera ? 1 : zoom / _optimalZoom;
+  double get overZoomError => !_kZoomTrackingCamera ? 1 : zoom / _optimalZoom;
 
   Ship get ship => world.space.ship;
 
-  get tooZoomedOut => overZoomError < 0.75;
+  bool get tooZoomedOut => overZoomError < 0.75;
 
   async.Timer? _zoomTimer;
   void startZoomTimer() {
-    _zoomTimer =
-        async.Timer.periodic(const Duration(milliseconds: 10), (timer) {
+    _zoomTimer = async.Timer.periodic(const Duration(milliseconds: 10),
+        (async.Timer timer) {
       if (!kDebugMode || _kZoomTrackingCamera) {
         if (zoom < _optimalZoom * 0.95) {
           //zoom in

@@ -11,17 +11,17 @@ import 'space_body.dart';
 bool _useSprite = false;
 
 double _breakupSizeFactor() {
-  const List<double> breakupSizes = [0.2, 0.4, 0.5, 0.6, 0.7, 0.75];
+  const List<double> breakupSizes = <double>[0.2, 0.4, 0.5, 0.6, 0.7, 0.75];
   return breakupSizes[random.nextInt(breakupSizes.length)];
 }
 
 double randomRadiusFactor() {
-  const List<double> rockRadii = [0.6, 0.8, 1.1, 1.3, 1.5, 2, 4, 7];
+  const List<double> rockRadii = <double>[0.6, 0.8, 1.1, 1.3, 1.5, 2, 4, 7];
   return rockRadii[random.nextInt(rockRadii.length)];
 }
 
 int randomStartingHits() {
-  const List<int> startingHits = [1, 2, 3, 4];
+  const List<int> startingHits = <int>[1, 2, 3, 4];
   return startingHits[random.nextInt(startingHits.length)];
 }
 
@@ -90,7 +90,7 @@ class Rock extends SpaceBody {
   }
 
   void explode() {
-    bool shouldSplit = !isSmall && numberExplosionsLeft >= 1;
+    final bool shouldSplit = !isSmall && numberExplosionsLeft >= 1;
     if (shouldSplit) {
       for (int i = 0; i < 2; i++) {
         if (_isLuckyHeart()) {
@@ -113,7 +113,7 @@ class Rock extends SpaceBody {
     } else if (isTiny) {
       removeFromParent();
     } else {
-      double rFactor = radius / ship.radius;
+      final double rFactor = radius / ship.radius;
       opacity =
           ((rFactor - transpThreshold) / (greyThreshold - transpThreshold))
               .clamp(0, 1);
@@ -128,7 +128,7 @@ class Rock extends SpaceBody {
 
   @override
   Future<void> onMount() async {
-    super.onMount();
+    await super.onMount();
     updateOpacity();
     if (_useSprite) {
       spriteHole?.position.setAll(radius);
@@ -143,7 +143,7 @@ class Rock extends SpaceBody {
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
 
     if (_useSprite) {
       rock1Sprite = await Sprite.load("asteroid1.png");
@@ -171,18 +171,18 @@ class Rock extends SpaceBody {
   }
 }
 
-final List<Rock> _allBits = [];
-Iterable<Rock> get _spareBits => _allBits.where((item) => !item.isActive);
+final List<Rock> _allBits = <Rock>[];
+Iterable<Rock> get _spareBits => _allBits.where((Rock item) => !item.isActive);
 
 // ignore: non_constant_identifier_names
 Rock RecycledRock(
-    {required position,
-    required velocity,
-    required numberExplosionsLeft,
-    required radius,
-    ensureVelocityTowardsCenter = false}) {
+    {required Vector2 position,
+    required Vector2 velocity,
+    required int numberExplosionsLeft,
+    required double radius,
+    bool ensureVelocityTowardsCenter = false}) {
   if (_spareBits.isEmpty) {
-    Rock newBit = Rock(
+    final Rock newBit = Rock(
         position: position,
         velocity: velocity,
         numberExplosionsLeft: numberExplosionsLeft,
@@ -191,14 +191,16 @@ Rock RecycledRock(
     _allBits.add(newBit);
     return newBit;
   } else {
-    Rock recycledBit = _spareBits.first;
+    final Rock recycledBit = _spareBits.first;
+    // ignore: cascade_invocations
     recycledBit.isActive = true;
     assert(_spareBits.isEmpty || _spareBits.first != recycledBit);
     recycledBit.position.setFrom(position);
     recycledBit.velocity.setFrom(velocity);
-    recycledBit.numberExplosionsLeft = numberExplosionsLeft;
-    recycledBit.ensureVelocityTowardsCenter = ensureVelocityTowardsCenter;
-    recycledBit.radius = radius;
+    recycledBit
+      ..numberExplosionsLeft = numberExplosionsLeft
+      ..ensureVelocityTowardsCenter = ensureVelocityTowardsCenter
+      ..radius = radius;
     return recycledBit;
   }
 }
