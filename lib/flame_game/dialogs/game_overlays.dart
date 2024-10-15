@@ -21,12 +21,12 @@ Widget topOverlayWidget(BuildContext context, PacmanGame game) {
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: _widgetSpacing,
-            children: [
+            children: <Widget>[
               _topLeftWidget(context, game),
               _topRightWidget(context, game)
             ],
@@ -43,10 +43,10 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
     mainAxisAlignment: MainAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     spacing: _widgetSpacing,
-    children: [
+    children: <Widget>[
       _mainMenuButtonWidget(context, game),
       game.level.isTutorial
-          ? SizedBox.shrink()
+          ? const SizedBox.shrink()
           : g.loginLogoutWidget(context, gIconSize, Palette.textColor),
     ],
   );
@@ -77,9 +77,9 @@ Widget _mainMenuButtonWidget(BuildContext context, PacmanGame game) {
 Widget _clockWidget(PacmanGame game) {
   return Padding(
     padding: const EdgeInsets.only(left: _clockSpacing, right: _clockSpacing),
-    child: StreamBuilder(
-      stream: Stream.periodic(const Duration(milliseconds: 100)),
-      builder: (context, snapshot) {
+    child: StreamBuilder<dynamic>(
+      stream: Stream<dynamic>.periodic(const Duration(milliseconds: 100)),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         return Text(
             (game.stopwatchMilliSeconds / 1000)
                 .toStringAsFixed(1)
@@ -101,11 +101,12 @@ Widget _pelletsCounterWidget(PacmanGame game) {
 
 // ignore: unused_element
 Widget _audioOnOffButtonWidget(BuildContext context, PacmanGame game) {
-  const color = Palette.textColor;
-  final settingsController = context.watch<SettingsController>();
+  const Color color = Palette.textColor;
+  final SettingsController settingsController =
+      context.watch<SettingsController>();
   return ValueListenableBuilder<bool>(
     valueListenable: settingsController.audioOn,
-    builder: (context, audioOn, child) {
+    builder: (BuildContext context, bool audioOn, Widget? child) {
       return IconButton(
         onPressed: () => settingsController.toggleAudioOn(),
         icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off, color: color),

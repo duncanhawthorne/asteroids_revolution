@@ -5,12 +5,17 @@ import 'package:flame/components.dart';
 import 'components/wall.dart';
 import 'pacman_game.dart';
 
-final Map<int, String> mazeNames = {-1: "T", 0: "A", 1: "B", 2: "C"};
-const _bufferColumns = 2;
+final Map<int, String> mazeNames = <int, String>{
+  -1: "T",
+  0: "A",
+  1: "B",
+  2: "C"
+};
+const int _bufferColumns = 2;
 
 class Maze {
   Maze({
-    required mazeId,
+    required int mazeId,
   }) {
     setMazeId(mazeId);
   }
@@ -40,21 +45,22 @@ class Maze {
     }
   }
 
-  final Map<int, List> _decodedMazeList = {
+  final Map<int, List<List<String>>> _decodedMazeList =
+      <int, List<List<String>>>{
     -1: _decodeMazeLayout(_mazeTutorialLayout),
     0: _decodeMazeLayout(_borders),
     1: _decodeMazeLayout(_mazeMP4Layout),
     2: _decodeMazeLayout(_mazeMP1Layout)
   };
 
-  get _mazeLayout => _decodedMazeList[mazeId];
+  List<List<String>> get _mazeLayout => _decodedMazeList[mazeId]!;
 
-  static const tutorialMazeId = -1;
-  static const defaultMazeId = 0;
+  static const int tutorialMazeId = -1;
+  static const int defaultMazeId = 0;
 
-  get isTutorial => isTutorialMaze(mazeId);
+  bool get isTutorial => isTutorialMaze(mazeId);
 
-  get isDefault => mazeId == defaultMazeId;
+  bool get isDefault => mazeId == defaultMazeId;
 
   int _mazeId = -1; //set properly in initializer
   final Vector2 ghostStart = Vector2.zero(); //set properly in initializer
@@ -65,10 +71,11 @@ class Maze {
   double blockWidth = 0; //set properly in initializer
   double spriteWidth = 0; //set properly in initializer
   final Vector2 spriteSize = Vector2.zero(); //set properly in initializer
-  Map<int, Vector2> ghostStartForIdMap = {}; //set properly in initializer
+  Map<int, Vector2> ghostStartForIdMap =
+      <int, Vector2>{}; //set properly in initializer
 
   static const bool _largeSprites = true;
-  static const pelletScaleFactor = _largeSprites ? 0.4 : 0.46;
+  static const double pelletScaleFactor = _largeSprites ? 0.4 : 0.46;
 
   Vector2 ghostStartForId(int idNum) {
     return ghostStartForIdMap[idNum % 3]!;
@@ -123,8 +130,8 @@ class Maze {
 
   Vector2 _vectorOfMazeListIndex(int icore, int jcore,
       {double ioffset = 0, double joffset = 0}) {
-    double i = ioffset + icore;
-    double j = joffset + jcore;
+    final double i = ioffset + icore;
+    final double j = joffset + jcore;
     return Vector2((j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth,
         (i + 1 / 2 - _mazeLayout.length / 2) * blockWidth);
   }
@@ -144,8 +151,8 @@ class Maze {
   static const double _pixelationBuffer = 0.03;
 
   List<Component> mazeWalls() {
-    final List<Component> result = [];
-    double scale = blockWidth;
+    final List<Component> result = <Component>[];
+    final double scale = blockWidth;
     for (int i = 0; i < _mazeLayout.length; i++) {
       for (int j = 0; j < _mazeLayout[i].length; j++) {
         final Vector2 center = _vectorOfMazeListIndex(i, j);
@@ -231,23 +238,24 @@ class Maze {
   }
 
   List<Component> mazeBlockingWalls() {
-    final List<Component> result = [];
-    double scale = blockWidth;
-    int width = 7;
-    result.add(
-      MazeVisualBlockingBar(
-          position: Vector2(
-              scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
-          width: scale * width,
-          height: scale * _mazeLayoutVerticalLength()),
-    );
-    result.add(
-      MazeVisualBlockingBar(
-          position: Vector2(
-              -scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
-          width: scale * width,
-          height: scale * _mazeLayoutVerticalLength()),
-    );
+    final List<Component> result = <Component>[];
+    final double scale = blockWidth;
+    final int width = 7;
+    result
+      ..add(
+        MazeVisualBlockingBar(
+            position: Vector2(
+                scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
+            width: scale * width,
+            height: scale * _mazeLayoutVerticalLength()),
+      )
+      ..add(
+        MazeVisualBlockingBar(
+            position: Vector2(
+                -scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
+            width: scale * width,
+            height: scale * _mazeLayoutVerticalLength()),
+      );
     return result;
   }
 
@@ -258,10 +266,10 @@ class Maze {
   static const _kLair = "2";
 //quad top
   // ignore: unused_field
-  static const _kEmpty = "4";
-  static const _kGhostStart = "7";
-  static const _kPacmanStart = "8";
-  static const _kCage = "9";
+  static const String _kEmpty = "4";
+  static const String _kGhostStart = "7";
+  static const String _kPacmanStart = "8";
+  static const String _kCage = "9";
 
   static const _borders = [
     '4111111111111144411111111111114',
@@ -296,7 +304,7 @@ class Maze {
   ];
 
   // ignore: unused_field
-  static const _mazeP1Layout = [
+  static const List<String> _mazeP1Layout = <String>[
     '4111111111111111111111111111114',
     '4100000000000001000000000000014',
     '4100000000000001000000000000014',
@@ -331,7 +339,7 @@ class Maze {
     '4111111111111111111111111111114'
   ];
 
-  static const _mazeMP4Layout = [
+  static const List<String> _mazeMP4Layout = <String>[
     '4111111111111111111111111111114',
     '4100000000000000000000000000014',
     '4100000000000000000000000000014',
@@ -366,7 +374,7 @@ class Maze {
     '4111111111111111111111111111114'
   ];
 
-  static const _mazeMP1Layout = [
+  static const List<String> _mazeMP1Layout = <String>[
     '4111111111111111111111111111114',
     '4100000001000000000001000000014',
     '4133000001000000000001000003314',
@@ -401,7 +409,7 @@ class Maze {
     '4111111111111111111111111111114'
   ];
 
-  static const _mazeTutorialLayout = [
+  static const List<String> _mazeTutorialLayout = <String>[
     '4111111111111111111111111111114',
     '4100000444444441444444440000014',
     '4100000444444441444444440000014',
@@ -438,7 +446,7 @@ class Maze {
 }
 
 List<List<String>> _decodeMazeLayout(List<String> encodedMazeLayout) {
-  List<List<String>> result = [];
+  final List<List<String>> result = <List<String>>[];
   for (String row in encodedMazeLayout) {
     result.add(row.split(""));
   }

@@ -66,7 +66,7 @@ class PacmanWorld extends Forge2DWorld
   double get everythingScale =>
       space.ship.scaledRadius / neutralShipRadius * 30 / flameGameZoom;
 
-  final Map<int, double?> _fingersLastDragAngle = {};
+  final Map<int, double?> _fingersLastDragAngle = <int, double?>{};
 
   bool doingLevelResetFlourish = false;
   bool _cameraRotatableOnPacmanDeathFlourish = true;
@@ -75,7 +75,7 @@ class PacmanWorld extends Forge2DWorld
   /// These pixels are in relation to how big the [FixedResolutionViewport] is.
 
   void play(SfxType type) {
-    const soundOn = true; //!(windows && !kIsWeb);
+    const bool soundOn = true; //!(windows && !kIsWeb);
     if (soundOn) {
       game.audioController.playSfx(type);
     }
@@ -95,7 +95,7 @@ class PacmanWorld extends Forge2DWorld
     doingLevelResetFlourish = false;
   }
 
-  void reset({firstRun = false}) {
+  void reset({bool firstRun = false}) {
     _cameraAndTimersReset();
     game.audioController.stopSfx(SfxType.ghostsScared);
 
@@ -104,9 +104,6 @@ class PacmanWorld extends Forge2DWorld
         assert(wrapper.isLoaded);
         wrapper.reset();
       }
-    }
-    if (kDebugMode) {
-      pellets.pelletsRemainingNotifier.value = 3;
     }
   }
 
@@ -162,18 +159,18 @@ class PacmanWorld extends Forge2DWorld
     }
 
     game.resumeGame();
-    final eventVectorLengthProportion =
+    final double eventVectorLengthProportion =
         (event.canvasStartPosition - game.canvasSize / 2).length /
             (min(game.canvasSize.x, game.canvasSize.y) / 2);
-    final fingerCurrentDragAngle = atan2(
+    final double fingerCurrentDragAngle = atan2(
         event.canvasStartPosition.x - game.canvasSize.x / 2,
         event.canvasStartPosition.y - game.canvasSize.y / 2);
     if (_fingersLastDragAngle.containsKey(event.pointerId)) {
       if (_fingersLastDragAngle[event.pointerId] != null) {
-        final angleDelta = smallAngle(
+        final double angleDelta = smallAngle(
             fingerCurrentDragAngle - _fingersLastDragAngle[event.pointerId]!);
-        const maxSpinMultiplierRadius = 0.75;
-        final spinMultiplier =
+        const double maxSpinMultiplierRadius = 0.75;
+        final num spinMultiplier =
             4 * min(1, eventVectorLengthProportion / maxSpinMultiplierRadius);
 
         _tutorial.hide();
@@ -209,8 +206,8 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  late final _levelSpeed = 0.5 * 0.5 * pow(1.1, level.number).toDouble();
-  final direction = Vector2.zero();
+  late final double _levelSpeed = 0.5 * 0.5 * pow(1.1, level.number).toDouble();
+  final Vector2 direction = Vector2.zero();
 
   final _tmpGravity = Vector2.zero();
   late final double _gravityScale = 50 * _levelSpeed;
