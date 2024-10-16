@@ -47,8 +47,11 @@ class SpaceWrapper extends WrapperNoEvents
     });
   }
 
+  double get zoomAdjustedEverythingScale =>
+      world.everythingScale / _cameraManager.overZoomError;
+
   final num _visibleRockLimit = 30 * pow(_kHubbleLimitMult, 2);
-  late final num _transparentrockLimit = _visibleRockLimit;
+  late final num _transparentrockLimit = _visibleRockLimit / 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6 / 2;
   static const int _alienLimit = kDebugMode ? 0 : 1; //1;
   static const int _cherryLimit = 4;
@@ -64,13 +67,15 @@ class SpaceWrapper extends WrapperNoEvents
   Iterable<SpaceBody> get _spaceBodies => children.whereType<SpaceBody>();
 
   double get mappedUniverseRadius =>
-      maze.mazeWidth * flameGameZoom / 30 * _kHubbleLimitMult * ship.radius;
-  // / min(1, _cameraManager.overZoomError);
+      maze.mazeWidth *
+      flameGameZoom /
+      30 *
+      _kHubbleLimitMult *
+      ship.radius /
+      min(1, _cameraManager.overZoomError);
 
   double get _fullUniverseRadius =>
-      mappedUniverseRadius *
-      (1 + _twilightZoneWidth) /
-      _cameraManager.overZoomError;
+      mappedUniverseRadius * (1 + _twilightZoneWidth);
 
   bool isOutsideFullUniverse(Vector2 target) {
     return target.distanceTo(ship.position) > _fullUniverseRadius;
@@ -118,28 +123,29 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       add(RecycledRock(
           position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+          velocity:
+              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
           numberExplosionsLeft: randomStartingHits(),
           radius: ship.radius * 0.8 * randomRadiusFactor()));
     }
     for (int i = 0; i < heartLimit - hearts.length; i++) {
       add(Heart(
         position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
         radius: ship.radius,
       ));
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
       add(Cherry(
         position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
         radius: ship.radius,
       ));
     }
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
       add(Alien(
         position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
         radius: ship.radius,
       ));
     }
@@ -149,7 +155,8 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _transparentrockLimit - _transparentRocks.length; i++) {
       add(RecycledRock(
           position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+          velocity:
+              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
           numberExplosionsLeft: randomStartingHits(),
           radius: ship.radius * transpThreshold * 1.15));
     }
@@ -165,7 +172,8 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       add(RecycledRock(
           position: _randomPositionInTwilightZone(),
-          velocity: randomVelocityOffset(scale: 10 * world.everythingScale),
+          velocity:
+              randomVelocityOffset(scale: 10 * zoomAdjustedEverythingScale),
           ensureVelocityTowardsCenter: true,
           radius: ship.radius * randomRadiusFactor(),
           numberExplosionsLeft: randomStartingHits()));
@@ -173,14 +181,15 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < heartLimit - hearts.length; i++) {
       add(Heart(
           position: _randomPositionInTwilightZone(),
-          velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+          velocity:
+              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
           radius: ship.radius,
           ensureVelocityTowardsCenter: true));
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
       add(Cherry(
         position: _randomPositionInTwilightZone(),
-        velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
         ensureVelocityTowardsCenter: true,
         radius: ship.radius,
       ));
@@ -188,7 +197,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
       add(Alien(
         position: _randomPositionInTwilightZone(),
-        velocity: randomVelocityOffset(scale: 5 * world.everythingScale),
+        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
         radius: ship.radius,
       ));
     }

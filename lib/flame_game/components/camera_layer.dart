@@ -1,4 +1,3 @@
-import 'dart:async' as async;
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -11,7 +10,7 @@ import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
 bool _kPanTrackingCamera = true;
-bool _kZoomTrackingCamera = true;
+bool _kAutoZoomingCamera = false;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
@@ -20,39 +19,20 @@ class CameraWrapper extends WrapperNoEvents
 
   @override
   void reset() {
-    _zoomTimer?.cancel();
-    startZoomTimer();
     fixSpaceDots();
 
-    if (!kDebugMode || _kZoomTrackingCamera) {
+    if (!kDebugMode || _kAutoZoomingCamera) {
       zoom = _optimalZoom;
     }
   }
 
   double get _optimalZoom => 30 / world.everythingScale;
 
-  double get overZoomError => !_kZoomTrackingCamera ? 1 : zoom / _optimalZoom;
+  double get overZoomError => !_kAutoZoomingCamera ? 1 : zoom / _optimalZoom;
 
   Ship get ship => world.space.ship;
 
   bool get tooZoomedOut => overZoomError < 0.75;
-
-  async.Timer? _zoomTimer;
-  void startZoomTimer() {
-    _zoomTimer = async.Timer.periodic(const Duration(milliseconds: 10),
-        (async.Timer timer) {
-      if (!kDebugMode || _kZoomTrackingCamera) {
-        if (zoom < _optimalZoom * 0.95) {
-          //zoom in
-          zoom *= pow(1 / overZoomError, 1 / 300);
-        }
-        if (zoom > _optimalZoom * 1.05) {
-          //zoom out
-          zoom *= pow(1 / overZoomError, 1 / 300);
-        }
-      }
-    });
-  }
 
   SpaceDotWrapper smallDots = SpaceDotWrapper(
       position: Vector2(0, 0), orderMagnitude: 0, fullGrid: true);
@@ -80,5 +60,18 @@ class CameraWrapper extends WrapperNoEvents
     add(smallDots);
     add(bigDot);
     reset();
+  }
+
+  @override
+  Future<void> update(double dt) async {
+    if (!kDebugMode || _kAutoZoomingCamera) {
+      if (zoom < _optimalZoom * 0.95) {
+        //zoom in
+        zoom *= pow(1 / overZoomError, 1 / 300 * (dt * 10));
+      } else if (zoom > _optimalZoom * 1.05) {
+        //zoom out
+        zoom *= pow(1 / overZoomError, 1 / 300 * (dt * 10));
+      }
+    }
   }
 }
