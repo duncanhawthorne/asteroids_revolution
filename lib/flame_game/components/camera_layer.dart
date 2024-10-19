@@ -9,8 +9,9 @@ import 'ship.dart';
 import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
-bool _kPanTrackingCamera = true;
-bool _kAutoZoomingCamera = true;
+const bool _kPanTrackingCamera = true;
+const bool _kAutoZoomingCameraOnDebug = false;
+const bool _kAutoZoomingCamera = _kAutoZoomingCameraOnDebug || !kDebugMode;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
@@ -24,7 +25,7 @@ class CameraWrapper extends WrapperNoEvents
   void reset() {
     fixSpaceDots();
 
-    if (!kDebugMode || _kAutoZoomingCamera) {
+    if (_kAutoZoomingCamera) {
       zoom = _optimalZoom;
     }
   }
@@ -67,7 +68,7 @@ class CameraWrapper extends WrapperNoEvents
 
   @override
   Future<void> update(double dt) async {
-    if (!kDebugMode || _kAutoZoomingCamera) {
+    if (_kAutoZoomingCamera) {
       if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
         zoom *= pow(1 / overZoomError, dt / 30);
       }

@@ -54,8 +54,8 @@ class SpaceWrapper extends WrapperNoEvents
   double get zoomAdjustedEverythingScale =>
       world.everythingScale / _cameraManager.overZoomError;
 
-  final num _visibleRockLimit = 30 * pow(_kHubbleLimitMult, 2);
-  late final num _transparentrockLimit = _visibleRockLimit / 20;
+  final int _visibleRockLimit = (30 * pow(_kHubbleLimitMult, 2)).floor();
+  late final int _transparentrockLimit = _visibleRockLimit ~/ 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6 / 2;
   static const int _alienLimit = kDebugMode ? 0 : 1; //1;
   static const int _cherryLimit = 4;
@@ -69,7 +69,7 @@ class SpaceWrapper extends WrapperNoEvents
   Iterable<Heart> get hearts => children.whereType<Heart>();
   Iterable<Alien> get _aliens => children.whereType<Alien>();
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
-  Iterable<SpaceBody> get _spaceBodies => children.whereType<SpaceBody>();
+  Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
   double get mappedUniverseRadius =>
       maze.mazeWidth *
@@ -105,7 +105,6 @@ class SpaceWrapper extends WrapperNoEvents
 
   @override
   void reset() {
-    debug("reset start");
     removeWhere((Component item) => item is Heart);
     removeWhere((Component item) => item is Cherry);
     removeWhere((Component item) => item is Alien);
@@ -122,7 +121,6 @@ class SpaceWrapper extends WrapperNoEvents
 
     _startTimerTopUpSpaceBodies();
     _startTimerTidySpaceBodies();
-    debug("reset end");
   }
 
   void _addStarterSpaceBodyField() {
@@ -216,7 +214,7 @@ class SpaceWrapper extends WrapperNoEvents
   }
 
   void _tidySpaceBodies() {
-    for (SpaceBody item in _spaceBodies) {
+    for (SpaceBody item in _otherSpaceBodies) {
       item.tidy();
     }
     for (Rock rock in _allRocks) {

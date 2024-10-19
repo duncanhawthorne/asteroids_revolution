@@ -75,7 +75,7 @@ class PacmanWorld extends Forge2DWorld
   /// These pixels are in relation to how big the [FixedResolutionViewport] is.
 
   void play(SfxType type) {
-    const bool soundOn = true; //!(windows && !kIsWeb);
+    const bool soundOn = false; //!(windows && !kIsWeb);
     if (soundOn) {
       game.audioController.playSfx(type);
     }

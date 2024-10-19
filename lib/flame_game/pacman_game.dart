@@ -43,6 +43,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     with
         // ignore: always_specify_types
         HasCollisionDetection,
+        SingleGameInstance,
         HasTimeScale {
   PacmanGame({
     required this.level,

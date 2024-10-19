@@ -65,6 +65,7 @@ class Rock extends SpaceBody {
   @override
   void damage(double d) {
     super.damage(d);
+    addRockHole();
     setHealth(health - d / 3 * 2);
   }
 
@@ -141,10 +142,7 @@ class Rock extends SpaceBody {
   Sprite? rock2Sprite;
   SpriteComponent? spriteHole;
 
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-
+  Future<void> addRockHole() async {
     if (_useSprite) {
       rock1Sprite = await Sprite.load("asteroid1.png");
       rock2Sprite = await Sprite.load("asteroid2.png");
