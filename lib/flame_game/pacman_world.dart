@@ -76,6 +76,7 @@ class PacmanWorld extends Forge2DWorld
 
   void play(SfxType type) {
     const bool soundOn = false; //!(windows && !kIsWeb);
+    // ignore: dead_code
     if (soundOn) {
       game.audioController.playSfx(type);
     }

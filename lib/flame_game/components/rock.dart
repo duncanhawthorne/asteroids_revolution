@@ -8,7 +8,7 @@ import '../../utils/helper.dart';
 import 'heart.dart';
 import 'space_body.dart';
 
-bool _useSprite = false;
+const bool _useSprite = false;
 
 double _breakupSizeFactor() {
   const List<double> breakupSizes = <double>[0.2, 0.4, 0.5, 0.6, 0.7, 0.75];
