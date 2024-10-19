@@ -11,6 +11,7 @@ import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'alien.dart';
+import 'bullet.dart';
 import 'bullet_layer.dart';
 import 'camera_layer.dart';
 import 'cherry.dart';
@@ -64,6 +65,7 @@ class SpaceWrapper extends WrapperNoEvents
       rocks.children.whereType<Rock>().where((Rock item) => item.opacity == 1);
   Iterable<Rock> get _transparentRocks =>
       rocks.children.whereType<Rock>().where((Rock item) => item.opacity != 1);
+  Iterable<Bullet> get _bullets => bullets.children.whereType<Bullet>();
   Iterable<Heart> get hearts => children.whereType<Heart>();
   Iterable<Alien> get _aliens => children.whereType<Alien>();
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
@@ -216,6 +218,12 @@ class SpaceWrapper extends WrapperNoEvents
   void _tidySpaceBodies() {
     for (SpaceBody item in _spaceBodies) {
       item.tidy();
+    }
+    for (Rock rock in _allRocks) {
+      rock.tidy();
+    }
+    for (Bullet bullet in _bullets) {
+      bullet.tidy();
     }
     _cameraManager.fixSpaceDots();
   }
