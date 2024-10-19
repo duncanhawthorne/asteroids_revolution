@@ -10,10 +10,13 @@ import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
 bool _kPanTrackingCamera = true;
-bool _kAutoZoomingCamera = false;
+bool _kAutoZoomingCamera = true;
 
 class CameraWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
+  @override
+  final int priority = -100;
+
   double get zoom => game.camera.viewfinder.zoom;
   set zoom(double z) => game.camera.viewfinder.zoom = z;
 
@@ -65,12 +68,8 @@ class CameraWrapper extends WrapperNoEvents
   @override
   Future<void> update(double dt) async {
     if (!kDebugMode || _kAutoZoomingCamera) {
-      if (zoom < _optimalZoom * 0.95) {
-        //zoom in
-        zoom *= pow(1 / overZoomError, 1 / 300 * (dt * 10));
-      } else if (zoom > _optimalZoom * 1.05) {
-        //zoom out
-        zoom *= pow(1 / overZoomError, 1 / 300 * (dt * 10));
+      if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
+        zoom *= pow(1 / overZoomError, dt / 30);
       }
     }
   }

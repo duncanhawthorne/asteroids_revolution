@@ -3,6 +3,9 @@ import 'wrapper_no_events.dart';
 
 class WallWrapper extends WrapperNoEvents {
   @override
+  int priority = -99;
+
+  @override
   void reset() {
     if (children.isNotEmpty) {
       removeAll(children);

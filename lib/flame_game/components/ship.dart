@@ -99,6 +99,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   void setSize(double h) {
+    if (radius != h) {
+      world.space.updateAllRockOpacities();
+    }
     super.setSize(h);
     gunDot.radius = radius / 4;
     gunDot.position
@@ -110,7 +113,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
       ..y = radius * 8 / 4;
     sprite?.position.setAll(radius);
     sprite?.size.setAll(radius * 2);
-    world.space.updateAllRockOpacities();
   }
 
   @override
@@ -136,8 +138,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   void addMultiGun() {
-    world.space.add(gunR);
-    world.space.add(gunL);
+    world.space.bullets.add(gunR);
+    world.space.bullets.add(gunL);
     multiGunTimer
       ..reset()
       ..start();
@@ -153,7 +155,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     hitbox.collisionType = CollisionType.active;
     //add(gunDot);
 
-    world.space.add(gun);
+    world.space.bullets.add(gun);
 
     shipSprite = await Sprite.load("ship.png");
     shipSpriteFlame = await Sprite.load("ship_flame.png");

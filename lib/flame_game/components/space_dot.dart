@@ -14,9 +14,6 @@ class SpaceDot extends RectangleComponent with IgnoreEvents {
             anchor: Anchor.center,
             paint: _spaceDotPaint);
 
-  @override
-  int priority = -100;
-
   bool isActive = true; //so not in sparebits
 
   @override

@@ -19,7 +19,6 @@ class SpaceBody extends CircleComponent
     required Vector2 velocity,
     required super.radius,
     super.paint,
-    super.priority = 1,
   }) : super(anchor: Anchor.center) {
     this.velocity.setFrom(velocity);
   }

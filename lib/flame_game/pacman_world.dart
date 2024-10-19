@@ -120,7 +120,7 @@ class PacmanWorld extends Forge2DWorld
   Future<void> onLoad() async {
     super.onLoad();
     add(noEventsWrapper);
-    wrappers.addAll(<WrapperNoEvents>[space, walls]); //_blocking, _tutorial
+    wrappers.addAll(<WrapperNoEvents>[space]); //_blocking, _tutorial
     for (WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }

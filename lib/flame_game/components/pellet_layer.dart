@@ -12,9 +12,6 @@ import 'wrapper_no_events.dart';
 
 class PelletWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
-  @override
-  final int priority = -2;
-
   final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier<int>(1);
 
   @override

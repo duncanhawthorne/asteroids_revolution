@@ -33,10 +33,10 @@ class Rock extends SpaceBody {
     required super.radius,
     required this.numberExplosionsLeft,
   }) : super(
-            paint: _useSprite
-                ? (Paint()..color = Palette.transp.color)
-                : (Paint()..color = Palette.text.color),
-            priority: 0);
+          paint: _useSprite
+              ? (Paint()..color = Palette.transp.color)
+              : (Paint()..color = Palette.text.color),
+        );
 
   @override
   // ignore: overridden_fields
@@ -69,7 +69,7 @@ class Rock extends SpaceBody {
   }
 
   void _addSubRock() {
-    world.space.add(RecycledRock(
+    world.space.rocks.add(RecycledRock(
         position: position,
         velocity: velocity + velocityNoise(2 * radius),
         radius: radius * _breakupSizeFactor(),

@@ -11,11 +11,12 @@ import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'alien.dart';
-import 'bullet.dart';
+import 'bullet_layer.dart';
 import 'camera_layer.dart';
 import 'cherry.dart';
 import 'heart.dart';
 import 'rock.dart';
+import 'rock_layer.dart';
 import 'ship.dart';
 import 'space_body.dart';
 import 'wrapper_no_events.dart';
@@ -30,6 +31,8 @@ class SpaceWrapper extends WrapperNoEvents
 
   final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
   final CameraWrapper _cameraManager = CameraWrapper();
+  final BulletWrapper bullets = BulletWrapper();
+  final RockWrapper rocks = RockWrapper();
 
   async.Timer? _timerTopUpSpaceBodies;
   void _startTimerTopUpSpaceBodies() {
@@ -56,11 +59,11 @@ class SpaceWrapper extends WrapperNoEvents
   static const int _alienLimit = kDebugMode ? 0 : 1; //1;
   static const int _cherryLimit = 4;
 
-  Iterable<Rock> get _allRocks => children.whereType<Rock>();
+  Iterable<Rock> get _allRocks => rocks.children.whereType<Rock>();
   Iterable<Rock> get _visibleRocks =>
-      children.whereType<Rock>().where((Rock item) => item.opacity == 1);
+      rocks.children.whereType<Rock>().where((Rock item) => item.opacity == 1);
   Iterable<Rock> get _transparentRocks =>
-      children.whereType<Rock>().where((Rock item) => item.opacity != 1);
+      rocks.children.whereType<Rock>().where((Rock item) => item.opacity != 1);
   Iterable<Heart> get hearts => children.whereType<Heart>();
   Iterable<Alien> get _aliens => children.whereType<Alien>();
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
@@ -101,14 +104,15 @@ class SpaceWrapper extends WrapperNoEvents
   @override
   void reset() {
     debug("reset start");
-    removeWhere((Component item) => item is Rock);
-    removeWhere((Component item) => item is Bullet);
     removeWhere((Component item) => item is Heart);
     removeWhere((Component item) => item is Cherry);
     removeWhere((Component item) => item is Alien);
 
     ship.reset();
     _cameraManager.reset();
+    bullets.reset();
+    rocks.reset();
+
     _addStarterSpaceBodyField();
 
     _timerTopUpSpaceBodies?.cancel();
@@ -121,7 +125,7 @@ class SpaceWrapper extends WrapperNoEvents
 
   void _addStarterSpaceBodyField() {
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
-      add(RecycledRock(
+      rocks.add(RecycledRock(
           position: _randomPositionInMappedUniverse(),
           velocity:
               randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
@@ -153,7 +157,7 @@ class SpaceWrapper extends WrapperNoEvents
 
   void addSmallRocksOnDamage() {
     for (int i = 0; i < _transparentrockLimit - _transparentRocks.length; i++) {
-      add(RecycledRock(
+      rocks.add(RecycledRock(
           position: _randomPositionInMappedUniverse(),
           velocity:
               randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
@@ -170,7 +174,7 @@ class SpaceWrapper extends WrapperNoEvents
       return; //risk adding spaceBodies that you can see being added
     }
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
-      add(RecycledRock(
+      rocks.add(RecycledRock(
           position: _randomPositionInTwilightZone(),
           velocity:
               randomVelocityOffset(scale: 10 * zoomAdjustedEverythingScale),
@@ -221,6 +225,9 @@ class SpaceWrapper extends WrapperNoEvents
     super.onLoad();
     add(ship);
     add(_cameraManager);
+    add(bullets);
+    add(rocks);
+    add(world.walls);
     reset();
   }
 }
