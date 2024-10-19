@@ -1,5 +1,5 @@
-name: pacman_roll
-description: Pacman ROLL
+name: asteroids_revolution
+description: Asteroids Revolution
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'

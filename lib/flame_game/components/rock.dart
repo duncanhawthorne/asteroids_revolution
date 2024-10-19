@@ -53,6 +53,11 @@ class Rock extends SpaceBody {
   @override
   void setHealth(double h) {
     super.setHealth(h);
+    if (h == 1) {
+      removeRockHole();
+    } else {
+      addRockHole();
+    }
     hole.radius = radius * (1 - health).clamp(0, 0.95);
     if (_useSprite) {
       spriteHole?.size.setAll(hole.radius * 2);
@@ -65,7 +70,6 @@ class Rock extends SpaceBody {
   @override
   void damage(double d) {
     super.damage(d);
-    addRockHole();
     setHealth(health - d / 3 * 2);
   }
 
@@ -165,6 +169,14 @@ class Rock extends SpaceBody {
       add(spriteHole!);
     } else {
       add(hole);
+    }
+  }
+
+  Future<void> removeRockHole() async {
+    if (_useSprite) {
+      spriteHole?.removeFromParent();
+    } else {
+      hole.removeFromParent();
     }
   }
 }
