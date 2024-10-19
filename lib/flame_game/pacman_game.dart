@@ -52,29 +52,29 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     required this.audioController,
     required this.appLifecycleStateNotifier,
   }) : super(
-          world: PacmanWorld(level: level, playerProgress: playerProgress),
+          world: PacmanWorld(),
           camera: CameraComponent.withFixedResolution(
-              width: kVirtualGameSize,
-              height: kVirtualGameSize), //2800, 1700 //CameraComponent(),//
+              width: kVirtualGameSize, height: kVirtualGameSize),
           zoom: flameGameZoom * _visualZoomMultiplier,
         ) {
-    _setMazeId(mazeId);
+    this.mazeId = mazeId;
   }
 
   /// What the properties of the level that is played has.
-  final GameLevel level;
+  GameLevel level;
+
+  set mazeId(int id) => <void>{maze.mazeId = id};
+
+  int get mazeId => maze.mazeId;
 
   final AudioController audioController;
   final AppLifecycleStateNotifier appLifecycleStateNotifier;
   final PlayerProgress playerProgress;
 
-  void _setMazeId(int id) {
-    maze.mazeId = id;
-  }
-
   String _userString = "";
 
-  static const int deathPenaltyMillis = 5000;
+  // ignore: unused_field
+  static const int _deathPenaltyMillis = 5000;
   final Timer stopwatch = Timer(double.infinity);
   int get stopwatchMilliSeconds => (stopwatch.current * 1000).toInt();
   bool get levelStarted => stopwatchMilliSeconds > 0;
@@ -180,9 +180,12 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     super.onGameResize(size);
   }
 
-  void reset({bool firstRun = false}) {
+  void reset({bool firstRun = false, bool showStartDialog = false}) {
     _userString = _getRandomString(random, 15);
     cleanDialogs();
+    if (showStartDialog) {
+      overlays.add(GameScreen.startDialogKey);
+    }
     stopwatch
       ..pause()
       ..reset();

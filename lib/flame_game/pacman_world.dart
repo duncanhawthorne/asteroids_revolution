@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../audio/sounds.dart';
-import '../level_selection/levels.dart';
-import '../player_progress/player_progress.dart';
 import 'components/pellet_layer.dart';
 import 'components/ship.dart';
 import 'components/space_layer.dart';
@@ -35,24 +34,7 @@ import 'pacman_game.dart';
 final bool _iOSWeb = defaultTargetPlatform == TargetPlatform.iOS && kIsWeb;
 
 class PacmanWorld extends Forge2DWorld
-    with
-        //TapCallbacks,
-        HasGameReference<PacmanGame>,
-        //PointerMoveCallbacks,
-        DragCallbacks {
-  PacmanWorld({
-    required this.level,
-    required this.playerProgress,
-    Random? random,
-  });
-
-  /// The properties of the current level.
-  final GameLevel level;
-
-  /// Used to see what the current progress of the player is and to update the
-  /// progress if a level is finished.
-  final PlayerProgress playerProgress;
-
+    with HasGameReference<PacmanGame>, DragCallbacks {
   final WrapperNoEvents noEventsWrapper = WrapperNoEvents();
   final PelletWrapper pellets = PelletWrapper();
   final WallWrapper walls = WallWrapper();
@@ -61,7 +43,7 @@ class PacmanWorld extends Forge2DWorld
 
   bool get gameWonOrLost =>
       pellets.pelletsRemainingNotifier.value <= 0 ||
-      space.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
+      space.numberOfDeathsNotifier.value >= game.level.maxAllowedDeaths;
 
   double get everythingScale =>
       space.ship.scaledRadius / neutralShipRadius * 30 / flameGameZoom;
@@ -101,7 +83,7 @@ class PacmanWorld extends Forge2DWorld
     game.audioController.stopSfx(SfxType.ghostsScared);
 
     if (!firstRun) {
-      for (WrapperNoEvents wrapper in wrappers) {
+      for (final WrapperNoEvents wrapper in wrappers) {
         assert(wrapper.isLoaded);
         wrapper.reset();
       }
@@ -112,7 +94,7 @@ class PacmanWorld extends Forge2DWorld
 
   void start() {
     play(SfxType.startMusic);
-    for (WrapperNoEvents wrapper in wrappers) {
+    for (final WrapperNoEvents wrapper in wrappers) {
       wrapper.start();
     }
   }
@@ -207,7 +189,8 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  late final double _levelSpeed = 0.5 * 0.5 * pow(1.1, level.number).toDouble();
+  late final double _levelSpeed =
+      0.5 * 0.5 * pow(1.1, game.level.number).toDouble();
   final Vector2 direction = Vector2.zero();
 
   final Vector2 _tmpGravity = Vector2.zero();
