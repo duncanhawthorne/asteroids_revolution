@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../google/google.dart';
 import '../../settings/settings.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
@@ -45,22 +44,17 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
     spacing: _widgetSpacing,
     children: <Widget>[
       _mainMenuButtonWidget(context, game),
-      game.level.isTutorial
-          ? const SizedBox.shrink()
-          : g.loginLogoutWidget(context, gIconSize, Palette.textColor),
     ],
   );
 }
 
 Widget _topRightWidget(BuildContext context, PacmanGame game) {
-  return Row(
+  return const Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.end,
     mainAxisSize: MainAxisSize.min,
     spacing: _widgetSpacing,
-    children: <Widget>[
-      _pelletsCounterWidget(game),
-    ],
+    children: <Widget>[],
   );
 }
 
@@ -90,6 +84,7 @@ Widget _clockWidget(PacmanGame game) {
   );
 }
 
+// ignore: unused_element
 Widget _pelletsCounterWidget(PacmanGame game) {
   return ValueListenableBuilder<int>(
     valueListenable: game.world.pellets.pelletsRemainingNotifier,
