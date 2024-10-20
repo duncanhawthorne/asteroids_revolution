@@ -18,21 +18,23 @@ class CameraWrapper extends WrapperNoEvents
   @override
   final int priority = -100;
 
-  double get zoom => game.camera.viewfinder.zoom;
-  set zoom(double z) => game.camera.viewfinder.zoom = z;
+  double debugFakeZoom = 1;
+
+  double get zoom =>
+      _kAutoZoomingCamera ? game.camera.viewfinder.zoom : debugFakeZoom;
+  set zoom(double z) =>
+      _kAutoZoomingCamera ? game.camera.viewfinder.zoom = z : debugFakeZoom = z;
 
   @override
   void reset() {
     fixSpaceDots();
 
-    if (_kAutoZoomingCamera) {
-      zoom = _optimalZoom;
-    }
+    zoom = _optimalZoom;
   }
 
   double get _optimalZoom => 30 / world.everythingScale;
 
-  double get overZoomError => !_kAutoZoomingCamera ? 1 : zoom / _optimalZoom;
+  double get overZoomError => zoom / _optimalZoom;
 
   Ship get ship => world.space.ship;
 
@@ -68,10 +70,8 @@ class CameraWrapper extends WrapperNoEvents
 
   @override
   Future<void> update(double dt) async {
-    if (_kAutoZoomingCamera) {
-      if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
-        zoom *= pow(1 / overZoomError, dt / 30);
-      }
+    if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
+      zoom *= pow(1 / overZoomError, dt / 30);
     }
   }
 }

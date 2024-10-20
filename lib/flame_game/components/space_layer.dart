@@ -15,6 +15,7 @@ import 'bullet.dart';
 import 'bullet_layer.dart';
 import 'camera_layer.dart';
 import 'cherry.dart';
+import 'debug_circle.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'rock_layer.dart';
@@ -71,19 +72,22 @@ class SpaceWrapper extends WrapperNoEvents
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
   Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
+  double get visibleUniverseRadius =>
+      max(game.size.y, game.size.x) / 2 / _cameraManager.zoom;
+
   double get mappedUniverseRadius =>
       maze.mazeWidth *
       flameGameZoom /
       30 *
       _kHubbleLimitMult *
       ship.radius /
-      min(1, _cameraManager.overZoomError);
+      _cameraManager.overZoomError;
 
-  double get _fullUniverseRadius =>
+  double get fullUniverseRadius =>
       mappedUniverseRadius * (1 + _twilightZoneWidth);
 
   bool isOutsideFullUniverse(Vector2 target) {
-    return target.distanceTo(ship.position) > _fullUniverseRadius;
+    return target.distanceTo(ship.position) > fullUniverseRadius;
   }
 
   static const double _twilightZoneWidth = 0.3;
@@ -234,6 +238,11 @@ class SpaceWrapper extends WrapperNoEvents
     add(bullets);
     add(rocks);
     add(world.walls);
+    if (kDebugMode) {
+      add(DebugCircle(type: "full")); //full universe
+      add(DebugCircle(type: "mapped")); //mapped universe
+      add(DebugCircle(type: "visible")); //visible universe
+    }
     reset();
   }
 }
