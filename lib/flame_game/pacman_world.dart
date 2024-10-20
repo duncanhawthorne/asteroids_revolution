@@ -189,18 +189,15 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  late final double _levelSpeed =
-      0.5 * 0.5 * pow(1.1, game.level.number).toDouble();
   final Vector2 direction = Vector2.zero();
 
   final Vector2 _tmpGravity = Vector2.zero();
-  late final double _gravityScale = 50 * _levelSpeed;
   void _setMazeAngle(double angle) {
     //using tmpGravity to avoid creating a new Vector2 on each update / frame
     //could instead directly do gravity = Vector2(calc, calc);
     _tmpGravity
-      ..x = -sin(angle) * _gravityScale
-      ..y = cos(angle) * _gravityScale;
+      ..x = -sin(angle) * game.level.levelSpeed
+      ..y = cos(angle) * game.level.levelSpeed;
     direction.setFrom(_tmpGravity);
     //gravity = _tmpGravity;
     game.camera.viewfinder.angle = angle;
