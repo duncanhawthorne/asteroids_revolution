@@ -82,7 +82,7 @@ Widget levelSelectorReal(BuildContext context, PacmanGame game) {
     child: Column(
         spacing: 8,
         children: List<Widget>.generate(
-            maxLevelToShowCache ~/ 5 + 1,
+            0,
             (int rowIndex) => levelSelectorRow(
                 context, game, maxLevelToShowCache, rowIndex))),
   );
