@@ -90,24 +90,22 @@ Widget levelSelectorReal(BuildContext context, PacmanGame game) {
 
 Widget levelSelectorRow(BuildContext context, PacmanGame game,
     int maxLevelToShowCache, int rowIndex) {
-  const bool showTutorialButton = false;
-  final bool showResetButton =
-      playerProgress.maxLevelCompleted >= Levels.firstRealLevel;
+  final bool showResetButton = maxLevelToShow(game) > Levels.firstRealLevel;
   return Row(spacing: 4, children: <Widget>[
     showResetButton && rowIndex == 0
         ? resetWidget(context, game)
         : const SizedBox.shrink(),
-    showTutorialButton && rowIndex == 0
-        ? levelButtonSingle(context, game, 0)
-        : const SizedBox.shrink(),
     ...List<Widget>.generate(
-        min(5, maxLevelToShowCache - rowIndex * 5),
+        max(0, min(5, maxLevelToShowCache - rowIndex * 5 + 5)),
         (int colIndex) =>
             levelButtonSingle(context, game, rowIndex * 5 + colIndex + 1))
   ]);
 }
 
 Widget levelButtonSingle(BuildContext context, PacmanGame game, int levelNum) {
+  if (levelNum < Levels.min || levelNum > Levels.max) {
+    return const SizedBox.shrink();
+  }
   final GameLevel level = levels.getLevel(levelNum);
   final int fixedMazeId = !level.isTutorial && maze.isTutorial
       ? Maze.defaultMazeId
@@ -123,11 +121,7 @@ Widget levelButtonSingle(BuildContext context, PacmanGame game, int levelNum) {
             '/?$levelUrlKey=$levelNum&$mazeUrlKey=${mazeNames[fixedMazeId]}');
       },
       child: Text(
-          level.isTutorial
-              ? (maxLevelToShow(game) == Levels.tutorialLevelNum
-                  ? "Tutorial"
-                  : "T")
-              : '$levelNum',
+          maxLevelToShow(game) == Levels.min ? "Tutorial" : level.levelString,
           style: playerProgress.isComplete(levelNum)
               ? textStyleBody
               : textStyleBodyDull));
@@ -187,13 +181,9 @@ Widget mazeButtonSingle(BuildContext context, PacmanGame game, int mazeId) {
 }
 
 int maxLevelToShow(PacmanGame game) {
-  return <int>[
-    game.level.number,
-    maze.isTutorial || maze.isDefault
-        ? Levels.tutorialLevelNum - 1 //no effect to max
-        : Levels.firstRealLevel + 1, //at least something
-    playerProgress.maxLevelCompleted + 1
-  ].reduce(max).clamp(0, Levels.max);
+  return <int>[game.level.number, playerProgress.maxLevelCompleted + 1]
+      .reduce(max)
+      .clamp(Levels.min, Levels.max);
 }
 
 Widget rotatedTitle() {

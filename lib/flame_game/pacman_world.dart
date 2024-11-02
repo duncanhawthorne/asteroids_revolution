@@ -196,8 +196,8 @@ class PacmanWorld extends Forge2DWorld
     //using tmpGravity to avoid creating a new Vector2 on each update / frame
     //could instead directly do gravity = Vector2(calc, calc);
     _tmpGravity
-      ..x = -sin(angle) * game.level.levelSpeed
-      ..y = cos(angle) * game.level.levelSpeed;
+      ..setValues(-sin(angle), cos(angle))
+      ..scale(game.level.levelSpeed);
     direction.setFrom(_tmpGravity);
     //gravity = _tmpGravity;
     game.camera.viewfinder.angle = angle;

@@ -139,7 +139,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       if (world.pellets.pelletsRemainingNotifier.value == 0) {
         world.resetAfterGameWin();
         stopwatch.pause();
-        if (stopwatchMilliSeconds > 0 * 1000) {
+        if (stopwatchMilliSeconds > 0 * 1000 && !level.isTutorial) {
           fBase.firebasePushSingleScore(_userString, _getCurrentGameState());
         }
         playerProgress.saveLevelComplete(_getCurrentGameState());
