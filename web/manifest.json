@@ -1,11 +1,11 @@
 {
-    "name": "Snake LOOP",
-    "short_name": "Snake LOOP",
+    "name": "Asteroids Revolution",
+    "short_name": "Asteroids Revolution",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#222222",
     "theme_color": "#222222",
-    "description": "Snake LOOP",
+    "description": "Asteroids Revolution",
     "prefer_related_applications": false,
     "icons": [
         {
