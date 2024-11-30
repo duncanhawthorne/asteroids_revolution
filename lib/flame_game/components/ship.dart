@@ -178,23 +178,26 @@ class Ship extends SpaceBody with CollisionCallbacks {
     setHealth(1);
   }
 
-  bool last_accelerating = false;
+  bool lastAccelerating = false;
   @override
   Future<void> update(double dt) async {
     angle = -atan2(world.direction.x, world.direction.y);
-    if (accelerating != last_accelerating) {
-      last_accelerating = accelerating;
+    if (accelerating != lastAccelerating) {
+      lastAccelerating = accelerating;
       if (accelerating) {
         sprite?.sprite = shipSpriteFlame;
         //add(flameDot);
-        acceleration
-          ..setFrom(world.direction)
-          ..scale(-radius); //* 1.4
       } else {
         //flameDot.removeFromParent();
         sprite?.sprite = shipSprite;
-        acceleration.setAll(0);
       }
+    }
+    if (accelerating) {
+      acceleration
+        ..setFrom(world.direction)
+        ..scale(-radius); //* 1.4
+    } else {
+      acceleration.setAll(0);
     }
     multiGunTimer.update(dt);
     if (multiGunTimer.finished) {

@@ -16,6 +16,7 @@ class Palette {
   static const Color textColor = _white;
   static const MaterialColor dullColor = _grey;
   static const MaterialAccentColor pacmanColor = _yellow;
+  static const Color dotsColor = Color(0xFF2D2D58);
 
   static const MaterialAccentColor _yellow = Colors.yellowAccent;
   static const Color _black = Color(0xff000000);

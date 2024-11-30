@@ -25,7 +25,7 @@ class SpaceDotWrapper extends PositionComponent
   int orderMagnitude;
   double roundingUnscaled = -1; //maze.mazeAcross
 
-  void setScale() {
+  void _setScale() {
     scale = Vector2.all(pow(_kOrderBase, orderMagnitude).toDouble());
   }
 
@@ -33,15 +33,14 @@ class SpaceDotWrapper extends PositionComponent
       {required int newOrderMagnitude, required Vector2 shipPosition}) {
     if (newOrderMagnitude != orderMagnitude) {
       orderMagnitude = newOrderMagnitude;
-      setScale();
+      _setScale();
     }
 
     final double roundingScaled =
         maze.blockWidth * pow(_kOrderBase, orderMagnitude);
-    final Vector2 centerPos = Vector2(
+    position.setValues(
         ((shipPosition.x / roundingScaled).round()) * roundingScaled,
         ((shipPosition.y / roundingScaled).round()) * roundingScaled);
-    position.setFrom(centerPos);
   }
 
   void reset() {
@@ -53,14 +52,14 @@ class SpaceDotWrapper extends PositionComponent
         final Vector2 dotPos = Vector2(
             ((0 / roundingUnscaled).round() + i) * roundingUnscaled,
             ((0 / roundingUnscaled).round() + j) * roundingUnscaled);
-        final SpaceDot newDot = RecycledSpaceDot(
+        final SpaceDot newDot = SpaceDot(
             position: dotPos,
             width: roundingUnscaled * 0.05,
             height: roundingUnscaled * 0.05);
         add(newDot);
       }
     }
-    setScale();
+    _setScale();
   }
 
   @override

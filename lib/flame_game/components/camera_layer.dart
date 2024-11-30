@@ -40,21 +40,20 @@ class CameraWrapper extends WrapperNoEvents
 
   bool get tooZoomedOut => overZoomError < 0.75;
 
-  SpaceDotWrapper smallDots = SpaceDotWrapper(
+  final SpaceDotWrapper _smallDots = SpaceDotWrapper(
       position: Vector2(0, 0), orderMagnitude: 0, fullGrid: true);
-  SpaceDotWrapper bigDot = SpaceDotWrapper(
+  final SpaceDotWrapper _bigDot = SpaceDotWrapper(
       position: Vector2(0, 0), orderMagnitude: 1, fullGrid: false);
 
   int get _zoomOrderOfMagnitude => logOrder(1 / zoom * 75).floor();
 
   void fixSpaceDots() {
-    smallDots.tidyUpdate(
+    _smallDots.tidyUpdate(
         newOrderMagnitude: _zoomOrderOfMagnitude + 0,
         shipPosition: ship.position);
-    bigDot.tidyUpdate(
+    _bigDot.tidyUpdate(
         newOrderMagnitude: _zoomOrderOfMagnitude + 1,
         shipPosition: ship.position);
-    return;
   }
 
   @override
@@ -63,8 +62,8 @@ class CameraWrapper extends WrapperNoEvents
     if (!kDebugMode || _kPanTrackingCamera) {
       game.camera.follow(ship);
     }
-    add(smallDots);
-    add(bigDot);
+    add(_smallDots);
+    add(_bigDot);
     reset();
   }
 
