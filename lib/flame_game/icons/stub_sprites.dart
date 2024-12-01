@@ -31,4 +31,4 @@ class StubSprites {
 
 StubSprites stubSprites = StubSprites();
 
-enum CharacterState { normal, scared, scaredIsh, eating, dead, spawning }
+enum CharacterState { normal, accelerating }

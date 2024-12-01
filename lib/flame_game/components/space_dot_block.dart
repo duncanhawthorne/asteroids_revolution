@@ -7,8 +7,9 @@ import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'space_dot.dart';
 
-int _kOrderBase = maze.mazeAcross; //number of dot in grid
-double logOrder(num x) => log(x) / log(_kOrderBase);
+const int _kOrderBase = 5; //maze.mazeAcross; //number of dot in grid
+final double logkOrderBase = log(_kOrderBase);
+double logOrder(num x) => log(x) / logkOrderBase;
 
 class SpaceDotWrapper extends PositionComponent
     with

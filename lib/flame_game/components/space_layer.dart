@@ -237,7 +237,7 @@ class SpaceWrapper extends WrapperNoEvents
     add(_cameraManager);
     add(bullets);
     add(rocks);
-    add(world.walls);
+    //add(world.walls);
     if (kDebugMode) {
       add(DebugCircle(type: "full")); //full universe
       add(DebugCircle(type: "mapped")); //mapped universe

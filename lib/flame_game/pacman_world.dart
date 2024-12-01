@@ -117,7 +117,7 @@ class PacmanWorld extends Forge2DWorld
     super.onDragStart(event);
     if (event.canvasPosition.y > game.canvasSize.y * 3 / 4 &&
         event.canvasPosition.x < game.canvasSize.x * 1 / 2) {
-      space.ship.accelerating = true;
+      space.ship.accel(true);
       _boostFingers[event.pointerId] = true;
       game.resumeGame();
       _moveMazeAngleByDelta(0); //to start timer
@@ -168,7 +168,7 @@ class PacmanWorld extends Forge2DWorld
     super.onDragEnd(event);
 
     if (_boostFingers.containsKey(event.pointerId)) {
-      space.ship.accelerating = false;
+      space.ship.accel(false);
       return;
     }
 

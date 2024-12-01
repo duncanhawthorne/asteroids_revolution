@@ -1,23 +1,20 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
+import 'package:flutter/foundation.dart';
 
-import '../../style/palette.dart';
+import '../icons/stub_sprites.dart';
 import '../maze.dart';
+import '../pacman_game.dart';
 import 'alien.dart';
 import 'bullet.dart';
 import 'cherry.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
-import 'space_layer.dart';
 import 'wall.dart';
-
-final Paint _wallBackgroundPaint = Paint()..color = Palette.background.color;
-final Paint _transparentPaint = Paint()..color = Palette.transp.color;
 
 final double neutralShipRadius =
     maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
@@ -26,9 +23,11 @@ double defaultShipRadius = neutralShipRadius / 18;
 
 class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})
-      : super(
-            paint: _transparentPaint, //
-            radius: defaultShipRadius);
+      : super(radius: defaultShipRadius);
+
+  @override
+  // ignore: overridden_fields
+  bool renderShape = false;
 
   bool accelerating = false;
   @override
@@ -84,18 +83,17 @@ class Ship extends SpaceBody with CollisionCallbacks {
     period: 0.15,
   );
 
-  late final CircleComponent gunDot = CircleComponent(
-      radius: 1,
-      anchor: Anchor.center,
-      paint: _wallBackgroundPaint,
-      position: Vector2(1, 1));
-
-  late final CircleComponent flameDot = CircleComponent(
-      radius: 1,
-      anchor: Anchor.center,
-      paint: seedPaint,
-      position: Vector2(1, 1))
-    ..scale = Vector2(2, 5);
+  bool lastAccelerating = false;
+  void accel(bool on) {
+    if (on) {
+      accelerating = true;
+      shipSprite.current = CharacterState.accelerating;
+    } else {
+      accelerating = false;
+      shipSprite.current = CharacterState.normal;
+    }
+    lastAccelerating = accelerating;
+  }
 
   @override
   void setSize(double h) {
@@ -103,16 +101,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
       world.space.updateAllRockOpacities();
     }
     super.setSize(h);
-    gunDot.radius = radius / 4;
-    gunDot.position
-      ..x = radius
-      ..y = radius / 4;
-    flameDot.radius = radius / 4;
-    flameDot.position
-      ..x = radius
-      ..y = radius * 8 / 4;
-    sprite?.position.setAll(radius);
-    sprite?.size.setAll(radius * 2);
+    shipSprite.position.setAll(radius);
+    shipSprite.size.setAll(radius * 2);
   }
 
   @override
@@ -145,28 +135,14 @@ class Ship extends SpaceBody with CollisionCallbacks {
       ..start();
   }
 
-  SpriteComponent? sprite;
-  Sprite? shipSprite;
-  Sprite? shipSpriteFlame;
+  ShipSpriteComponent shipSprite = ShipSpriteComponent();
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     hitbox.collisionType = CollisionType.active;
-    //add(gunDot);
-
     world.space.bullets.add(gun);
-
-    shipSprite = await Sprite.load("ship.png");
-    shipSpriteFlame = await Sprite.load("ship_flame.png");
-    sprite = SpriteComponent(
-        sprite: shipSprite,
-        angle: -tau / 4,
-        anchor: Anchor.center,
-        position: Vector2.all(radius),
-        size: Vector2.all(radius * 2));
-    add(sprite!);
-
+    add(shipSprite);
     reset();
   }
 
@@ -178,20 +154,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
     setHealth(1);
   }
 
-  bool lastAccelerating = false;
   @override
   Future<void> update(double dt) async {
     angle = -atan2(world.direction.x, world.direction.y);
-    if (accelerating != lastAccelerating) {
-      lastAccelerating = accelerating;
-      if (accelerating) {
-        sprite?.sprite = shipSpriteFlame;
-        //add(flameDot);
-      } else {
-        //flameDot.removeFromParent();
-        sprite?.sprite = shipSprite;
-      }
-    }
     if (accelerating) {
       acceleration
         ..setFrom(world.direction)
@@ -237,5 +202,42 @@ class Ship extends SpaceBody with CollisionCallbacks {
       addMultiGun();
       other.removeFromParent();
     }
+  }
+}
+
+class ShipSpriteComponent extends SpriteAnimationGroupComponent<CharacterState>
+    with HasGameReference<PacmanGame>, IgnoreEvents {
+  ShipSpriteComponent({super.position, super.priority = 1})
+      : super(anchor: Anchor.center);
+
+  void loadStubAnimationsOnDebugMode() {
+    // works around changes made in flame 1.19
+    // where animations have to be loaded before can set current
+    // only fails due to assert, which is only tested in debug mode
+    // so if in debug mode, quickly load up stub animations first
+    // https://github.com/flame-engine/flame/pull/3258
+    if (kDebugMode) {
+      animations = stubSprites.stubAnimation;
+    }
+  }
+
+  Future<Map<CharacterState, SpriteAnimation>?> getAnimations() async {
+    return <CharacterState, SpriteAnimation>{
+      CharacterState.normal: SpriteAnimation.spriteList(
+        <Sprite>[await game.loadSprite("ship.png")],
+        stepTime: double.infinity,
+      ),
+      CharacterState.accelerating: SpriteAnimation.spriteList(
+        <Sprite>[await game.loadSprite('ship_flame.png')],
+        stepTime: double.infinity,
+      ),
+    };
+  }
+
+  @override
+  Future<void> onLoad() async {
+    loadStubAnimationsOnDebugMode();
+    animations = await getAnimations();
+    angle = -tau / 4;
   }
 }
