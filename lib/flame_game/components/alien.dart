@@ -44,7 +44,7 @@ class Alien extends SpaceBody {
   Future<void> onLoad() async {
     await super.onLoad();
     add(hole);
-    hitbox.collisionType = CollisionType.passive;
+    hitBox.collisionType = CollisionType.passive;
   }
 
   final Vector2 _oneTimeGoal = Vector2(0, 0);

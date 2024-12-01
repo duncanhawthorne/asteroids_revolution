@@ -25,7 +25,7 @@ import 'wrapper_no_events.dart';
 
 final Paint seedPaint = Paint()..color = Palette.seed.color;
 
-const double _kHubbleLimitMult = 1.6;
+const double _kHubbleLimitMult = 0.7;
 
 class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
@@ -56,7 +56,7 @@ class SpaceWrapper extends WrapperNoEvents
       world.everythingScale / _cameraManager.overZoomError;
 
   final int _visibleRockLimit = (30 * pow(_kHubbleLimitMult, 2)).floor();
-  late final int _transparentrockLimit = _visibleRockLimit ~/ 20;
+  late final int _transparentRockLimit = _visibleRockLimit ~/ 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6 / 2;
   static const int _alienLimit = kDebugMode ? 0 : 1; //1;
   static const int _cherryLimit = 4;
@@ -85,6 +85,10 @@ class SpaceWrapper extends WrapperNoEvents
 
   double get fullUniverseRadius =>
       mappedUniverseRadius * (1 + _twilightZoneWidth);
+
+  bool isOutsideMappedUniverse(Vector2 target) {
+    return target.distanceTo(ship.position) > mappedUniverseRadius;
+  }
 
   bool isOutsideFullUniverse(Vector2 target) {
     return target.distanceTo(ship.position) > fullUniverseRadius;
@@ -160,7 +164,7 @@ class SpaceWrapper extends WrapperNoEvents
   }
 
   void addSmallRocksOnDamage() {
-    for (int i = 0; i < _transparentrockLimit - _transparentRocks.length; i++) {
+    for (int i = 0; i < _transparentRockLimit - _transparentRocks.length; i++) {
       rocks.add(RecycledRock(
           position: _randomPositionInMappedUniverse(),
           velocity:

@@ -46,7 +46,7 @@ class PacmanWorld extends Forge2DWorld
       space.numberOfDeathsNotifier.value >= game.level.maxAllowedDeaths;
 
   double get everythingScale =>
-      space.ship.scaledRadius / neutralShipRadius * 30 / flameGameZoom;
+      space.ship.radius / neutralShipRadius * 30 / flameGameZoom;
 
   final Map<int, double?> _fingersLastDragAngle = <int, double?>{};
 

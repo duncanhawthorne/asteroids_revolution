@@ -121,9 +121,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
     }
 
     //i-frames
-    hitbox.collisionType = CollisionType.inactive;
+    hitBox.collisionType = CollisionType.inactive;
     Future<void>.delayed(const Duration(milliseconds: 250), () {
-      hitbox.collisionType = CollisionType.active;
+      hitBox.collisionType = CollisionType.active;
     });
   }
 
@@ -140,7 +140,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    hitbox.collisionType = CollisionType.active;
+    hitBox.collisionType = CollisionType.active;
     world.space.bullets.add(gun);
     add(shipSprite);
     reset();

@@ -14,7 +14,17 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    hitbox.collisionType = CollisionType.active;
+    hitBox.collisionType = CollisionType.active;
+  }
+
+  @override
+  Future<void> update(double dt) async {
+    if (isOutsideMappedUniverse) {
+      //as doing collision detection on bullets
+      //more efficient to test this each frame to remove asap
+      removeFromParent();
+    }
+    await super.update(dt);
   }
 
   @override

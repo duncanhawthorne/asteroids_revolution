@@ -23,7 +23,7 @@ class SpaceBody extends CircleComponent
     this.velocity.setFrom(velocity);
   }
 
-  late final CircleHitbox hitbox = CircleHitbox(
+  late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
     collisionType: CollisionType.passive,
     anchor: Anchor.center,
@@ -54,12 +54,14 @@ class SpaceBody extends CircleComponent
   }
 
   bool get isOutsideFullUniverse => world.space.isOutsideFullUniverse(position);
+  bool get isOutsideMappedUniverse =>
+      world.space.isOutsideMappedUniverse(position);
 
   @mustCallSuper
   void setSize(double h) {
     radius = h;
-    hitbox.position.setAll(radius);
-    hitbox.radius = radius;
+    hitBox.position.setAll(radius);
+    hitBox.radius = radius;
   }
 
   @mustCallSuper
@@ -81,7 +83,7 @@ class SpaceBody extends CircleComponent
       fixVelocityTowardsCenter();
     }
     setHealth(1);
-    add(hitbox);
+    add(hitBox);
     setSize(radius); //FIXME fixes hitboxes
   }
 
