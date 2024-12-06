@@ -19,7 +19,7 @@ import 'wall.dart';
 final double neutralShipRadius =
     maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
 
-double defaultShipRadius = neutralShipRadius / 18;
+double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
 class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})

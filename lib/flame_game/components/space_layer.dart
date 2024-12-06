@@ -72,10 +72,10 @@ class SpaceWrapper extends WrapperNoEvents
   Iterable<Cherry> get _cherries => children.whereType<Cherry>();
   Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
-  double get visibleUniverseRadius =>
+  double get _visibleUniverseRadius =>
       max(game.size.y, game.size.x) / 2 / _cameraManager.zoom;
 
-  double get mappedUniverseRadius =>
+  double get _mappedUniverseRadius =>
       maze.mazeWidth *
       flameGameZoom /
       30 *
@@ -84,10 +84,15 @@ class SpaceWrapper extends WrapperNoEvents
       _cameraManager.overZoomError *
       2;
 
-  double get fullUniverseRadius =>
+  double get _fullUniverseRadius =>
       mappedUniverseRadius * (1 + _twilightZoneWidth);
 
-  double get visiblePlusUniverseRadius => visibleUniverseRadius * 1.7;
+  double get _visiblePlusUniverseRadius => visibleUniverseRadius * 1.7;
+
+  double visibleUniverseRadius = 100000;
+  double mappedUniverseRadius = 100000;
+  double fullUniverseRadius = 100000;
+  double visiblePlusUniverseRadius = 100000;
 
   static const double _twilightZoneWidth = 0.3;
   Vector2 _randomPositionInTwilightZone() {
@@ -244,5 +249,15 @@ class SpaceWrapper extends WrapperNoEvents
       add(DebugCircle(type: "visible")); //visible universe
     }
     reset();
+  }
+
+  @override
+  Future<void> update(double dt) async {
+    super.update(dt);
+
+    visibleUniverseRadius = _visibleUniverseRadius;
+    mappedUniverseRadius = _mappedUniverseRadius;
+    fullUniverseRadius = _fullUniverseRadius;
+    visiblePlusUniverseRadius = _visiblePlusUniverseRadius;
   }
 }

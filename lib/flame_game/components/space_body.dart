@@ -1,6 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../pacman_game.dart';
 import '../pacman_world.dart';
@@ -55,8 +55,7 @@ class SpaceBody extends CircleComponent
     }
   }
 
-  bool get isOutsideVisiblePlusUniverseCache =>
-      distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
+  bool isOutsideVisiblePlusUniverseCache = false;
 
   @mustCallSuper
   void setSize(double h) {
@@ -87,6 +86,7 @@ class SpaceBody extends CircleComponent
     add(hitBox);
     setSize(radius); //FIXME fixes hitboxes
     distanceFromShipCache = 0;
+    isOutsideVisiblePlusUniverseCache = false;
   }
 
   @override
@@ -99,6 +99,8 @@ class SpaceBody extends CircleComponent
 
   void tidy() {
     distanceFromShipCache = position.distanceTo(ship.position);
+    isOutsideVisiblePlusUniverseCache =
+        distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
 
     if (cleanIfTiny) {
       if (isTiny) {
@@ -122,7 +124,9 @@ class SpaceBody extends CircleComponent
         dt = dtCache;
         dtCache = 0;
       }
-      renderShape = false;
+      if (!kDebugMode) {
+        renderShape = false;
+      }
     } else {
       if (!neverRender) {
         renderShape = true;
