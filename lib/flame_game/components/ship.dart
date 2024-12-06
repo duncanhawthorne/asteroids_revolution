@@ -27,6 +27,10 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   // ignore: overridden_fields
+  bool neverRender = true;
+
+  @override
+  // ignore: overridden_fields
   bool renderShape = false;
 
   bool accelerating = false;
@@ -238,6 +242,7 @@ class ShipSpriteComponent extends SpriteAnimationGroupComponent<CharacterState>
   Future<void> onLoad() async {
     loadStubAnimationsOnDebugMode();
     animations = await getAnimations();
+    current = CharacterState.normal;
     angle = -tau / 4;
   }
 }

@@ -19,7 +19,7 @@ class Bullet extends SpaceBody with CollisionCallbacks {
 
   @override
   Future<void> update(double dt) async {
-    if (isOutsideMappedUniverse) {
+    if (position.distanceTo(ship.position) > world.space.mappedUniverseRadius) {
       //as doing collision detection on bullets
       //more efficient to test this each frame to remove asap
       removeFromParent();

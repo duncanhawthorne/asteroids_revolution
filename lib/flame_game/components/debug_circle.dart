@@ -31,6 +31,8 @@ class DebugCircle extends CircleComponent
       paint = Paint()..color = Palette.warning.color;
     } else if (type == "full") {
       paint = Paint()..color = Palette.dull.color;
+    } else if (type == "visiblePlus") {
+      paint = Paint()..color = Palette.background.color;
     } else {
       paint = Paint()..color = Palette.pacman.color;
     }
@@ -43,6 +45,8 @@ class DebugCircle extends CircleComponent
       scale.setAll(world.space.mappedUniverseRadius);
     } else if (type == "full") {
       scale.setAll(world.space.fullUniverseRadius);
+    } else if (type == "visiblePlus") {
+      scale.setAll(world.space.visiblePlusUniverseRadius);
     } else {
       scale.setAll(world.space.visibleUniverseRadius);
     }

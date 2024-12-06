@@ -81,18 +81,13 @@ class SpaceWrapper extends WrapperNoEvents
       30 *
       _kHubbleLimitMult *
       ship.radius /
-      _cameraManager.overZoomError;
+      _cameraManager.overZoomError *
+      2;
 
   double get fullUniverseRadius =>
       mappedUniverseRadius * (1 + _twilightZoneWidth);
 
-  bool isOutsideMappedUniverse(Vector2 target) {
-    return target.distanceTo(ship.position) > mappedUniverseRadius;
-  }
-
-  bool isOutsideFullUniverse(Vector2 target) {
-    return target.distanceTo(ship.position) > fullUniverseRadius;
-  }
+  double get visiblePlusUniverseRadius => visibleUniverseRadius * 1.7;
 
   static const double _twilightZoneWidth = 0.3;
   Vector2 _randomPositionInTwilightZone() {
@@ -245,6 +240,7 @@ class SpaceWrapper extends WrapperNoEvents
     if (kDebugMode) {
       add(DebugCircle(type: "full")); //full universe
       add(DebugCircle(type: "mapped")); //mapped universe
+      add(DebugCircle(type: "visiblePlus")); //visible universe
       add(DebugCircle(type: "visible")); //visible universe
     }
     reset();

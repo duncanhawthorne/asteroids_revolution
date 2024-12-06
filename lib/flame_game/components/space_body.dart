@@ -38,6 +38,8 @@ class SpaceBody extends CircleComponent
   final bool canAccelerate = false;
   bool isActive = true; //do not in spareBits
 
+  bool neverRender = false;
+
   Ship get ship => world.space.ship;
 
   bool get isSmall => radius < ship.radius * greyThreshold;
@@ -53,9 +55,8 @@ class SpaceBody extends CircleComponent
     }
   }
 
-  bool get isOutsideFullUniverse => world.space.isOutsideFullUniverse(position);
-  bool get isOutsideMappedUniverse =>
-      world.space.isOutsideMappedUniverse(position);
+  bool get isOutsideVisiblePlusUniverseCache =>
+      distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
 
   @mustCallSuper
   void setSize(double h) {
@@ -85,6 +86,7 @@ class SpaceBody extends CircleComponent
     setHealth(1);
     add(hitBox);
     setSize(radius); //FIXME fixes hitboxes
+    distanceFromShipCache = 0;
   }
 
   @override
@@ -93,20 +95,39 @@ class SpaceBody extends CircleComponent
     reset();
   }
 
+  double distanceFromShipCache = 0;
+
   void tidy() {
+    distanceFromShipCache = position.distanceTo(ship.position);
+
     if (cleanIfTiny) {
       if (isTiny) {
         removeFromParent();
       }
     }
-    if (isOutsideFullUniverse) {
+    if (distanceFromShipCache > world.space.fullUniverseRadius) {
       removeFromParent();
     }
   }
 
+  double dtCache = 0;
   @override
   Future<void> update(double dt) async {
     super.update(dt);
+    if (isOutsideVisiblePlusUniverseCache) {
+      if (dtCache < 1) {
+        dtCache += dt;
+        return;
+      } else {
+        dt = dtCache;
+        dtCache = 0;
+      }
+      renderShape = false;
+    } else {
+      if (!neverRender) {
+        renderShape = true;
+      }
+    }
     if (canAccelerate) {
       velocity.addScaled(acceleration, dt);
     }
@@ -114,6 +135,7 @@ class SpaceBody extends CircleComponent
       velocity.scale(friction);
     }
     position.addScaled(velocity, dt);
+    distanceFromShipCache = position.distanceTo(ship.position);
   }
 
   @override
