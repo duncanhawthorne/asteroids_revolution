@@ -25,7 +25,7 @@ import 'wrapper_no_events.dart';
 
 final Paint seedPaint = Paint()..color = Palette.seed.color;
 
-const double _kHubbleLimitMult = 0.7;
+const double _kHubbleLimitMult = 1.4;
 
 class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
@@ -79,10 +79,9 @@ class SpaceWrapper extends WrapperNoEvents
       maze.mazeWidth *
       flameGameZoom /
       30 *
-      _kHubbleLimitMult *
       ship.radius /
       _cameraManager.overZoomError *
-      2;
+      _kHubbleLimitMult;
 
   double get _fullUniverseRadius =>
       mappedUniverseRadius * (1 + _twilightZoneWidth);
