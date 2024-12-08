@@ -200,7 +200,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     } else if (other is Heart) {
       other.removeFromParent();
       damage(-0.2);
-    } else if (other is MazeWallRectangleVisual) {
+    } else if (other is WallRectangleVisual) {
       velocity.scale(-1);
     } else if (other is Cherry) {
       addMultiGun();

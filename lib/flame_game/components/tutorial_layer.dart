@@ -5,22 +5,18 @@ import 'package:flame/components.dart';
 import '../../level_selection/levels.dart';
 import '../game_screen.dart';
 import '../pacman_game.dart';
-import '../pacman_world.dart';
 import 'wrapper_no_events.dart';
 
 class TutorialWrapper extends WrapperNoEvents
-    with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
-  @override
-  final int priority = 100;
-
+    with HasGameReference<PacmanGame> {
   bool _tutorialEverManuallyHidden = false;
-  static const Duration tutorialDelay = Duration(milliseconds: 3000);
+  static const Duration _tutorialDelay = Duration(milliseconds: 3000);
 
   @override
   void start() {
     return;
     // ignore: dead_code
-    Future<void>.delayed(tutorialDelay, () {
+    Future<void>.delayed(_tutorialDelay, () {
       if (!game.levelStarted &&
           !_tutorialEverManuallyHidden &&
           game.level.number == Levels.levelToShowInstructions) {

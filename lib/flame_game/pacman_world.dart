@@ -133,6 +133,7 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
+  final Vector2 _eventOffset = Vector2.zero();
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
@@ -142,18 +143,17 @@ class PacmanWorld extends Forge2DWorld
     }
 
     game.resumeGame();
-    final double eventVectorLengthProportion =
-        (event.canvasStartPosition - game.canvasSize / 2).length /
-            (min(game.canvasSize.x, game.canvasSize.y) / 2);
-    final double fingerCurrentDragAngle = atan2(
-        event.canvasStartPosition.x - game.canvasSize.x / 2,
+    _eventOffset.setValues(event.canvasStartPosition.x - game.canvasSize.x / 2,
         event.canvasStartPosition.y - game.canvasSize.y / 2);
+    final double eventVectorLengthProportion =
+        _eventOffset.length / (min(game.canvasSize.x, game.canvasSize.y) / 2);
+    final double fingerCurrentDragAngle = atan2(_eventOffset.x, _eventOffset.y);
     if (_fingersLastDragAngle.containsKey(event.pointerId)) {
       if (_fingersLastDragAngle[event.pointerId] != null) {
         final double angleDelta = smallAngle(
             fingerCurrentDragAngle - _fingersLastDragAngle[event.pointerId]!);
         const double maxSpinMultiplierRadius = 0.75;
-        final num spinMultiplier =
+        final double spinMultiplier =
             4 * min(1, eventVectorLengthProportion / maxSpinMultiplierRadius);
 
         _tutorial.hide();
@@ -192,14 +192,20 @@ class PacmanWorld extends Forge2DWorld
   final Vector2 direction = Vector2.zero();
 
   final Vector2 _tmpGravity = Vector2.zero();
+  double gravityXSign = 0;
+  double gravityYSign = 0;
   void _setMazeAngle(double angle) {
     //using tmpGravity to avoid creating a new Vector2 on each update / frame
     //could instead directly do gravity = Vector2(calc, calc);
     _tmpGravity
       ..setValues(-sin(angle), cos(angle))
       ..scale(game.level.levelSpeed);
+    /*
+    gravity = _tmpGravity;
+    gravityXSign = gravity.x.sign;
+    gravityYSign = gravity.y.sign;
+     */
     direction.setFrom(_tmpGravity);
-    //gravity = _tmpGravity;
     game.camera.viewfinder.angle = angle;
   }
 }
