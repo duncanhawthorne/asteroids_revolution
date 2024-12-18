@@ -8,6 +8,7 @@ import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../utils/src/workarounds.dart';
+import 'dialogs/begin_dialog.dart';
 import 'dialogs/game_lose_dialog.dart';
 import 'dialogs/game_overlays.dart';
 import 'dialogs/game_start_dialog.dart';
@@ -56,6 +57,7 @@ class GameScreen extends StatelessWidget {
   static const String startDialogKey = 'start_dialog';
   static const String tutorialDialogKey = 'tutorial_dialog';
   static const String resetDialogKey = 'reset_dialog';
+  static const String beginDialogKey = 'begin_dialog';
   static const String topOverlayKey = 'top_overlay';
 
   @override
@@ -68,37 +70,41 @@ class GameScreen extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(bottom: gestureInset()),
             child: Scaffold(
+                backgroundColor: Palette.background.color,
                 body: GameWidget<PacmanGame>(
-              key: const Key('play session'),
-              game: getGame(level: level, mazeId: mazeId, context: context),
-              overlayBuilderMap: <String, OverlayWidgetBuilder<PacmanGame>>{
-                topOverlayKey: (BuildContext context, PacmanGame game) {
-                  return topOverlayWidget(context, game);
-                },
-                loseDialogKey: (BuildContext context, PacmanGame game) {
-                  return GameLoseDialog(
-                    level: level,
-                    game: game,
-                  );
-                },
-                wonDialogKey: (BuildContext context, PacmanGame game) {
-                  return GameWonDialog(
-                      level: level,
-                      levelCompletedInMillis: game.stopwatchMilliSeconds,
-                      game: game);
-                },
-                startDialogKey: (BuildContext context, PacmanGame game) {
-                  return StartDialog(level: level, game: game);
-                },
-                tutorialDialogKey: (BuildContext context, PacmanGame game) {
-                  return TutorialDialog(game: game);
-                },
-                resetDialogKey: (BuildContext context, PacmanGame game) {
-                  return ResetDialog(game: game);
-                },
-              },
-              initialActiveOverlays: const <String>[topOverlayKey],
-            )),
+                  key: const Key('play session'),
+                  game: getGame(level: level, mazeId: mazeId, context: context),
+                  overlayBuilderMap: <String, OverlayWidgetBuilder<PacmanGame>>{
+                    topOverlayKey: (BuildContext context, PacmanGame game) {
+                      return topOverlayWidget(context, game);
+                    },
+                    loseDialogKey: (BuildContext context, PacmanGame game) {
+                      return GameLoseDialog(
+                        level: level,
+                        game: game,
+                      );
+                    },
+                    wonDialogKey: (BuildContext context, PacmanGame game) {
+                      return GameWonDialog(
+                          level: level,
+                          levelCompletedInMillis: game.stopwatchMilliSeconds,
+                          game: game);
+                    },
+                    startDialogKey: (BuildContext context, PacmanGame game) {
+                      return StartDialog(level: level, game: game);
+                    },
+                    tutorialDialogKey: (BuildContext context, PacmanGame game) {
+                      return TutorialDialog(game: game);
+                    },
+                    resetDialogKey: (BuildContext context, PacmanGame game) {
+                      return ResetDialog(game: game);
+                    },
+                    beginDialogKey: (BuildContext context, PacmanGame game) {
+                      return BeginDialog(game: game);
+                    },
+                  },
+                  initialActiveOverlays: const <String>[topOverlayKey],
+                )),
           ),
         ),
       ),

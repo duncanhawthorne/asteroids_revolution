@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/components.dart';
 
 import '../pacman_game.dart';
@@ -11,13 +13,13 @@ class BulletWrapper extends WrapperNoEvents
   final int priority = -1;
 
   @override
-  void reset() {
+  Future<void> reset() async {
     removeWhere((Component item) => item is Bullet);
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    reset();
+    unawaited(reset());
   }
 }

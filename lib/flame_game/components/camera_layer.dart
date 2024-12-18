@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -26,7 +27,7 @@ class CameraWrapper extends WrapperNoEvents
       _kAutoZoomingCamera ? game.camera.viewfinder.zoom = z : debugFakeZoom = z;
 
   @override
-  void reset() {
+  Future<void> reset() async {
     fixSpaceDots();
 
     zoom = _optimalZoom;
@@ -64,7 +65,7 @@ class CameraWrapper extends WrapperNoEvents
     }
     add(_smallDots);
     add(_bigDot);
-    reset();
+    unawaited(reset());
   }
 
   @override

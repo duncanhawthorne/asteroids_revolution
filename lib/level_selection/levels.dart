@@ -2,19 +2,34 @@ import 'dart:math';
 
 class Levels {
   static const int firstRealLevel = 1;
-  static const int min = 1;
-  static const int max = 15;
+  static const int minLevel = 1;
+  static const int maxLevel = 15;
   static const int levelToShowInstructions = defaultLevelNum;
-  static const int defaultLevelNum = min;
+  static const int playbackModeLevel = -4;
+  static const int defaultLevelNum = firstRealLevel;
 
   static const List<int> _ghostSpawnTimerLengthPattern = <int>[5, 3, 2, 1];
 
   static const double _levelSpeedFactor = 50;
 
+  double _tutorialFactor(int levelNum) {
+    return levelNum >= 1
+        ? 1
+        : levelNum == minLevel
+            ? 0.5
+            : 0.75;
+  }
+
   GameLevel getLevel(int levelNum) {
-    assert(levelNum <= max && levelNum >= min);
+    assert(levelNum <= maxLevel && levelNum >= minLevel ||
+        levelNum == playbackModeLevel);
+    bool playbackMode = false;
+    if (levelNum == playbackModeLevel) {
+      levelNum = firstRealLevel;
+      playbackMode = true;
+    }
     final GameLevel result = (
-      number: levelNum,
+      number: playbackMode ? playbackModeLevel : levelNum,
       maxAllowedDeaths: 1,
       superPelletsEnabled: levelNum <= 1 ? true : false,
       multipleSpawningGhosts: levelNum <= 2 ? false : true,
@@ -25,15 +40,17 @@ class Levels {
       homingGhosts:
           levelNum <= 2 + _ghostSpawnTimerLengthPattern.length ? false : true,
       isTutorial: levelNum <= 0,
+      levelSpeed: _levelSpeedFactor * 0.25 * pow(1.1, levelNum).toDouble(),
+      ghostScaredTimeFactor: _tutorialFactor(levelNum),
+      spinSpeedFactor: _tutorialFactor(levelNum),
       numStartingGhosts: levelNum >= 0
           ? 3
-          : levelNum == min
+          : levelNum == minLevel
               ? 1
               : (levelNum - 1) % 3 + 1,
       levelString:
-          levelNum > 0 ? levelNum.toString() : "T${(levelNum - 1) % 4}",
-      infLives: levelNum == min ? true : false,
-      levelSpeed: _levelSpeedFactor * 0.25 * pow(1.1, levelNum).toDouble()
+          levelNum > 0 ? levelNum.toString() : "L${levelNum - minLevel + 1}",
+      infLives: levelNum <= 0 ? true : false,
     );
     return result;
   }
@@ -50,6 +67,8 @@ typedef GameLevel = ({
   bool homingGhosts,
   bool isTutorial,
   double levelSpeed,
+  double ghostScaredTimeFactor,
+  double spinSpeedFactor,
   int numStartingGhosts,
   String levelString,
   bool infLives,

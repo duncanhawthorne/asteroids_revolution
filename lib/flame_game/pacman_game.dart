@@ -4,9 +4,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/camera.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
 
 import '../app_lifecycle/app_lifecycle.dart';
 import '../audio/audio_controller.dart';
@@ -14,7 +16,9 @@ import '../firebase/firebase_saves.dart';
 import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
+import '../utils/helper.dart';
 import '../utils/src/workarounds.dart';
+import '../utils/stored_moves.dart';
 import 'game_screen.dart';
 import 'maze.dart';
 import 'pacman_world.dart';
@@ -42,7 +46,7 @@ const double kVirtualGameSize = 1700; //determines speed of game
 class PacmanGame extends Forge2DGame<PacmanWorld>
     with
         // ignore: always_specify_types
-        HasCollisionDetection,
+        HasQuadTreeCollisionDetection,
         SingleGameInstance,
         HasTimeScale {
   PacmanGame({
@@ -76,16 +80,61 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   // ignore: unused_field
   static const int _deathPenaltyMillis = 5000;
   final Timer stopwatch = Timer(double.infinity);
-  int get stopwatchMilliSeconds => (stopwatch.current * 1000).toInt();
-  bool get levelStarted => stopwatchMilliSeconds > 0;
+  int get stopwatchMilliSeconds =>
+      (stopwatch.current * 1000).toInt() +
+      (level.isTutorial
+          ? 0
+          : min(level.maxAllowedDeaths - 1,
+                  world.space.numberOfDeathsNotifier.value) *
+              _deathPenaltyMillis);
 
-  bool get isGameLive =>
-      !paused &&
-      isLoaded &&
-      isMounted &&
-      !(overlays.isActive(GameScreen.startDialogKey) && !levelStarted);
+  bool stopwatchStarted = false;
+
+  bool get isLive => !paused && isLoaded && isMounted;
+
+  bool get openingScreenCleared =>
+      !(!stopwatchStarted && overlays.isActive(GameScreen.startDialogKey));
+
+  bool get isWonOrLost =>
+      world.pellets.pelletsRemainingNotifier.value <= 0 ||
+      world.space.numberOfDeathsNotifier.value >= level.maxAllowedDeaths;
 
   final Random random = Random();
+
+  late int playbackModeCounter;
+  bool playbackMode = false;
+
+  // ignore: dead_code
+  static const bool recordMode = false && kDebugMode;
+  List<List<double>> recordedMovesLive = <List<double>>[];
+
+  void recordAngle(double angle) {
+    if (recordMode && !playbackMode) {
+      recordedMovesLive
+          .add(<double>[(stopwatchMilliSeconds).toDouble(), angle]);
+      if (recordedMovesLive.length % 100 == 0) {
+        debug(recordedMovesLive);
+      }
+    }
+  }
+
+  void playbackAngles() {
+    if (playbackMode && isLive && _framesRendered > 30) {
+      // && isLive && overlays.isActive(GameScreen.startDialogKey)
+      if (playbackModeCounter == -1) {
+        playbackModeCounter++;
+        startRegularItems();
+      }
+      while (playbackModeCounter < storedMoves.length &&
+          stopwatchMilliSeconds > storedMoves[playbackModeCounter][0]) {
+        world.setMazeAngle(storedMoves[playbackModeCounter][1]);
+        playbackModeCounter++;
+      }
+      if (stopwatchMilliSeconds > 20000) {
+        reset(); //if stuck, reset
+      }
+    }
+  }
 
   @override
   Color backgroundColor() => Palette.background.color;
@@ -111,6 +160,15 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     resumeEngine();
   }
 
+  void startRegularItems() {
+    stopwatchStarted = true; //once per reset
+    stopwatch.resume();
+  }
+
+  void stopRegularItems() {
+    stopwatch.pause();
+  }
+
   void _lifecycleChangeListener() {
     appLifecycleStateNotifier.addListener(() {
       if (appLifecycleStateNotifier.value == AppLifecycleState.hidden) {
@@ -120,36 +178,45 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   }
 
   void _winOrLoseGameListener() {
-    assert(world.pellets.pelletsRemainingNotifier.value > 0 || !levelStarted);
+    assert(!stopwatchStarted); //so no instant trigger of listeners
     world.space.numberOfDeathsNotifier.addListener(() {
       if (world.space.numberOfDeathsNotifier.value >= level.maxAllowedDeaths &&
-          levelStarted) {
+          stopwatchStarted &&
+          !playbackMode) {
+        assert(isWonOrLost);
+        stopRegularItems();
         _handleLoseGame();
       }
     });
     world.pellets.pelletsRemainingNotifier.addListener(() {
-      if (world.pellets.pelletsRemainingNotifier.value == 0 && levelStarted) {
+      if (world.pellets.pelletsRemainingNotifier.value == 0 &&
+          stopwatchStarted &&
+          !playbackMode) {
+        assert(isWonOrLost);
+        stopRegularItems();
         _handleWinGame();
       }
     });
   }
 
   void _handleWinGame() {
-    if (isGameLive) {
-      if (world.pellets.pelletsRemainingNotifier.value == 0) {
-        world.resetAfterGameWin();
-        stopwatch.pause();
-        if (stopwatchMilliSeconds > 0 * 1000 && !level.isTutorial) {
-          fBase.firebasePushSingleScore(_userString, _getCurrentGameState());
-        }
-        playerProgress.saveLevelComplete(_getCurrentGameState());
-        cleanDialogs();
-        overlays.add(GameScreen.wonDialogKey);
+    assert(isWonOrLost);
+    assert(!stopwatch.isRunning());
+    assert(stopwatchStarted);
+    if (world.pellets.pelletsRemainingNotifier.value == 0) {
+      world.resetAfterGameWin();
+      if (stopwatchMilliSeconds > 0 * 1000 && !level.isTutorial) {
+        fBase.firebasePushSingleScore(_userString, _getCurrentGameState());
       }
+      playerProgress.saveLevelComplete(_getCurrentGameState());
+      cleanDialogs();
+      overlays.add(GameScreen.wonDialogKey);
     }
   }
 
   void _handleLoseGame() {
+    assert(isWonOrLost);
+    assert(stopwatchStarted);
     audioController.stopAllSfx();
     cleanDialogs();
     overlays.add(GameScreen.loseDialogKey);
@@ -181,18 +248,26 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   }
 
   void reset({bool firstRun = false, bool showStartDialog = false}) {
+    playbackModeCounter = -1;
+    playbackMode = !recordMode && level.number == Levels.playbackModeLevel;
+    recordedMovesLive.clear();
     _userString = _getRandomString(random, 15);
     cleanDialogs();
     if (showStartDialog) {
-      overlays.add(GameScreen.startDialogKey);
+      playbackMode
+          ? overlays.add(GameScreen.beginDialogKey)
+          : overlays.add(GameScreen.startDialogKey);
     }
+    stopRegularItems(); //duplicates other items, belt and braces only
     stopwatch
       ..pause()
       ..reset();
+    stopwatchStarted = false;
     if (!firstRun) {
       assert(world.isLoaded);
       world.reset();
     }
+    collisionDetection.broadphase.tree.optimize();
   }
 
   void resetAndStart() {
@@ -212,6 +287,9 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     async.Timer.periodic(const Duration(milliseconds: 10), (async.Timer timer) {
       if (paused) {
         //already paused, no further action required, just cancel timer
+        timer.cancel();
+      } else if (playbackMode) {
+        //want to continue playback in playbackMode
         timer.cancel();
       } else if (stopwatch.isRunning()) {
         //some game activity has happened, no need to pause, just cancel timer
@@ -239,8 +317,11 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   Future<void> onLoad() async {
     super.onLoad();
     _bugFixes();
-    reset(firstRun: true);
-
+    initializeCollisionDetection(
+      mapDimensions: Rect.fromLTWH(-maze.mazeWidth / 2, -maze.mazeHeight / 2,
+          maze.mazeWidth, maze.mazeHeight),
+    ); //assume maze size won't change
+    reset(firstRun: true, showStartDialog: true);
     _winOrLoseGameListener(); //isn't disposed so run once, not on start()
     _lifecycleChangeListener(); //isn't disposed so run once, not on start()
   }
@@ -249,6 +330,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   void update(double dt) {
     stopwatch.update(dt * timeScale); //stops stopwatch when timeScale = 0
     _framesRendered++;
+    playbackAngles();
     super.update(dt);
   }
 

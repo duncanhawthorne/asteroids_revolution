@@ -47,7 +47,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
   Vector2 fBulletVelocity() {
     _oneTimeVelocity
-      ..setFrom(world.direction)
+      ..setFrom(world.downDirection)
       ..scale(-2 * radius)
       ..add(velocity);
     return _oneTimeVelocity;
@@ -160,10 +160,10 @@ class Ship extends SpaceBody with CollisionCallbacks {
 
   @override
   Future<void> update(double dt) async {
-    angle = -atan2(world.direction.x, world.direction.y);
+    angle = -atan2(world.downDirection.x, world.downDirection.y);
     if (accelerating) {
       acceleration
-        ..setFrom(world.direction)
+        ..setFrom(world.downDirection)
         ..scale(-radius); //* 1.4
     } else {
       acceleration.setAll(0);

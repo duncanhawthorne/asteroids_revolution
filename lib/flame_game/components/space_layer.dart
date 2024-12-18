@@ -111,15 +111,15 @@ class SpaceWrapper extends WrapperNoEvents
   }
 
   @override
-  void reset() {
+  Future<void> reset() async {
     removeWhere((Component item) => item is Heart);
     removeWhere((Component item) => item is Cherry);
     removeWhere((Component item) => item is Alien);
 
     ship.reset();
-    _cameraManager.reset();
-    bullets.reset();
-    rocks.reset();
+    async.unawaited(_cameraManager.reset());
+    async.unawaited(bullets.reset());
+    async.unawaited(rocks.reset());
 
     _addStarterSpaceBodyField();
 
@@ -247,7 +247,7 @@ class SpaceWrapper extends WrapperNoEvents
       add(DebugCircle(type: "visiblePlus")); //visible universe
       add(DebugCircle(type: "visible")); //visible universe
     }
-    reset();
+    async.unawaited(reset());
   }
 
   @override
