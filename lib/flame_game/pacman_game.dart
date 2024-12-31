@@ -320,7 +320,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     initializeCollisionDetection(
       mapDimensions: Rect.fromLTWH(-maze.mazeWidth / 2, -maze.mazeHeight / 2,
           maze.mazeWidth, maze.mazeHeight),
-    ); //assume maze size won't change
+    ); //assume maze size won't change //FIXME
     reset(firstRun: true, showStartDialog: true);
     _winOrLoseGameListener(); //isn't disposed so run once, not on start()
     _lifecycleChangeListener(); //isn't disposed so run once, not on start()
