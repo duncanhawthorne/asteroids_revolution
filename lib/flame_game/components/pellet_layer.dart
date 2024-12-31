@@ -24,6 +24,13 @@ class PelletWrapper extends WrapperNoEvents
     pelletsRemainingNotifier.addListener(() {
       clearSnapshot();
     });
-    unawaited(reset());
+    await reset();
+  }
+
+  @override
+  void updateTree(double dt) {
+    // no point traversing large list of children as nothing to update
+    // so cut short the updateTree here
+    //super.updateTree(dt);
   }
 }

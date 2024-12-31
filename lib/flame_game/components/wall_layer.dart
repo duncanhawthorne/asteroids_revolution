@@ -22,6 +22,13 @@ class WallWrapper extends WrapperNoEvents with Snapshot {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    unawaited(reset());
+    await reset();
+  }
+
+  @override
+  void updateTree(double dt) {
+    // no point traversing large list of children as nothing to update
+    // so cut short the updateTree here
+    //super.updateTree(dt);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../audio/audio_controller.dart';
 import '../../settings/settings.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
@@ -69,17 +70,24 @@ Widget _mainMenuButtonWidget(BuildContext context, PacmanGame game) {
 
 // ignore: unused_element
 Widget _clockWidget(PacmanGame game) {
-  return Padding(
-    padding: const EdgeInsets.only(left: _clockSpacing, right: _clockSpacing),
-    child: StreamBuilder<dynamic>(
-      stream: Stream<dynamic>.periodic(const Duration(milliseconds: 100)),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        return Text(
-            (game.stopwatchMilliSeconds / 1000)
-                .toStringAsFixed(1)
-                .padLeft(4, " "),
-            style: textStyleBody);
-      },
+  return GestureDetector(
+    onLongPress: () {
+      if (detailedAudioLog) {
+        game.toggleOverlay(GameScreen.debugDialogKey);
+      }
+    },
+    child: Padding(
+      padding: const EdgeInsets.only(left: _clockSpacing, right: _clockSpacing),
+      child: StreamBuilder<dynamic>(
+        stream: Stream<dynamic>.periodic(const Duration(milliseconds: 100)),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return Text(
+              (game.stopwatchMilliSeconds / 1000)
+                  .toStringAsFixed(1)
+                  .padLeft(4, " "),
+              style: textStyleBody);
+        },
+      ),
     ),
   );
 }
@@ -103,7 +111,9 @@ Widget _audioOnOffButtonWidget(BuildContext context, PacmanGame game) {
     valueListenable: settingsController.audioOn,
     builder: (BuildContext context, bool audioOn, Widget? child) {
       return IconButton(
-        onPressed: () => settingsController.toggleAudioOn(),
+        onPressed: () {
+          settingsController.toggleAudioOn();
+        },
         icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off, color: color),
       );
     },

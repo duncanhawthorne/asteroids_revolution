@@ -16,21 +16,19 @@ import 'router.dart';
 import 'settings/settings.dart';
 import 'style/palette.dart';
 import 'utils/constants.dart';
+import 'utils/helper.dart';
 import 'utils/src/workarounds.dart';
 //firebase_options.dart as per direct download from google, not included in repo
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   unawaited(fBase.initialize());
-
   GoogleFonts.config.allowRuntimeFetching = false;
-
   FlutterNativeSplash.remove();
   await Flame.device.fullScreen();
-
+  setupGlobalLogger();
   fixTitlePerm();
-
+  await soLoud.init();
   runApp(const MyGame());
 }
 
