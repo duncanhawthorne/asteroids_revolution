@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../level_selection/levels.dart';
-import '../../player_progress/player_progress.dart';
 import '../../router.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
@@ -75,7 +74,7 @@ class StartDialog extends StatelessWidget {
 
 Widget levelSelector(BuildContext context, PacmanGame game) {
   return ListenableBuilder(
-      listenable: playerProgress,
+      listenable: game.playerProgress,
       builder: (BuildContext context, _) {
         return levelSelectorReal(context, game);
       });
@@ -135,14 +134,14 @@ Widget levelButtonSingle(BuildContext context, PacmanGame game, int levelNum) {
             '/?$levelUrlKey=$levelNum&$mazeUrlKey=${mazeNames[fixedMazeId]}');
       },
       child: Text(level.levelString,
-          style: playerProgress.isComplete(levelNum)
+          style: game.playerProgress.isComplete(levelNum)
               ? textStyleBody
               : textStyleBodyDull));
 }
 
 Widget mazeSelector(BuildContext context, PacmanGame game) {
   return ListenableBuilder(
-      listenable: playerProgress,
+      listenable: game.playerProgress,
       builder: (BuildContext context, _) {
         return mazeSelectorReal(context, game);
       });
@@ -198,7 +197,7 @@ int _maxLevelToShow(PacmanGame game) {
 }
 
 int levelAfterPlaybackScreen(PacmanGame game) {
-  return <int>[game.level.number, playerProgress.maxLevelCompleted + 1]
+  return <int>[game.level.number, game.playerProgress.maxLevelCompleted + 1]
       .reduce(max)
       .clamp(Levels.minLevel, Levels.maxLevel);
 }

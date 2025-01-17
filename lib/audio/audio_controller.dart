@@ -10,20 +10,71 @@ import 'package:logging/logging.dart';
 import '../app_lifecycle/app_lifecycle.dart';
 import '../settings/settings.dart';
 import '../utils/constants.dart';
+import '../utils/helper.dart';
 import 'sounds.dart';
 
-final SoLoud soLoud = SoLoud.instance;
 const bool _useSoLoudInDebug = true;
-final bool _useSoLoud = (kDebugMode && _useSoLoudInDebug) || isiOSWeb;
-final bool _useAudioPlayers = !_useSoLoud;
-final bool detailedAudioLog = _useSoLoud;
-final bool canDoVariableVolume = !_useAudioPlayers || !isiOSWeb; //i.e. true
-final bool _soLoudIsUnreliable = isiOSWeb || (_useSoLoudInDebug && kDebugMode);
+final bool _platformForSoLoud = ((kDebugMode && _useSoLoudInDebug) || isiOSWeb);
+final bool detailedAudioLog = _platformForSoLoud;
+
+bool _soLoudCrashedOnLoad = false;
+
+Future<void> firstInitialiseSoLoud() async {
+  try {
+    await soLoud.init();
+  } catch (e) {
+    logGlobal("SoLoud crash, use AP");
+    _soLoudCrashedOnLoad = true;
+  }
+}
+
+final SoLoud soLoud = SoLoud.instance;
+
+final ValueNotifier<bool> flagOnUserInteractionPlaySilence =
+    ValueNotifier<bool>(true);
+final ValueNotifier<bool> flagOnUserInteractionEnsureSoLoudInitialised =
+    ValueNotifier<bool>(false);
+final ValueNotifier<bool> flagDeInitOnHidden = ValueNotifier<bool>(true);
+final ValueNotifier<bool> flagPlaySilenceOnResume = ValueNotifier<bool>(false);
+final ValueNotifier<bool> flagPreLoadSfxOnResume = ValueNotifier<bool>(false);
+final ValueNotifier<bool> flagPlaySilenceOnSoLoudEnsureInitialised =
+    ValueNotifier<bool>(false);
+final ValueNotifier<bool> flagSoLoudInitialisedAsPartOfCanPlayForAPSounds =
+    ValueNotifier<bool>(true);
+
+Map<String, ValueNotifier<bool>> checkboxes = <String, ValueNotifier<bool>>{
+  "flagOnUserInteractionPlaySilence": flagOnUserInteractionPlaySilence,
+  "flagOnUserInteractionEnsureSoLoudInitialised":
+      flagOnUserInteractionEnsureSoLoudInitialised,
+  "flagDeInitOnHidden": flagDeInitOnHidden,
+  "flagPlaySilenceOnResume": flagPlaySilenceOnResume,
+  "flagPreLoadSfxOnResume": flagPreLoadSfxOnResume,
+  "flagPlaySilenceOnSoLoudEnsureInitialised":
+      flagPlaySilenceOnSoLoudEnsureInitialised,
+  "flagSoLoudInitialisedAsPartOfCanPlayForAPSounds":
+      flagSoLoudInitialisedAsPartOfCanPlayForAPSounds,
+};
 
 class AudioController {
-  AudioController() {
+  AudioController._() {
     unawaited(_preloadSfx());
   }
+
+  factory AudioController() {
+    assert(_instance == null);
+    _instance ??= AudioController._();
+    return _instance!;
+  }
+
+  ///ensures singleton [AudioController]
+  static AudioController? _instance;
+
+  final bool _useSoLoud = _platformForSoLoud && !_soLoudCrashedOnLoad;
+  late final bool _useAudioPlayers = !_useSoLoud;
+  late final bool canDoVariableVolume = !(isiOSWeb && _useAudioPlayers);
+  late final bool _soLoudIsUnreliable = _useSoLoud;
+
+  bool get isAudioOn => _settings?.audioOn.value ?? true;
 
   static final Logger _log = Logger('AC');
   SettingsController? _settings;
@@ -38,6 +89,7 @@ class AudioController {
   Future<AudioSource> _getSoLoudSound(SfxType type,
       {bool preload = false}) async {
     await soLoudEnsureInitialised();
+    assert(_useSoLoud);
     assert(type != SfxType.silence);
     if (await _soLoudSourceValid(type)) {
       return _soLoudSources[type]!;
@@ -69,7 +121,8 @@ class AudioController {
     }
 
     // ignore: dead_code
-    if (true || !playWithAudioPlayers) {
+    if (flagSoLoudInitialisedAsPartOfCanPlayForAPSounds.value ||
+        !playWithAudioPlayers) {
       //FIXME requires testing
       await soLoudEnsureInitialised();
       if (_useSoLoud && !soLoud.isInitialized) {
@@ -78,10 +131,10 @@ class AudioController {
       }
     }
 
-    final bool audioOn = _settings?.audioOn.value ?? true;
+    final bool audioOn = isAudioOn;
     if (!audioOn) {
       if (type != SfxType.ghostsRoamingSiren) {
-        _log.fine('Cant play $type: muted.');
+        //_log.fine('Cant play $type: muted.');
       }
       return false;
     }
@@ -96,7 +149,7 @@ class AudioController {
       {bool forceUseAudioPlayersOnce = false}) async {
     final bool playWithAudioPlayers =
         _useAudioPlayers || forceUseAudioPlayersOnce;
-    _log.fine('Playing $type');
+    isAudioOn ? _log.fine('Playing $type') : null;
     if (!(await _canPlay(type,
         forceUseAudioPlayersOnce: forceUseAudioPlayersOnce))) {
       return;
@@ -156,10 +209,15 @@ class AudioController {
     }
   }
 
-  void soLoudWorkaround() {
+  Future<void> workaroundiOSSafariAudioOnUserInteraction() async {
     //ideally replaced by ensureSilencePlaying
     //FIXME requires testing
-    playSilence();
+    if (flagOnUserInteractionPlaySilence.value) {
+      await playSilence();
+    }
+    if (flagOnUserInteractionEnsureSoLoudInitialised.value) {
+      await soLoudEnsureInitialised();
+    }
   }
 
   bool silencePlayingOnAp() {
@@ -346,7 +404,7 @@ class AudioController {
     _log.fine('audioOn changed to ${_settings!.audioOn.value}');
     if (_settings!.audioOn.value) {
       // All sound just got un-muted. Audio is on.
-      soLoudWorkaround();
+      workaroundiOSSafariAudioOnUserInteraction();
     } else {
       // All sound just got muted. Audio is off.
       stopAllSounds();
@@ -362,9 +420,11 @@ class AudioController {
       case AppLifecycleState.hidden:
         _log.fine("Lifecycle hidden");
         if (_useSoLoud && _soLoudIsUnreliable) {
-          _log.info("soLoudReset due to unreliable soLoud");
-          //else silently stop working
-          await soLoudPowerDownForReset();
+          if (flagDeInitOnHidden.value) {
+            _log.info("soLoudReset due to unreliable soLoud");
+            //else silently stop working
+            await soLoudPowerDownForReset();
+          }
         } else {
           await stopAllSounds();
         }
@@ -373,8 +433,12 @@ class AudioController {
         if (_useSoLoud && _soLoudIsUnreliable) {
           //ideally would preload here to stop preload coinciding with user interaction
           //but soLoudUnreliable workaround fails if so preload here
-          //await playSilence(); //FIXME requires testing
-          //await _preloadSfx(); //FIXME requires testing
+          if (flagPlaySilenceOnResume.value) {
+            await playSilence(); //FIXME requires testing
+          }
+          if (flagPreLoadSfxOnResume.value) {
+            await _preloadSfx(); //FIXME requires testing
+          }
         }
       case AppLifecycleState.inactive:
         _log.fine("Lifecycle inactive");
@@ -384,12 +448,13 @@ class AudioController {
 
   Future<void> soLoudEnsureInitialised() async {
     if (_useSoLoud) {
-      /* //FIXME requires testing
-      if (_soLoudIsUnreliable && !silencePlayingOnAp()) {
-        _log.fine("silence not playing, reinitialise");
-        await playSilence();
+      if (flagPlaySilenceOnSoLoudEnsureInitialised.value) {
+        //FIXME requires testing
+        if (_soLoudIsUnreliable && !silencePlayingOnAp()) {
+          _log.fine("silence not playing, reinitialise");
+          await playSilence();
+        }
       }
-       */
       if (!soLoud.isInitialized) {
         _log.fine("soLoud not initialised, re-initialise");
         //don't soLoud.disposeAllSources here as soLoud not initialised

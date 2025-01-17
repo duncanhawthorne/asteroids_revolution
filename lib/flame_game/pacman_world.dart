@@ -32,6 +32,17 @@ import 'pacman_game.dart';
 
 class PacmanWorld extends Forge2DWorld
     with HasGameReference<PacmanGame>, DragCallbacks {
+  PacmanWorld._();
+
+  factory PacmanWorld() {
+    assert(_instance == null);
+    _instance ??= PacmanWorld._();
+    return _instance!;
+  }
+
+  ///ensures singleton [PacmanWorld]
+  static PacmanWorld? _instance;
+
   final WrapperNoEvents noEventsWrapper = WrapperNoEvents();
   final PelletWrapper pellets = PelletWrapper();
   final WallWrapper walls = WallWrapper();

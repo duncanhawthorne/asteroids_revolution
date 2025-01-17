@@ -11,9 +11,18 @@ import '../google/google.dart';
 import '../level_selection/levels.dart';
 
 class PlayerProgress extends ChangeNotifier {
-  PlayerProgress() {
+  PlayerProgress._() {
     _userChangeListener();
   }
+
+  factory PlayerProgress() {
+    assert(_instance == null);
+    _instance ??= PlayerProgress._();
+    return _instance!;
+  }
+
+  ///ensures singleton [PlayerProgress]
+  static PlayerProgress? _instance;
 
   static final Logger _log = Logger('PP');
 
@@ -120,8 +129,6 @@ class PlayerProgress extends ChangeNotifier {
     }
   }
 }
-
-PlayerProgress playerProgress = PlayerProgress();
 
 Map<String, int> _cleanupWin(Map<String, dynamic> winRaw) {
   final Map<String, int> result = <String, int>{
