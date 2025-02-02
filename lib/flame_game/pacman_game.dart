@@ -228,7 +228,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       }
     });
     world.pellets.pelletsRemainingNotifier.addListener(() {
-      if (world.pellets.pelletsRemainingNotifier.value == 0 &&
+      if (world.pellets.pelletsRemainingNotifier.value <= 0 &&
           stopwatchStarted &&
           !playbackMode) {
         assert(isWonOrLost);
@@ -243,7 +243,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     assert(isWonOrLost);
     assert(!stopwatch.isRunning());
     assert(stopwatchStarted);
-    if (world.pellets.pelletsRemainingNotifier.value == 0) {
+    if (world.pellets.pelletsRemainingNotifier.value <= 0) {
       world.resetAfterGameWin();
       if (stopwatchMilliSeconds > _minRecordableWinTimeMillis &&
           !level.isTutorial) {

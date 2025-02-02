@@ -45,7 +45,7 @@ class PacmanWorld extends Forge2DWorld
 
   final WrapperNoEvents noEventsWrapper = WrapperNoEvents();
   final PelletWrapper pellets = PelletWrapper();
-  final WallWrapper walls = WallWrapper();
+  final WallWrapper _walls = WallWrapper();
   final List<WrapperNoEvents> wrappers = <WrapperNoEvents>[];
 
   double get everythingScale =>
@@ -88,7 +88,7 @@ class PacmanWorld extends Forge2DWorld
     if (!firstRun) {
       for (final WrapperNoEvents wrapper in wrappers) {
         assert(wrapper.isLoaded, wrapper);
-        if (wrapper == walls) {
+        if (wrapper == _walls) {
           continue; //no need to reset, stops a flash on screen
         }
         wrapper.reset();
@@ -110,7 +110,7 @@ class PacmanWorld extends Forge2DWorld
     super.onLoad();
     add(noEventsWrapper);
     wrappers.addAll(<WrapperNoEvents>[space]); //_blocking, _tutorial
-    for (WrapperNoEvents wrapper in wrappers) {
+    for (final WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }
     reset(firstRun: true);
@@ -197,7 +197,7 @@ class PacmanWorld extends Forge2DWorld
   final Vector2 downDirection = Vector2.zero();
 
   static const bool _updateGravityOnRotation = false;
-  Vector2 gravitySign = Vector2(0, 0);
+  final Vector2 gravitySign = Vector2(0, 0);
 
   void setMazeAngle(double angle) {
     game.recordAngle(angle);

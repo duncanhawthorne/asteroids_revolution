@@ -16,8 +16,7 @@ import 'rock.dart';
 import 'space_body.dart';
 import 'wall.dart';
 
-final double neutralShipRadius =
-    maze.spriteWidth / 2 * Maze.pelletScaleFactor * 2;
+final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 

@@ -15,11 +15,24 @@ final Map<int, String> mazeNames = <int, String>{
 const int _bufferColumns = 2;
 
 class Maze {
-  Maze({
+  Maze._({
     required int mazeId,
   }) {
     setMazeId(mazeId);
   }
+
+  factory Maze({
+    required int mazeId,
+  }) {
+    assert(_instance == null);
+    _instance ??= Maze._(
+      mazeId: mazeId,
+    );
+    return _instance!;
+  }
+
+  ///ensures singleton [Maze]
+  static Maze? _instance;
 
   int get mazeAcross => _mazeLayoutHorizontalLength();
 
@@ -30,9 +43,9 @@ class Maze {
   void setMazeId(int id) {
     {
       _mazeId = id;
-      ghostStart.setFrom(_vectorOfMazeListCode(_kGhostStart));
-      pacmanStart.setFrom(_vectorOfMazeListCode(_kPacmanStart));
-      _cage.setFrom(_vectorOfMazeListCode(_kCage));
+      ghostStart.setFrom(_volatileVectorOfMazeListCode(_kGhostStart));
+      pacmanStart.setFrom(_volatileVectorOfMazeListCode(_kPacmanStart));
+      _cage.setFrom(_volatileVectorOfMazeListCode(_kCage));
       //items below used every frame so calculate once here
       blockWidth = _blockWidth();
       spriteWidth = _spriteWidth();
@@ -43,9 +56,9 @@ class Maze {
       mazeHalfWidth = mazeWidth / 2;
       mazeHalfHeight = mazeHeight / 2;
       //item below used regularly
-      ghostStartForIdMap[0] = _ghostStartForId(0);
-      ghostStartForIdMap[1] = _ghostStartForId(1);
-      ghostStartForIdMap[2] = _ghostStartForId(2);
+      _ghostStartForIdMap[0] = _ghostStartForId(0);
+      _ghostStartForIdMap[1] = _ghostStartForId(1);
+      _ghostStartForIdMap[2] = _ghostStartForId(2);
     }
   }
 
@@ -78,14 +91,11 @@ class Maze {
   double mazeHalfWidth = 0; //set properly in initializer
   double mazeHalfHeight = 0; //set properly in initializer
   final Vector2 spriteSize = Vector2.zero(); //set properly in initializer
-  Map<int, Vector2> ghostStartForIdMap =
+  final Map<int, Vector2> _ghostStartForIdMap =
       <int, Vector2>{}; //set properly in initializer
 
-  static const bool _largeSprites = true;
-  static const double pelletScaleFactor = _largeSprites ? 0.4 : 0.46;
-
   Vector2 ghostStartForId(int idNum) {
-    return ghostStartForIdMap[idNum % 3]!;
+    return _ghostStartForIdMap[idNum % 3]!;
   }
 
   Vector2 _ghostStartForId(int idNum) {
@@ -110,7 +120,7 @@ class Maze {
   }
 
   double _spriteWidth() {
-    return blockWidth * (_largeSprites ? 2 : 1);
+    return blockWidth * 2;
   }
 
   int _mazeLayoutHorizontalLength() {
@@ -135,36 +145,105 @@ class Maze {
         _wallAt(i, j - 1) && _wallAt(i, j + 1));
   }
 
-  Vector2 _vectorOfMazeListIndex(int icore, int jcore,
+  bool _movingWallAt(int i, int j) {
+    return i >= 0 &&
+        i < _mazeLayout.length &&
+        j >= 0 &&
+        j < _mazeLayout[i].length &&
+        _mazeLayout[i][j] == _kMovingWall;
+  }
+
+  final Vector2 _volatileInstantConsumeVector2 = Vector2.zero();
+
+  Vector2 _volatileVectorOfMazeListIndex(int icore, int jcore,
       {double ioffset = 0, double joffset = 0}) {
     final double i = ioffset + icore;
     final double j = joffset + jcore;
-    return Vector2((j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth,
+
+    /// using [_volatileInstantConsumeVector2]
+    /// so we don't have to make new Vector2 every time called
+    /// but therefore must instantly consume the output as it may change
+    _volatileInstantConsumeVector2.setValues(
+        (j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth,
         (i + 1 / 2 - _mazeLayout.length / 2) * blockWidth);
+    return _volatileInstantConsumeVector2;
   }
 
-  Vector2 _vectorOfMazeListCode(String code) {
+  Vector2 _volatileVectorOfMazeListCode(String code) {
     for (int i = 0; i < _mazeLayout.length; i++) {
       for (int j = 0; j < _mazeLayout[i].length; j++) {
         if (_mazeLayout[i][j] == code) {
-          return _vectorOfMazeListIndex(i, j, ioffset: _largeSprites ? 0.5 : 0);
+          return _volatileVectorOfMazeListIndex(i, j, ioffset: 0.5);
         }
       }
     }
-    return Vector2.zero();
+    throw 'Missing maze code';
   }
 
   static const double _mazeInnerWallWidthFactor = 1;
   static const double _pixelationBuffer = 0.03;
+
+  bool _topLeftOfBigBlock(int i, int j, {bool moving = false}) {
+    final bool Function(int i, int j) localWallAt =
+        moving ? _movingWallAt : _wallAt;
+    assert(localWallAt(i, j));
+    return (!localWallAt(i - 1, j) || !localWallAt(i - 1, j + 1)) &&
+        (!localWallAt(i, j - 1) || !localWallAt(i + 1, j - 1)) &&
+        !localWallAt(i - 1, j - 1) &&
+        localWallAt(i + 1, j) &&
+        localWallAt(i, j + 1) &&
+        localWallAt(i + 1, j + 1);
+  }
+
+  int _bigBlockWidth(int i, int j,
+      {bool singleHeight = true, bool moving = false}) {
+    final bool Function(int i, int j) localWallAt =
+        moving ? _movingWallAt : _wallAt;
+    assert(localWallAt(i, j));
+    int k = 0;
+    while (j + k < _mazeLayout[i].length &&
+        (singleHeight || localWallAt(i + 1, j + k + 1)) &&
+        localWallAt(i, j + k + 1)) {
+      k++;
+    }
+    return k;
+  }
+
+  int _bigBlockHeight(int i, int j,
+      {bool singleWidth = true, bool moving = false}) {
+    final bool Function(int i, int j) localWallAt =
+        moving ? _movingWallAt : _wallAt;
+    assert(localWallAt(i, j));
+    int l = 0;
+    while (i + l < _mazeLayout.length &&
+        (singleWidth || localWallAt(i + l + 1, j + 1)) &&
+        localWallAt(i + l + 1, j)) {
+      l++;
+    }
+    return l;
+  }
+
+  FixtureDef _fixtureDefBlock(
+      {required Vector2 position,
+      required double width,
+      required double height,
+      double density = 1}) {
+    return FixtureDef(
+        PolygonShape()..setAsBox(width / 2, height / 2, position, 0),
+        density: density);
+  }
 
   List<Component> mazeWalls(
       {bool includeGround = true, bool includeVisualWalls = true}) {
     final List<FixtureDef> fixtureDefs = <FixtureDef>[];
     final List<Component> result = <Component>[];
     final double scale = blockWidth;
+    final Vector2 center = Vector2.zero();
+    final Vector2 bigBlockCenter = Vector2.zero();
+    final Vector2 bigBlockSize = Vector2.zero();
     for (int i = 0; i < _mazeLayout.length; i++) {
       for (int j = 0; j < _mazeLayout[i].length; j++) {
-        final Vector2 center = _vectorOfMazeListIndex(i, j);
+        center.setFrom(_volatileVectorOfMazeListIndex(i, j));
         if (_wallAt(i, j)) {
           if (_circleAt(i, j)) {
             fixtureDefs.add(
@@ -174,62 +253,49 @@ class Maze {
                 radius: scale / 2 * _mazeInnerWallWidthFactor));
           }
           if (!_wallAt(i, j - 1)) {
-            int k = 0;
-            while (j + k < _mazeLayout[i].length && _wallAt(i, j + k + 1)) {
-              k++;
-            }
-            if (k > 0) {
-              final Vector2 newCentre = center + Vector2(scale * k / 2, 0);
-              fixtureDefs.add(FixtureDef(PolygonShape()
-                ..setAsBox(scale * (k + _pixelationBuffer) / 2, scale / 2,
-                    newCentre, 0)));
+            final int width = _bigBlockWidth(i, j);
+            if (width > 0) {
+              bigBlockCenter
+                ..setFrom(center)
+                ..x += scale * width / 2;
+              bigBlockSize.setValues(scale * (width + _pixelationBuffer),
+                  scale * _mazeInnerWallWidthFactor);
+              fixtureDefs.add(_fixtureDefBlock(
+                  position: bigBlockCenter,
+                  width: scale * (width + _pixelationBuffer),
+                  height: scale));
               result.add(WallRectangleVisual(
-                  position: newCentre,
-                  width: scale * (k + _pixelationBuffer),
-                  height: scale * _mazeInnerWallWidthFactor));
+                  position: bigBlockCenter, size: bigBlockSize));
             }
           }
 
           if (!_wallAt(i - 1, j)) {
-            int k = 0;
-            while (i + k < _mazeLayout.length && _wallAt(i + k + 1, j)) {
-              k++;
-            }
-            if (k > 0) {
-              final Vector2 newCentre = center + Vector2(0, scale * k / 2);
-              fixtureDefs.add(FixtureDef(PolygonShape()
-                ..setAsBox(scale / 2, scale * (k + _pixelationBuffer) / 2,
-                    newCentre, 0)));
+            final int height = _bigBlockHeight(i, j);
+            if (height > 0) {
+              bigBlockCenter
+                ..setFrom(center)
+                ..y += scale * height / 2;
+              bigBlockSize.setValues(scale * _mazeInnerWallWidthFactor,
+                  scale * (height + _pixelationBuffer));
+              fixtureDefs.add(_fixtureDefBlock(
+                  position: bigBlockCenter,
+                  width: scale,
+                  height: scale * (height + _pixelationBuffer)));
               result.add(WallRectangleVisual(
-                  position: newCentre,
-                  width: scale * _mazeInnerWallWidthFactor,
-                  height: scale * (k + _pixelationBuffer)));
+                  position: bigBlockCenter, size: bigBlockSize));
             }
           }
-          if ((!_wallAt(i - 1, j) || !_wallAt(i - 1, j + 1)) &&
-              (!_wallAt(i, j - 1) || !_wallAt(i + 1, j - 1)) &&
-              !_wallAt(i - 1, j - 1) &&
-              _wallAt(i + 1, j) &&
-              _wallAt(i, j + 1) &&
-              _wallAt(i + 1, j + 1)) {
-            //top left of a block
-            int k = 0;
-            while (j + k < _mazeLayout[i].length &&
-                _wallAt(i + 1, j + k + 1) &&
-                _wallAt(i, j + k + 1)) {
-              k++;
-            }
-            int l = 0;
-            while (i + l < _mazeLayout.length &&
-                _wallAt(i + l + 1, j + 1) &&
-                _wallAt(i + l + 1, j)) {
-              l++;
-            }
-            if (k > 0 && l > 0) {
+          if (_topLeftOfBigBlock(i, j)) {
+            final int width = _bigBlockWidth(i, j, singleHeight: false);
+            final int height = _bigBlockHeight(i, j, singleWidth: false);
+            if (width > 0 && height > 0) {
+              bigBlockCenter
+                ..setFrom(center)
+                ..x += scale * width / 2
+                ..y += scale * height / 2;
+              bigBlockSize.setValues(scale * width, scale * height);
               result.add(WallRectangleVisual(
-                  position: center + Vector2(scale * k / 2, scale * l / 2),
-                  width: scale * k,
-                  height: scale * l));
+                  position: bigBlockCenter, size: bigBlockSize));
             }
           }
         }
@@ -248,26 +314,24 @@ class Maze {
     final List<Component> result = <Component>[];
     final double scale = blockWidth;
     const int width = 7;
+    final Vector2 size =
+        Vector2(scale * width, scale * _mazeLayoutVerticalLength());
+    final Vector2 position =
+        Vector2(scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0);
     result
       ..add(
-        WallRectangleVisual(
-            position: Vector2(
-                scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
-            width: scale * width,
-            height: scale * _mazeLayoutVerticalLength()),
+        WallRectangleVisual(position: position, size: size),
       )
       ..add(
-        WallRectangleVisual(
-            position: Vector2(
-                -scale * (_mazeLayoutHorizontalLength() / 2 + width / 2), 0),
-            width: scale * width,
-            height: scale * _mazeLayoutVerticalLength()),
+        WallRectangleVisual(position: position..x *= -1, size: size),
       );
     return result;
   }
 
-//quad of dots
+  // ignore: unused_field
+  static const String _kMiniPellet = "0"; //quad of dots
   static const String _kWall = "1";
+  static const String _kMovingWall = "6";
 
   // ignore: unused_field
   static const String _kLair = "2";
@@ -313,12 +377,12 @@ class Maze {
   // ignore: unused_field
   static const List<String> _mazeP1Layout = <String>[
     '4111111111111111111111111111114',
-    '4100000000000001000000000000014',
-    '4100000000000001000000000000014',
-    '4133111001111001001111001113314',
+    '4100000660000001000000660000014',
+    '4100000660000001000000660000014',
+    '4133111661111001001111661113314',
     '4100111001111001001111001110014',
-    '4100000000000000000000000000014',
-    '4100000000000000000000000000014',
+    '4100000000000066600000000000014',
+    '4100000000000066600000000000014',
     '4100111001001111111001001110014',
     '4100000001000001000001000000014',
     '4100000001000001000001000000014',
@@ -341,8 +405,8 @@ class Maze {
     '4100000001000001000001000000014',
     '4100000001000001000001000000014',
     '4100111111111001001111111110014',
-    '4100000000000000000000000000014',
-    '4100000000000000000000000000014',
+    '4100000000000066600000000000014',
+    '4100000000000066600000000000014',
     '4111111111111111111111111111114'
   ];
 

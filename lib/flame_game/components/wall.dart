@@ -16,6 +16,11 @@ final Paint _wallGroundPaint = Paint()
 ////..color = Color.fromARGB(50, 100, 100, 100)
 //..isAntiAlias = false
   ..color = Palette.seed.color;
+final Paint _movingWallPaint = Paint()
+//..filterQuality = FilterQuality.none
+////..color = Color.fromARGB(50, 100, 100, 100)
+//..isAntiAlias = false
+  ..color = Palette.text.color;
 // ignore: unused_element
 final Paint _wallBackgroundPaint = Paint()
 //..filterQuality = FilterQuality.none
@@ -24,12 +29,8 @@ final Paint _wallBackgroundPaint = Paint()
   ..color = Palette.background.color;
 
 class WallRectangleVisual extends RectangleComponent with IgnoreEvents {
-  WallRectangleVisual(
-      {required super.position, required double width, required double height})
-      : super(
-            size: Vector2(width, height),
-            anchor: Anchor.center,
-            paint: _wallVisualPaint);
+  WallRectangleVisual({required super.position, required super.size})
+      : super(anchor: Anchor.center, paint: _wallVisualPaint);
 
   @override
   Future<void> onLoad() async {
@@ -37,8 +38,8 @@ class WallRectangleVisual extends RectangleComponent with IgnoreEvents {
     add(RectangleHitbox(
       isSolid: true,
       collisionType: CollisionType.passive,
-      position: Vector2(width / 2, height / 2),
-      size: Vector2(width, height),
+      position: size / 2,
+      size: size,
       anchor: Anchor.center,
     )..debugMode = false);
   }
@@ -53,6 +54,22 @@ class WallCircleVisual extends CircleComponent with IgnoreEvents {
 class WallGround extends BodyComponent with IgnoreEvents {
   WallGround({required super.fixtureDefs})
       : super(paint: _wallGroundPaint, bodyDef: BodyDef(type: BodyType.static));
+
+  @override
+  final int priority = -3;
+}
+
+final Vector2 _dynamicWallGravityScale = Vector2(-1, -1);
+
+// ignore: always_specify_types
+class WallDynamic extends BodyComponent with IgnoreEvents {
+  WallDynamic({required super.fixtureDefs})
+      : super(
+            paint: _movingWallPaint,
+            bodyDef: BodyDef(
+                type: BodyType.dynamic,
+                fixedRotation: true,
+                gravityScale: _dynamicWallGravityScale));
 
   @override
   final int priority = -3;
