@@ -32,7 +32,7 @@ import 'pacman_game.dart';
 ///  to.
 
 class PacmanWorld extends Forge2DWorld
-    with HasGameReference<PacmanGame>, DragCallbacks, TapCallbacks {
+    with HasGameReference<PacmanGame>, DragCallbacks {
   PacmanWorld._();
 
   factory PacmanWorld() {
@@ -119,14 +119,6 @@ class PacmanWorld extends Forge2DWorld
   }
 
   final Map<int, bool> _boostFingers = <int, bool>{};
-
-  @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-    if (PacmanGame.stepDebug && game.paused) {
-      game.stepEngine();
-    }
-  }
 
   @override
   void onDragStart(DragStartEvent event) {
