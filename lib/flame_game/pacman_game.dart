@@ -115,7 +115,10 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   bool stopwatchStarted = false;
 
-  bool get isLive => !paused && isLoaded && isMounted;
+  // ignore: dead_code
+  static const bool stepDebug = false && kDebugMode;
+
+  bool get isLive => (!paused || stepDebug) && isLoaded && isMounted;
 
   bool get openingScreenCleared =>
       !(!stopwatchStarted && overlays.isActive(GameScreen.startDialogKey));
@@ -189,7 +192,9 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       regularItemsStarted = false; //so restart things next time
       audioController.workaroundiOSSafariAudioOnUserInteraction();
       resume(); //timeScale = 1.0;
-      resumeEngine();
+      if (!stepDebug) {
+        resumeEngine();
+      }
     }
   }
 

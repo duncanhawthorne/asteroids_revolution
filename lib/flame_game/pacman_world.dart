@@ -5,6 +5,7 @@ import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../audio/sounds.dart';
 import '../utils/constants.dart';
@@ -31,7 +32,7 @@ import 'pacman_game.dart';
 ///  to.
 
 class PacmanWorld extends Forge2DWorld
-    with HasGameReference<PacmanGame>, DragCallbacks {
+    with HasGameReference<PacmanGame>, DragCallbacks, TapCallbacks {
   PacmanWorld._();
 
   factory PacmanWorld() {
@@ -105,11 +106,12 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
+  static const bool enableMovingWalls = true && kDebugMode;
   @override
   Future<void> onLoad() async {
     super.onLoad();
     add(noEventsWrapper);
-    wrappers.addAll(<WrapperNoEvents>[space]); //_blocking, _tutorial
+    wrappers.addAll(<WrapperNoEvents>[space]);
     for (final WrapperNoEvents wrapper in wrappers) {
       noEventsWrapper.add(wrapper);
     }
@@ -117,6 +119,14 @@ class PacmanWorld extends Forge2DWorld
   }
 
   final Map<int, bool> _boostFingers = <int, bool>{};
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+    if (PacmanGame.stepDebug && game.paused) {
+      game.stepEngine();
+    }
+  }
 
   @override
   void onDragStart(DragStartEvent event) {

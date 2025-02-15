@@ -34,8 +34,6 @@ class Maze {
   ///ensures singleton [Maze]
   static Maze? _instance;
 
-  int get mazeAcross => _mazeLayoutHorizontalLength();
-
   int get mazeId => _mazeId;
 
   set mazeId(int i) => setMazeId(i);
@@ -268,7 +266,6 @@ class Maze {
                   position: bigBlockCenter, size: bigBlockSize));
             }
           }
-
           if (!_wallAt(i - 1, j)) {
             final int height = _bigBlockHeight(i, j);
             if (height > 0) {
@@ -335,7 +332,8 @@ class Maze {
 
   // ignore: unused_field
   static const String _kLair = "2";
-//quad top
+  // ignore: unused_field
+  static const String _kSuperPellet = "3"; //quad top
   // ignore: unused_field
   static const String _kEmpty = "4";
   static const String _kGhostStart = "7";
