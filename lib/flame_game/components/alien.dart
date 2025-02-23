@@ -17,10 +17,11 @@ class Alien extends SpaceBody {
   }) : super(paint: _alienPaint);
 
   late final CircleComponent hole = CircleComponent(
-      radius: 0,
-      anchor: Anchor.center,
-      paint: _alienCorePaint,
-      position: Vector2.all(radius));
+    radius: 0,
+    anchor: Anchor.center,
+    paint: _alienCorePaint,
+    position: Vector2.all(radius),
+  );
 
   @override
   // ignore: overridden_fields

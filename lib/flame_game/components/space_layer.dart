@@ -39,17 +39,21 @@ class SpaceWrapper extends WrapperNoEvents
   async.Timer? _timerTopUpSpaceBodies;
   void _startTimerTopUpSpaceBodies() {
     _timerTopUpSpaceBodies = async.Timer.periodic(
-        const Duration(milliseconds: 1000), (async.Timer timer) {
-      _topUpSpaceBodies();
-    });
+      const Duration(milliseconds: 1000),
+      (async.Timer timer) {
+        _topUpSpaceBodies();
+      },
+    );
   }
 
   async.Timer? _timerTidySpaceBodies;
   void _startTimerTidySpaceBodies() {
     _timerTidySpaceBodies = async.Timer.periodic(
-        const Duration(milliseconds: 1000), (async.Timer timer) {
-      _tidySpaceBodies();
-    });
+      const Duration(milliseconds: 1000),
+      (async.Timer timer) {
+        _tidySpaceBodies();
+      },
+    );
   }
 
   double get zoomAdjustedEverythingScale =>
@@ -96,18 +100,20 @@ class SpaceWrapper extends WrapperNoEvents
   static const double _twilightZoneWidth = 0.3;
   Vector2 _randomPositionInTwilightZone() {
     return randomRThetaRing(
-        center: ship.position,
-        ringWidth: _twilightZoneWidth,
-        ignoredRing: 1,
-        overallScale: mappedUniverseRadius);
+      center: ship.position,
+      ringWidth: _twilightZoneWidth,
+      ignoredRing: 1,
+      overallScale: mappedUniverseRadius,
+    );
   }
 
   Vector2 _randomPositionInMappedUniverse() {
     return randomRThetaRing(
-        center: ship.position,
-        ringWidth: 0.9,
-        ignoredRing: 0.1,
-        overallScale: mappedUniverseRadius);
+      center: ship.position,
+      ringWidth: 0.9,
+      ignoredRing: 0.1,
+      overallScale: mappedUniverseRadius,
+    );
   }
 
   @override
@@ -132,44 +138,64 @@ class SpaceWrapper extends WrapperNoEvents
 
   void _addStarterSpaceBodyField() {
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
-      rocks.add(RecycledRock(
+      rocks.add(
+        RecycledRock(
           position: _randomPositionInMappedUniverse(),
-          velocity:
-              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
           numberExplosionsLeft: randomStartingHits(),
-          radius: ship.radius * 0.8 * randomRadiusFactor()));
+          radius: ship.radius * 0.8 * randomRadiusFactor(),
+        ),
+      );
     }
     for (int i = 0; i < heartLimit - hearts.length; i++) {
-      add(Heart(
-        position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
-        radius: ship.radius,
-      ));
+      add(
+        Heart(
+          position: _randomPositionInMappedUniverse(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
-      add(Cherry(
-        position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
-        radius: ship.radius,
-      ));
+      add(
+        Cherry(
+          position: _randomPositionInMappedUniverse(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
     }
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
-      add(Alien(
-        position: _randomPositionInMappedUniverse(),
-        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
-        radius: ship.radius,
-      ));
+      add(
+        Alien(
+          position: _randomPositionInMappedUniverse(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
     }
   }
 
   void addSmallRocksOnDamage() {
     for (int i = 0; i < _transparentRockLimit - _transparentRocks.length; i++) {
-      rocks.add(RecycledRock(
+      rocks.add(
+        RecycledRock(
           position: _randomPositionInMappedUniverse(),
-          velocity:
-              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
           numberExplosionsLeft: randomStartingHits(),
-          radius: ship.radius * transpThreshold * 1.15));
+          radius: ship.radius * transpThreshold * 1.15,
+        ),
+      );
     }
   }
 
@@ -181,36 +207,52 @@ class SpaceWrapper extends WrapperNoEvents
       return; //risk adding spaceBodies that you can see being added
     }
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
-      rocks.add(RecycledRock(
+      rocks.add(
+        RecycledRock(
           position: _randomPositionInTwilightZone(),
-          velocity:
-              randomVelocityOffset(scale: 10 * zoomAdjustedEverythingScale),
+          velocity: randomVelocityOffset(
+            scale: 10 * zoomAdjustedEverythingScale,
+          ),
           ensureVelocityTowardsCenter: true,
           radius: ship.radius * randomRadiusFactor(),
-          numberExplosionsLeft: randomStartingHits()));
+          numberExplosionsLeft: randomStartingHits(),
+        ),
+      );
     }
     for (int i = 0; i < heartLimit - hearts.length; i++) {
-      add(Heart(
+      add(
+        Heart(
           position: _randomPositionInTwilightZone(),
-          velocity:
-              randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
           radius: ship.radius,
-          ensureVelocityTowardsCenter: true));
+          ensureVelocityTowardsCenter: true,
+        ),
+      );
     }
     for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
-      add(Cherry(
-        position: _randomPositionInTwilightZone(),
-        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
-        ensureVelocityTowardsCenter: true,
-        radius: ship.radius,
-      ));
+      add(
+        Cherry(
+          position: _randomPositionInTwilightZone(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          ensureVelocityTowardsCenter: true,
+          radius: ship.radius,
+        ),
+      );
     }
     for (int i = 0; i < _alienLimit - _aliens.length; i++) {
-      add(Alien(
-        position: _randomPositionInTwilightZone(),
-        velocity: randomVelocityOffset(scale: 5 * zoomAdjustedEverythingScale),
-        radius: ship.radius,
-      ));
+      add(
+        Alien(
+          position: _randomPositionInTwilightZone(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
     }
   }
 

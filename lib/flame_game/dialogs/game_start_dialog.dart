@@ -31,9 +31,10 @@ class StartDialog extends StatelessWidget {
       children: <Widget>[
         rotatedTitle(),
         bottomRowWidget(
-          children: true || game.stopwatchStarted && !game.playbackMode
-              ? <Widget>[
-                  TextButton(
+          children:
+              true || game.stopwatchStarted && !game.playbackMode
+                  ? <Widget>[
+                    TextButton(
                       style: buttonStyle(borderColor: Palette.warning.color),
                       onPressed: () {
                         game.overlays.remove(GameScreen.startDialogKey);

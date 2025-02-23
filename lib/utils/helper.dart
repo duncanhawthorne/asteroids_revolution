@@ -78,11 +78,12 @@ Vector2 randomVelocityOffset({double scale = 1}) {
 }
 
 final Vector2 _oneTimePosition = Vector2(0, 0);
-Vector2 randomRThetaRing(
-    {required Vector2 center,
-    required double ringWidth,
-    double ignoredRing = 0,
-    double overallScale = 1}) {
+Vector2 randomRThetaRing({
+  required Vector2 center,
+  required double ringWidth,
+  double ignoredRing = 0,
+  double overallScale = 1,
+}) {
   final double ringRadius =
       (ignoredRing + random.nextDouble() * ringWidth) * overallScale;
   final double ringAngle = tau * random.nextDouble();

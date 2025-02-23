@@ -33,10 +33,11 @@ class Rock extends SpaceBody {
     required super.radius,
     required this.numberExplosionsLeft,
   }) : super(
-          paint: _useSprite
-              ? (Paint()..color = Palette.transp.color)
-              : (Paint()..color = Palette.text.color),
-        );
+         paint:
+             _useSprite
+                 ? (Paint()..color = Palette.transp.color)
+                 : (Paint()..color = Palette.text.color),
+       );
 
   @override
   // ignore: overridden_fields
@@ -45,10 +46,11 @@ class Rock extends SpaceBody {
   int numberExplosionsLeft;
 
   late final CircleComponent hole = CircleComponent(
-      radius: 0,
-      anchor: Anchor.center,
-      paint: Paint()..color = Palette.dull.color,
-      position: Vector2.all(radius));
+    radius: 0,
+    anchor: Anchor.center,
+    paint: Paint()..color = Palette.dull.color,
+    position: Vector2.all(radius),
+  );
 
   @override
   void setHealth(double h) {
@@ -74,19 +76,24 @@ class Rock extends SpaceBody {
   }
 
   void _addSubRock() {
-    world.space.rocks.add(RecycledRock(
+    world.space.rocks.add(
+      RecycledRock(
         position: position,
         velocity: velocity + velocityNoise(2 * radius),
         radius: radius * _breakupSizeFactor(),
-        numberExplosionsLeft: numberExplosionsLeft - 1));
+        numberExplosionsLeft: numberExplosionsLeft - 1,
+      ),
+    );
   }
 
   void _addSubHeart() {
-    world.space.add(Heart(
-      position: position,
-      velocity: velocity + velocityNoise(2 * radius),
-      radius: ship.radius,
-    ));
+    world.space.add(
+      Heart(
+        position: position,
+        velocity: velocity + velocityNoise(2 * radius),
+        radius: ship.radius,
+      ),
+    );
   }
 
   bool _isLuckyHeart() {
@@ -119,9 +126,9 @@ class Rock extends SpaceBody {
       removeFromParent();
     } else {
       final double rFactor = radius / ship.radius;
-      opacity =
-          ((rFactor - transpThreshold) / (greyThreshold - transpThreshold))
-              .clamp(0, 1);
+      opacity = ((rFactor - transpThreshold) /
+              (greyThreshold - transpThreshold))
+          .clamp(0, 1);
     }
     if (_useSprite) {
       //sprite!.opacity = opacity;
@@ -161,11 +168,12 @@ class Rock extends SpaceBody {
        */
 
       spriteHole = SpriteComponent(
-          sprite: rock2Sprite,
-          angle: -tau / 4,
-          anchor: Anchor.center,
-          position: Vector2.all(radius),
-          size: Vector2.all(0));
+        sprite: rock2Sprite,
+        angle: -tau / 4,
+        anchor: Anchor.center,
+        position: Vector2.all(radius),
+        size: Vector2.all(0),
+      );
       add(spriteHole!);
     } else {
       add(hole);
@@ -185,19 +193,21 @@ final List<Rock> _allBits = <Rock>[];
 Iterable<Rock> get _spareBits => _allBits.where((Rock item) => !item.isActive);
 
 // ignore: non_constant_identifier_names
-Rock RecycledRock(
-    {required Vector2 position,
-    required Vector2 velocity,
-    required int numberExplosionsLeft,
-    required double radius,
-    bool ensureVelocityTowardsCenter = false}) {
+Rock RecycledRock({
+  required Vector2 position,
+  required Vector2 velocity,
+  required int numberExplosionsLeft,
+  required double radius,
+  bool ensureVelocityTowardsCenter = false,
+}) {
   if (_spareBits.isEmpty) {
     final Rock newBit = Rock(
-        position: position,
-        velocity: velocity,
-        numberExplosionsLeft: numberExplosionsLeft,
-        ensureVelocityTowardsCenter: ensureVelocityTowardsCenter,
-        radius: radius);
+      position: position,
+      velocity: velocity,
+      numberExplosionsLeft: numberExplosionsLeft,
+      ensureVelocityTowardsCenter: ensureVelocityTowardsCenter,
+      radius: radius,
+    );
     _allBits.add(newBit);
     return newBit;
   } else {

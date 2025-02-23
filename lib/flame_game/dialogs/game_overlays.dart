@@ -43,9 +43,7 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
     mainAxisAlignment: MainAxisAlignment.start,
     mainAxisSize: MainAxisSize.min,
     spacing: _widgetSpacing,
-    children: <Widget>[
-      _mainMenuButtonWidget(context, game),
-    ],
+    children: <Widget>[_mainMenuButtonWidget(context, game)],
   );
 }
 

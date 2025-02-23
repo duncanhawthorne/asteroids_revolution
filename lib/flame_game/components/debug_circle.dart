@@ -12,12 +12,12 @@ class DebugCircle extends CircleComponent
         HasGameReference<PacmanGame>,
         IgnoreEvents {
   DebugCircle({required this.type})
-      : super(
-          paint: Paint()..color = Palette.warning.color,
-          radius: 1,
-          position: Vector2(0, 0),
-          anchor: Anchor.center,
-        );
+    : super(
+        paint: Paint()..color = Palette.warning.color,
+        radius: 1,
+        position: Vector2(0, 0),
+        anchor: Anchor.center,
+      );
 
   @override
   int priority = -10000;

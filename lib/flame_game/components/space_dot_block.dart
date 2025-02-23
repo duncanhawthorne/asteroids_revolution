@@ -30,8 +30,10 @@ class SpaceDotWrapper extends PositionComponent
     scale = Vector2.all(pow(_kOrderBase, orderMagnitude).toDouble());
   }
 
-  void tidyUpdate(
-      {required int newOrderMagnitude, required Vector2 shipPosition}) {
+  void tidyUpdate({
+    required int newOrderMagnitude,
+    required Vector2 shipPosition,
+  }) {
     if (newOrderMagnitude != orderMagnitude) {
       orderMagnitude = newOrderMagnitude;
       _setScale();
@@ -40,8 +42,9 @@ class SpaceDotWrapper extends PositionComponent
     final double roundingScaled =
         maze.blockWidth * pow(_kOrderBase, orderMagnitude);
     position.setValues(
-        ((shipPosition.x / roundingScaled).round()) * roundingScaled,
-        ((shipPosition.y / roundingScaled).round()) * roundingScaled);
+      ((shipPosition.x / roundingScaled).round()) * roundingScaled,
+      ((shipPosition.y / roundingScaled).round()) * roundingScaled,
+    );
   }
 
   void reset() {
@@ -51,12 +54,14 @@ class SpaceDotWrapper extends PositionComponent
     for (int i = -halfGridSize; i <= halfGridSize; i++) {
       for (int j = -halfGridSize; j <= halfGridSize; j++) {
         final Vector2 dotPos = Vector2(
-            ((0 / roundingUnscaled).round() + i) * roundingUnscaled,
-            ((0 / roundingUnscaled).round() + j) * roundingUnscaled);
+          ((0 / roundingUnscaled).round() + i) * roundingUnscaled,
+          ((0 / roundingUnscaled).round() + j) * roundingUnscaled,
+        );
         final SpaceDot newDot = SpaceDot(
-            position: dotPos,
-            width: roundingUnscaled * 0.05,
-            height: roundingUnscaled * 0.05);
+          position: dotPos,
+          width: roundingUnscaled * 0.05,
+          height: roundingUnscaled * 0.05,
+        );
         add(newDot);
       }
     }

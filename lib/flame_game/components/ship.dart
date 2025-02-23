@@ -22,7 +22,7 @@ double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
 class Ship extends SpaceBody with CollisionCallbacks {
   Ship({required super.position, required super.velocity})
-      : super(radius: defaultShipRadius);
+    : super(radius: defaultShipRadius);
 
   @override
   // ignore: overridden_fields
@@ -62,26 +62,34 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   late final SpawnComponent gun = SpawnComponent(
-    factory: (int i) => RecycledBullet(
-        position: position, velocity: fBulletVelocity(), radius: radius * 0.25),
+    factory:
+        (int i) => RecycledBullet(
+          position: position,
+          velocity: fBulletVelocity(),
+          radius: radius * 0.25,
+        ),
     selfPositioning: true,
     period: 0.15,
   );
 
   late final SpawnComponent gunR = SpawnComponent(
-    factory: (int i) => RecycledBullet(
-        position: fBulletPosition(0.5),
-        velocity: fBulletVelocity(),
-        radius: radius * 0.25),
+    factory:
+        (int i) => RecycledBullet(
+          position: fBulletPosition(0.5),
+          velocity: fBulletVelocity(),
+          radius: radius * 0.25,
+        ),
     selfPositioning: true,
     period: 0.15,
   );
 
   late final SpawnComponent gunL = SpawnComponent(
-    factory: (int i) => RecycledBullet(
-        position: fBulletPosition(-0.5),
-        velocity: fBulletVelocity(),
-        radius: radius * 0.25),
+    factory:
+        (int i) => RecycledBullet(
+          position: fBulletPosition(-0.5),
+          velocity: fBulletVelocity(),
+          radius: radius * 0.25,
+        ),
     selfPositioning: true,
     period: 0.15,
   );
@@ -211,7 +219,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
 class ShipSpriteComponent extends SpriteAnimationGroupComponent<CharacterState>
     with HasGameReference<PacmanGame>, IgnoreEvents {
   ShipSpriteComponent({super.position, super.priority = 1})
-      : super(anchor: Anchor.center);
+    : super(anchor: Anchor.center);
 
   void loadStubAnimationsOnDebugMode() {
     // works around changes made in flame 1.19
@@ -226,14 +234,12 @@ class ShipSpriteComponent extends SpriteAnimationGroupComponent<CharacterState>
 
   Future<Map<CharacterState, SpriteAnimation>?> getAnimations() async {
     return <CharacterState, SpriteAnimation>{
-      CharacterState.normal: SpriteAnimation.spriteList(
-        <Sprite>[await game.loadSprite("ship.png")],
-        stepTime: double.infinity,
-      ),
-      CharacterState.accelerating: SpriteAnimation.spriteList(
-        <Sprite>[await game.loadSprite('ship_flame.png')],
-        stepTime: double.infinity,
-      ),
+      CharacterState.normal: SpriteAnimation.spriteList(<Sprite>[
+        await game.loadSprite("ship.png"),
+      ], stepTime: double.infinity),
+      CharacterState.accelerating: SpriteAnimation.spriteList(<Sprite>[
+        await game.loadSprite('ship_flame.png'),
+      ], stepTime: double.infinity),
     };
   }
 

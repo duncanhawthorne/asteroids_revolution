@@ -7,9 +7,11 @@ import 'space_body.dart';
 import 'space_layer.dart';
 
 class Bullet extends SpaceBody with CollisionCallbacks {
-  Bullet(
-      {required super.position, required super.velocity, required super.radius})
-      : super(paint: seedPaint);
+  Bullet({
+    required super.position,
+    required super.velocity,
+    required super.radius,
+  }) : super(paint: seedPaint);
 
   @override
   Future<void> onLoad() async {
@@ -52,13 +54,17 @@ Iterable<Bullet> get _spareBits =>
     _allBits.where((Bullet item) => !item.isActive);
 
 // ignore: non_constant_identifier_names
-Bullet RecycledBullet(
-    {required Vector2 position,
-    required Vector2 velocity,
-    required double radius}) {
+Bullet RecycledBullet({
+  required Vector2 position,
+  required Vector2 velocity,
+  required double radius,
+}) {
   if (_spareBits.isEmpty) {
-    final Bullet newBit =
-        Bullet(position: position, velocity: velocity, radius: radius);
+    final Bullet newBit = Bullet(
+      position: position,
+      velocity: velocity,
+      radius: radius,
+    );
     _allBits.add(newBit);
     return newBit;
   } else {

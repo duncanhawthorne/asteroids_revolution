@@ -42,19 +42,27 @@ class CameraWrapper extends WrapperNoEvents
   bool get tooZoomedOut => overZoomError < 0.75;
 
   final SpaceDotWrapper _smallDots = SpaceDotWrapper(
-      position: Vector2(0, 0), orderMagnitude: 0, fullGrid: true);
+    position: Vector2(0, 0),
+    orderMagnitude: 0,
+    fullGrid: true,
+  );
   final SpaceDotWrapper _bigDot = SpaceDotWrapper(
-      position: Vector2(0, 0), orderMagnitude: 1, fullGrid: false);
+    position: Vector2(0, 0),
+    orderMagnitude: 1,
+    fullGrid: false,
+  );
 
   int get _zoomOrderOfMagnitude => logOrder(1 / zoom * 75).floor();
 
   void fixSpaceDots() {
     _smallDots.tidyUpdate(
-        newOrderMagnitude: _zoomOrderOfMagnitude + 0,
-        shipPosition: ship.position);
+      newOrderMagnitude: _zoomOrderOfMagnitude + 0,
+      shipPosition: ship.position,
+    );
     _bigDot.tidyUpdate(
-        newOrderMagnitude: _zoomOrderOfMagnitude + 1,
-        shipPosition: ship.position);
+      newOrderMagnitude: _zoomOrderOfMagnitude + 1,
+      shipPosition: ship.position,
+    );
   }
 
   @override
