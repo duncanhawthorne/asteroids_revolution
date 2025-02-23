@@ -25,6 +25,7 @@ class PelletWrapper extends WrapperNoEvents
       clearSnapshot();
     });
     await reset();
+    renderSnapshot = false;
   }
 
   @override

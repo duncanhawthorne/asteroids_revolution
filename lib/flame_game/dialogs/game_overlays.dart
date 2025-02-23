@@ -28,7 +28,7 @@ Widget topOverlayWidget(BuildContext context, PacmanGame game) {
             spacing: _widgetSpacing,
             children: <Widget>[
               _topLeftWidget(context, game),
-              _topRightWidget(context, game)
+              _topRightWidget(context, game),
             ],
           ),
         ],
@@ -82,10 +82,11 @@ Widget _clockWidget(PacmanGame game) {
         stream: Stream<dynamic>.periodic(const Duration(milliseconds: 100)),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return Text(
-              (game.stopwatchMilliSeconds / 1000)
-                  .toStringAsFixed(1)
-                  .padLeft(4, " "),
-              style: textStyleBody);
+            (game.stopwatchMilliSeconds / 1000)
+                .toStringAsFixed(1)
+                .padLeft(4, " "),
+            style: textStyleBody,
+          );
         },
       ),
     ),

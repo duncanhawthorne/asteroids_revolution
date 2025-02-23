@@ -106,7 +106,7 @@ class PacmanWorld extends Forge2DWorld
     }
   }
 
-  static const bool enableMovingWalls = true && kDebugMode;
+  static const bool enableMovingWalls = kDebugMode && false;
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -135,8 +135,9 @@ class PacmanWorld extends Forge2DWorld
       _fingersLastDragAngle[event.pointerId] = null;
     } else {
       _fingersLastDragAngle[event.pointerId] = atan2(
-          event.canvasPosition.x - game.canvasSize.x / 2,
-          event.canvasPosition.y - game.canvasSize.y / 2);
+        event.canvasPosition.x - game.canvasSize.x / 2,
+        event.canvasPosition.y - game.canvasSize.y / 2,
+      );
     }
   }
 
@@ -150,17 +151,21 @@ class PacmanWorld extends Forge2DWorld
     }
 
     game.resumeGame();
-    _eventOffset.setValues(event.canvasStartPosition.x - game.canvasSize.x / 2,
-        event.canvasStartPosition.y - game.canvasSize.y / 2);
+    _eventOffset.setValues(
+      event.canvasStartPosition.x - game.canvasSize.x / 2,
+      event.canvasStartPosition.y - game.canvasSize.y / 2,
+    );
     final double eventVectorLengthProportion =
         _eventOffset.length / (min(game.canvasSize.x, game.canvasSize.y) / 2);
     final double fingerCurrentDragAngle = atan2(_eventOffset.x, _eventOffset.y);
     if (_fingersLastDragAngle.containsKey(event.pointerId)) {
       if (_fingersLastDragAngle[event.pointerId] != null) {
         final double angleDelta = smallAngle(
-            fingerCurrentDragAngle - _fingersLastDragAngle[event.pointerId]!);
+          fingerCurrentDragAngle - _fingersLastDragAngle[event.pointerId]!,
+        );
         const double maxSpinMultiplierRadius = 0.75;
-        final double spinMultiplier = 4 *
+        final double spinMultiplier =
+            4 *
             game.level.spinSpeedFactor *
             min(1, eventVectorLengthProportion / maxSpinMultiplierRadius);
 
