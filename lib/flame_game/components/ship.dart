@@ -62,37 +62,37 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   late final SpawnComponent gun = SpawnComponent(
-    factory:
-        (int i) => RecycledBullet(
-          position: position,
-          velocity: fBulletVelocity(),
-          radius: radius * 0.25,
-        ),
+    multiFactory: (int i) => bullets(),
     selfPositioning: true,
     period: 0.15,
   );
 
-  late final SpawnComponent gunR = SpawnComponent(
-    factory:
-        (int i) => RecycledBullet(
+  List<PositionComponent> bullets() {
+    List<PositionComponent> out = [
+      RecycledBullet(
+        position: position,
+        velocity: fBulletVelocity(),
+        radius: radius * 0.25,
+      ),
+    ];
+    if (_withMultiGun) {
+      out.add(
+        RecycledBullet(
           position: fBulletPosition(0.5),
           velocity: fBulletVelocity(),
           radius: radius * 0.25,
         ),
-    selfPositioning: true,
-    period: 0.15,
-  );
-
-  late final SpawnComponent gunL = SpawnComponent(
-    factory:
-        (int i) => RecycledBullet(
+      );
+      out.add(
+        RecycledBullet(
           position: fBulletPosition(-0.5),
           velocity: fBulletVelocity(),
           radius: radius * 0.25,
         ),
-    selfPositioning: true,
-    period: 0.15,
-  );
+      );
+    }
+    return out;
+  }
 
   bool lastAccelerating = false;
   void accel(bool on) {
@@ -138,12 +138,17 @@ class Ship extends SpaceBody with CollisionCallbacks {
     });
   }
 
+  bool _withMultiGun = false;
   void addMultiGun() {
-    world.space.bullets.add(gunR);
-    world.space.bullets.add(gunL);
+    _withMultiGun = true;
     multiGunTimer
       ..reset()
       ..start();
+  }
+
+  void removeMultiGun() {
+    _withMultiGun = false;
+    multiGunTimer.pause();
   }
 
   ShipSpriteComponent shipSprite = ShipSpriteComponent();
@@ -177,9 +182,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     }
     multiGunTimer.update(dt);
     if (multiGunTimer.finished) {
-      gunR.removeFromParent();
-      gunL.removeFromParent();
-      multiGunTimer.pause();
+      removeMultiGun();
     }
     await super.update(dt);
   }
