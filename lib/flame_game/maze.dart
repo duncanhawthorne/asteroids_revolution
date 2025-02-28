@@ -318,9 +318,6 @@ class Maze {
     if (!includeVisualWalls) {
       result.clear();
     }
-    if (includeGround) {
-      result.add(WallGround(fixtureDefs: fixtureDefs));
-    }
     return result;
   }
 
