@@ -41,10 +41,10 @@ class Ship extends SpaceBody with CollisionCallbacks {
   // ignore: overridden_fields
   final bool canAccelerate = true;
 
-  Timer multiGunTimer = Timer(15);
+  Timer _multiGunTimer = Timer(15);
 
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
-  Vector2 fBulletVelocity() {
+  Vector2 _fBulletVelocity() {
     _oneTimeVelocity
       ..setFrom(world.downDirection)
       ..scale(-2 * radius)
@@ -53,7 +53,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   final Vector2 _oneTimePosition = Vector2(0, 0);
-  Vector2 fBulletPosition(double offset) {
+  Vector2 _fBulletPosition(double offset) {
     _oneTimePosition
       ..setFrom(position)
       ..x += radius * cos(angle) * offset
@@ -62,31 +62,31 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   late final SpawnComponent gun = SpawnComponent(
-    multiFactory: (int i) => bullets(),
+    multiFactory: (int i) => _bullets(),
     selfPositioning: true,
     period: 0.15,
   );
 
-  List<PositionComponent> bullets() {
+  List<PositionComponent> _bullets() {
     List<PositionComponent> out = [
       RecycledBullet(
         position: position,
-        velocity: fBulletVelocity(),
+        velocity: _fBulletVelocity(),
         radius: radius * 0.25,
       ),
     ];
     if (_withMultiGun) {
       out.add(
         RecycledBullet(
-          position: fBulletPosition(0.5),
-          velocity: fBulletVelocity(),
+          position: _fBulletPosition(0.5),
+          velocity: _fBulletVelocity(),
           radius: radius * 0.25,
         ),
       );
       out.add(
         RecycledBullet(
-          position: fBulletPosition(-0.5),
-          velocity: fBulletVelocity(),
+          position: _fBulletPosition(-0.5),
+          velocity: _fBulletVelocity(),
           radius: radius * 0.25,
         ),
       );
@@ -94,16 +94,14 @@ class Ship extends SpaceBody with CollisionCallbacks {
     return out;
   }
 
-  bool lastAccelerating = false;
   void accel(bool on) {
     if (on) {
       accelerating = true;
-      shipSprite.current = CharacterState.accelerating;
+      _shipSprite.current = CharacterState.accelerating;
     } else {
       accelerating = false;
-      shipSprite.current = CharacterState.normal;
+      _shipSprite.current = CharacterState.normal;
     }
-    lastAccelerating = accelerating;
   }
 
   @override
@@ -112,8 +110,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
       world.space.updateAllRockOpacities();
     }
     super.setSize(h);
-    shipSprite.position.setAll(radius);
-    shipSprite.size.setAll(radius * 2);
+    _shipSprite.position.setAll(radius);
+    _shipSprite.size.setAll(radius * 2);
   }
 
   @override
@@ -139,26 +137,26 @@ class Ship extends SpaceBody with CollisionCallbacks {
   }
 
   bool _withMultiGun = false;
-  void addMultiGun() {
+  void _addMultiGun() {
     _withMultiGun = true;
-    multiGunTimer
+    _multiGunTimer
       ..reset()
       ..start();
   }
 
-  void removeMultiGun() {
+  void _removeMultiGun() {
     _withMultiGun = false;
-    multiGunTimer.pause();
+    _multiGunTimer.pause();
   }
 
-  ShipSpriteComponent shipSprite = ShipSpriteComponent();
+  ShipSpriteComponent _shipSprite = ShipSpriteComponent();
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     hitBox.collisionType = CollisionType.active;
     world.space.bullets.add(gun);
-    add(shipSprite);
+    add(_shipSprite);
     reset();
   }
 
@@ -180,9 +178,9 @@ class Ship extends SpaceBody with CollisionCallbacks {
     } else {
       acceleration.setAll(0);
     }
-    multiGunTimer.update(dt);
-    if (multiGunTimer.finished) {
-      removeMultiGun();
+    _multiGunTimer.update(dt);
+    if (_multiGunTimer.finished) {
+      _removeMultiGun();
     }
     await super.update(dt);
   }
@@ -213,7 +211,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
     } else if (other is WallRectangleVisual) {
       velocity.scale(-1);
     } else if (other is Cherry) {
-      addMultiGun();
+      _addMultiGun();
       other.removeFromParent();
     }
   }
