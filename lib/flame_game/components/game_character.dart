@@ -27,9 +27,9 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     this.original,
     super.paint,
     required double radius,
-    required Vector2 nonForgeVelocity,
+    required Vector2 velocity,
   }) : super(size: Vector2.all(radius * 2), anchor: Anchor.center) {
-    _simpleVelocity = Vector2.zero()..setFrom(nonForgeVelocity);
+    _simpleVelocity = Vector2.zero()..setFrom(velocity);
   }
 
   bool possiblePhysicsConnection = true;

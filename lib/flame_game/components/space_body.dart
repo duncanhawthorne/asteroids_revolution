@@ -10,10 +10,10 @@ const double transpThreshold = 0.5 * 0.2;
 class SpaceBody extends GameCharacter with IgnoreEvents {
   SpaceBody({
     required super.position,
-    required Vector2 velocity,
+    required super.velocity,
     required super.radius,
     super.paint,
-  }) : super(nonForgeVelocity: velocity);
+  });
 
   double health = 1;
   final bool cleanIfTiny = true;
