@@ -8,7 +8,7 @@ import '../../utils/helper.dart';
 import 'heart.dart';
 import 'space_body.dart';
 
-const bool _useSprite = false;
+final Paint _rockPaint = Paint()..color = Palette.transp.color;
 
 double _breakupSizeFactor() {
   const List<double> breakupSizes = <double>[0.2, 0.4, 0.5, 0.6, 0.7, 0.75];
@@ -32,12 +32,7 @@ class Rock extends SpaceBody {
     this.ensureVelocityTowardsCenter = false,
     required super.radius,
     required this.numberExplosionsLeft,
-  }) : super(
-         paint:
-             _useSprite
-                 ? (Paint()..color = Palette.transp.color)
-                 : (Paint()..color = Palette.text.color),
-       );
+  }) : super(paint: _rockPaint);
 
   @override
   // ignore: overridden_fields
@@ -61,9 +56,7 @@ class Rock extends SpaceBody {
       addRockHole();
     }
     hole.radius = radius * (1 - health).clamp(0, 0.95);
-    if (_useSprite) {
-      spriteHole?.size.setAll(hole.radius * 2);
-    }
+    spriteHole?.size.setAll(hole.radius * 2);
     if (health < 0) {
       explode();
     }
@@ -77,8 +70,8 @@ class Rock extends SpaceBody {
 
   void _addSubRock() {
     world.space.rocks.add(
-      RecycledRock(
-        position: position,
+      Rock(
+        position: position + Vector2.random() * radius / 2,
         velocity: velocity + velocityNoise(2 * radius),
         radius: radius * _breakupSizeFactor(),
         numberExplosionsLeft: numberExplosionsLeft - 1,
@@ -89,7 +82,7 @@ class Rock extends SpaceBody {
   void _addSubHeart() {
     world.space.add(
       Heart(
-        position: position,
+        position: position + Vector2.random() * radius / 2,
         velocity: velocity + velocityNoise(2 * radius),
         radius: ship.radius,
       ),
@@ -116,6 +109,7 @@ class Rock extends SpaceBody {
         _addSubHeart();
       }
     }
+    removalActions();
     removeFromParent();
   }
 
@@ -125,102 +119,42 @@ class Rock extends SpaceBody {
     } else if (isTiny) {
       removeFromParent();
     } else {
+      //update paint so can have separate transparency to other rocks
+      paint = Paint()..color = Palette.transp.color;
       final double rFactor = radius / ship.radius;
       opacity = ((rFactor - transpThreshold) /
               (greyThreshold - transpThreshold))
           .clamp(0, 1);
     }
-    if (_useSprite) {
-      //sprite!.opacity = opacity;
-      //spriteHole?.opacity = opacity;
-    } else {
-      hole.opacity = opacity;
-    }
   }
+
+  @override
+  String defaultSpritePath = "asteroid1.png";
 
   @override
   Future<void> onMount() async {
     await super.onMount();
     updateOpacity();
-    if (_useSprite) {
-      spriteHole?.position.setAll(radius);
-    } else {
-      hole.position.setAll(radius);
-    }
+    spriteHole?.position.setAll(radius);
   }
 
-  Sprite? rock1Sprite;
-  Sprite? rock2Sprite;
+  Sprite? rockHoleSprite;
   SpriteComponent? spriteHole;
 
   Future<void> addRockHole() async {
-    if (_useSprite) {
-      rock1Sprite = await Sprite.load("asteroid1.png");
-      rock2Sprite = await Sprite.load("asteroid2.png");
-      /*
-      sprite = SpriteComponent(
-          sprite: rock1Sprite,
-          angle: -tau / 4,
-          anchor: Anchor.center,
-          position: Vector2.all(radius),
-          size: Vector2.all(radius * 2));
-      add(sprite!);
-       */
+    rockHoleSprite = await Sprite.load("asteroid2.png");
 
-      spriteHole = SpriteComponent(
-        sprite: rock2Sprite,
-        angle: -tau / 4,
-        anchor: Anchor.center,
-        position: Vector2.all(radius),
-        size: Vector2.all(0),
-      );
-      add(spriteHole!);
-    } else {
-      add(hole);
-    }
+    spriteHole = SpriteComponent(
+      sprite: rockHoleSprite,
+      angle: -tau / 4,
+      anchor: Anchor.center,
+      position: Vector2.all(radius),
+      size: Vector2.all(0),
+    );
+    add(spriteHole!);
   }
 
   Future<void> removeRockHole() async {
-    if (_useSprite) {
-      spriteHole?.removeFromParent();
-    } else {
-      hole.removeFromParent();
-    }
-  }
-}
-
-final List<Rock> _allBits = <Rock>[];
-Iterable<Rock> get _spareBits => _allBits.where((Rock item) => !item.isActive);
-
-// ignore: non_constant_identifier_names
-Rock RecycledRock({
-  required Vector2 position,
-  required Vector2 velocity,
-  required int numberExplosionsLeft,
-  required double radius,
-  bool ensureVelocityTowardsCenter = false,
-}) {
-  if (_spareBits.isEmpty) {
-    final Rock newBit = Rock(
-      position: position,
-      velocity: velocity,
-      numberExplosionsLeft: numberExplosionsLeft,
-      ensureVelocityTowardsCenter: ensureVelocityTowardsCenter,
-      radius: radius,
-    );
-    _allBits.add(newBit);
-    return newBit;
-  } else {
-    final Rock recycledBit = _spareBits.first;
-    // ignore: cascade_invocations
-    recycledBit.isActive = true;
-    assert(_spareBits.isEmpty || _spareBits.first != recycledBit);
-    recycledBit.position.setFrom(position);
-    recycledBit.velocity.setFrom(velocity);
-    recycledBit
-      ..numberExplosionsLeft = numberExplosionsLeft
-      ..ensureVelocityTowardsCenter = ensureVelocityTowardsCenter
-      ..radius = radius;
-    return recycledBit;
+    spriteHole?.removeFromParent();
   }
 }
