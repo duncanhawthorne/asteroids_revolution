@@ -10,6 +10,9 @@ class Heart extends SpaceBody {
   }) : super(paint: seedPaint);
 
   @override
+  String defaultSpritePath = "heart.png";
+
+  @override
   // ignore: overridden_fields
   bool ensureVelocityTowardsCenter;
 }

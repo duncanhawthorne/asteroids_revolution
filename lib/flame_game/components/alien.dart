@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../../style/palette.dart';
@@ -42,10 +41,12 @@ class Alien extends SpaceBody {
   }
 
   @override
+  String defaultSpritePath = "alien.png";
+
+  @override
   Future<void> onLoad() async {
     await super.onLoad();
     add(hole);
-    hitBox.collisionType = CollisionType.passive;
   }
 
   final Vector2 _oneTimeGoal = Vector2(0, 0);

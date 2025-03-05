@@ -13,6 +13,9 @@ class Cherry extends SpaceBody {
   }) : super(paint: _cherryPaint);
 
   @override
+  String defaultSpritePath = "triple.png";
+
+  @override
   // ignore: overridden_fields
   bool ensureVelocityTowardsCenter;
 }

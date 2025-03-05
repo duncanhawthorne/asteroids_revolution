@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/camera.dart';
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -46,7 +45,7 @@ const double kVirtualGameSize = 1700; //determines speed of game
 class PacmanGame extends Forge2DGame<PacmanWorld>
     with
         // ignore: always_specify_types
-        HasQuadTreeCollisionDetection,
+        HasCollisionDetection,
         SingleGameInstance,
         HasTimeScale {
   PacmanGame._({
@@ -321,7 +320,6 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       assert(world.isLoaded);
       world.reset();
     }
-    collisionDetection.broadphase.tree.optimize();
   }
 
   void resetAndStart() {
@@ -373,14 +371,6 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   Future<void> onLoad() async {
     super.onLoad();
     _bugFixes();
-    initializeCollisionDetection(
-      mapDimensions: Rect.fromLTWH(
-        -maze.mazeWidth / 2,
-        -maze.mazeHeight / 2,
-        maze.mazeWidth,
-        maze.mazeHeight,
-      ),
-    ); //assume maze size won't change //FIXME
     reset(firstRun: true, showStartDialog: true);
     _winOrLoseGameListener(); //isn't disposed so run once, not on start()
     _lifecycleChangeListener(); //isn't disposed so run once, not on start()
