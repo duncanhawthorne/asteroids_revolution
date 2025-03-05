@@ -10,6 +10,7 @@ class Heart extends SpaceBody {
   }) : super(paint: seedPaint);
 
   @override
+  // ignore: overridden_fields
   String defaultSpritePath = "heart.png";
 
   @override

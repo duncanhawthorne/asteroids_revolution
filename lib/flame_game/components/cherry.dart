@@ -13,6 +13,7 @@ class Cherry extends SpaceBody {
   }) : super(paint: _cherryPaint);
 
   @override
+  // ignore: overridden_fields
   String defaultSpritePath = "triple.png";
 
   @override

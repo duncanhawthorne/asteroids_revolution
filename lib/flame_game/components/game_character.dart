@@ -29,7 +29,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     required double radius,
     required Vector2 nonForgeVelocity,
   }) : super(size: Vector2.all(radius * 2), anchor: Anchor.center) {
-    this._simpleVelocity = Vector2.zero()..setFrom(nonForgeVelocity);
+    _simpleVelocity = Vector2.zero()..setFrom(nonForgeVelocity);
   }
 
   bool possiblePhysicsConnection = true;
@@ -39,7 +39,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   late final double _radius = size.x / 2;
   double get radius => size.x.toDouble() / 2;
-  set radius(x) => _setRadius(x);
+  set radius(double x) => _setRadius(x);
   void _setRadius(double x) {
     size = Vector2.all(x * 2);
     if (isMounted) {
@@ -84,7 +84,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
           ? CollisionType.active
           : CollisionType.passive;
 
-  bool _cloneEverMade = false; //could just test clone is null
+  final bool _cloneEverMade = false; //could just test clone is null
   GameCharacter? _clone;
   late final GameCharacter? original;
   bool isClone = false;

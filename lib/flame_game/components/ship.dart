@@ -35,7 +35,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   // ignore: overridden_fields
   final bool canAccelerate = true;
 
-  Timer _multiGunTimer = Timer(15);
+  final Timer _multiGunTimer = Timer(15);
 
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
   Vector2 _fBulletVelocity() {
@@ -62,7 +62,7 @@ class Ship extends SpaceBody with CollisionCallbacks {
   );
 
   List<PositionComponent> _bullets() {
-    List<PositionComponent> out = [
+    final List<PositionComponent> out = <PositionComponent>[
       RecycledBullet(
         position: position,
         velocity: _fBulletVelocity(),
@@ -70,20 +70,21 @@ class Ship extends SpaceBody with CollisionCallbacks {
       ),
     ];
     if (_withMultiGun) {
-      out.add(
-        RecycledBullet(
-          position: _fBulletPosition(0.5),
-          velocity: _fBulletVelocity(),
-          radius: radius * 0.25,
-        ),
-      );
-      out.add(
-        RecycledBullet(
-          position: _fBulletPosition(-0.5),
-          velocity: _fBulletVelocity(),
-          radius: radius * 0.25,
-        ),
-      );
+      out
+        ..add(
+          RecycledBullet(
+            position: _fBulletPosition(0.5),
+            velocity: _fBulletVelocity(),
+            radius: radius * 0.25,
+          ),
+        )
+        ..add(
+          RecycledBullet(
+            position: _fBulletPosition(-0.5),
+            velocity: _fBulletVelocity(),
+            radius: radius * 0.25,
+          ),
+        );
     }
     return out;
   }

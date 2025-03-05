@@ -36,6 +36,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents {
   // ignore: overridden_fields
   final bool renderBody = false;
 
+  @override
   int priority = -100;
 
   // ignore: unused_field

@@ -16,12 +16,15 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   }) : super(paint: seedPaint);
 
   @override
+  // ignore: overridden_fields
   final bool connectedToBall = false;
 
   @override
+  // ignore: overridden_fields
   final bool possiblePhysicsConnection = false;
 
   @override
+  // ignore: overridden_fields
   String defaultSpritePath = "bullet.png";
 
   @override

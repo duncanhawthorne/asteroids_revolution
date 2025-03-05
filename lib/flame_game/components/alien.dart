@@ -41,6 +41,7 @@ class Alien extends SpaceBody {
   }
 
   @override
+  // ignore: overridden_fields
   String defaultSpritePath = "alien.png";
 
   @override

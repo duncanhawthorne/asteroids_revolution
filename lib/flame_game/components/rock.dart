@@ -129,6 +129,7 @@ class Rock extends SpaceBody {
   }
 
   @override
+  // ignore: overridden_fields
   String defaultSpritePath = "asteroid1.png";
 
   @override
