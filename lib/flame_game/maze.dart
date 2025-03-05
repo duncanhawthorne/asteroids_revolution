@@ -321,6 +321,7 @@ class Maze {
     return result;
   }
 
+  // ignore: unused_field
   static const String _kMiniPellet = "0"; //quad of dots
   static const String _kWall = "1";
   static const String _kMovingWall = "6";

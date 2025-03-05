@@ -26,10 +26,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
   // ignore: overridden_fields
   bool neverRender = true;
 
-  @override
-  // ignore: overridden_fields
-  bool renderShape = false;
-
   bool accelerating = false;
   @override
   // ignore: overridden_fields

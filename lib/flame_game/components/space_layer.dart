@@ -283,6 +283,7 @@ class SpaceWrapper extends WrapperNoEvents
     add(bullets);
     add(rocks);
     //add(world.walls);
+    // ignore: dead_code
     if (false && kDebugMode) {
       add(DebugCircle(type: "full")); //full universe
       add(DebugCircle(type: "mapped")); //mapped universe

@@ -4,10 +4,6 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 
 import '../../utils/helper.dart';
 
-const double _lubricationScaleFactor = 0.99;
-const bool _kVerticalPortalsEnabled = false;
-final Vector2 _volatileInstantConsumeVector2 =
-    Vector2.zero(); //shared across all balls
 const bool openSpaceMovement = true;
 
 // ignore: always_specify_types
@@ -42,6 +38,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents {
 
   int priority = -100;
 
+  // ignore: unused_field
   bool _subConnectedBall = true;
 
   set velocity(Vector2 vel) => body.linearVelocity.setFrom(vel);
@@ -69,10 +66,4 @@ class PhysicsBall extends BodyComponent with IgnoreEvents {
     }
     _subConnectedBall = false;
   }
-}
-
-double _smallMod(double value, double mod) {
-  //produces number between -mod / 2 and +mod / 2
-  value = value % mod;
-  return value > mod / 2 ? value - mod : value;
 }
