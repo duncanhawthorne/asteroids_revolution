@@ -42,7 +42,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   set radius(double x) => _setRadius(x);
   void _setRadius(double x) {
     size = Vector2.all(x * 2);
-    if (isMounted) {
+    if (isMounted && possiblePhysicsConnection) {
       _ball.body.fixtures.first.shape.radius = x;
     }
   }
@@ -129,8 +129,14 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   }
 
   void bringBallToSprite() {
-    _ball.position = position;
-    _ball.velocity = _simpleVelocity;
+    assert(possiblePhysicsConnection, this);
+    if (!possiblePhysicsConnection) {
+      return;
+    }
+    if (isMounted && !isRemoving) {
+      _ball.position = position;
+      _ball.velocity = _simpleVelocity;
+    }
 
     if (isMounted && !isRemoving) {
       // must test isMounted as bringBallToSprite typically runs after a delay
@@ -159,6 +165,10 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   }
 
   void connectToBall() {
+    assert(possiblePhysicsConnection, this);
+    if (!possiblePhysicsConnection) {
+      return;
+    }
     connectedToBall = true;
     _ball.setDynamic();
     _ball.body.angularVelocity = (random.nextDouble() - 0.5) * tau / 2;
