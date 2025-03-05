@@ -6,6 +6,8 @@ import 'rock.dart';
 import 'space_body.dart';
 import 'space_layer.dart';
 
+final Vector2 _offscreen = Vector2(1000, 1000);
+
 class Bullet extends SpaceBody with CollisionCallbacks {
   Bullet({
     required super.position,
@@ -14,10 +16,13 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   }) : super(paint: seedPaint);
 
   @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-    hitBox.collisionType = CollisionType.active;
-  }
+  final bool connectedToBall = false;
+
+  @override
+  final bool possiblePhysicsConnection = false;
+
+  @override
+  String defaultSpritePath = "bullet.png";
 
   @override
   Future<void> update(double dt) async {
@@ -41,9 +46,11 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   void _onCollideWith(PositionComponent other) {
     if (other is Rock) {
       other.damage(4 * radius / other.radius);
+      position = _offscreen; //stop repeat hits
       removeFromParent();
     } else if (other is Alien) {
       other.damage(0.05 * radius / other.radius);
+      position = _offscreen; //stop repeat hits
       removeFromParent();
     }
   }
@@ -75,6 +82,7 @@ Bullet RecycledBullet({
     recycledBit.position.setFrom(position);
     recycledBit.velocity.setFrom(velocity);
     recycledBit.radius = radius;
+    recycledBit.hitBox.collisionType = recycledBit.defaultCollisionType;
     return recycledBit;
   }
 }
