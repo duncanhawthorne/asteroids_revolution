@@ -15,11 +15,9 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     super.paint,
   }) : super(nonForgeVelocity: velocity);
 
-  final Vector2 acceleration = Vector2(0, 0);
   double health = 1;
   final bool cleanIfTiny = true;
   bool ensureVelocityTowardsCenter = false;
-  final bool canAccelerate = false;
   bool isActive = true; //do not in spareBits
 
   bool neverRender = false;
@@ -135,9 +133,6 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
         position.addScaled(velocity, dt);
       }
     } else {
-      if (canAccelerate) {
-        ball.body.applyForce(acceleration * ball.body.mass);
-      }
       oneFrameOfPhysics(dt);
     }
     if (oneFrameDue) {
