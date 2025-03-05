@@ -110,6 +110,7 @@ class PacmanWorld extends Forge2DWorld
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    gravity = gravZero;
     add(noEventsWrapper);
     wrappers.addAll(<WrapperNoEvents>[space]);
     for (final WrapperNoEvents wrapper in wrappers) {
@@ -202,6 +203,7 @@ class PacmanWorld extends Forge2DWorld
   }
 
   final Vector2 downDirection = Vector2.zero();
+  final Vector2 gravZero = Vector2.zero();
 
   static const bool _updateGravityOnRotation = false;
   final Vector2 gravitySign = Vector2(0, 0);

@@ -139,7 +139,7 @@ class SpaceWrapper extends WrapperNoEvents
   void _addStarterSpaceBodyField() {
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       rocks.add(
-        RecycledRock(
+        Rock(
           position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
@@ -187,7 +187,7 @@ class SpaceWrapper extends WrapperNoEvents
   void addSmallRocksOnDamage() {
     for (int i = 0; i < _transparentRockLimit - _transparentRocks.length; i++) {
       rocks.add(
-        RecycledRock(
+        Rock(
           position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
@@ -208,7 +208,7 @@ class SpaceWrapper extends WrapperNoEvents
     }
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       rocks.add(
-        RecycledRock(
+        Rock(
           position: _randomPositionInTwilightZone(),
           velocity: randomVelocityOffset(
             scale: 10 * zoomAdjustedEverythingScale,
@@ -283,7 +283,7 @@ class SpaceWrapper extends WrapperNoEvents
     add(bullets);
     add(rocks);
     //add(world.walls);
-    if (kDebugMode) {
+    if (false && kDebugMode) {
       add(DebugCircle(type: "full")); //full universe
       add(DebugCircle(type: "mapped")); //mapped universe
       add(DebugCircle(type: "visiblePlus")); //visible universe
