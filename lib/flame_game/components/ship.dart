@@ -168,7 +168,8 @@ class Ship extends SpaceBody with CollisionCallbacks {
   @override
   void reset() {
     super.reset();
-    //position = Vector2(0, 0); //FIXME
+    position = Vector2(0, 0);
+    bringBallToSprite();
     //velocity.setAll(0); //FIXME
     setHealth(1);
   }
