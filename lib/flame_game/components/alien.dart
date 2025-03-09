@@ -1,12 +1,10 @@
 import 'dart:ui';
 
-import 'package:flame/components.dart';
-
 import '../../style/palette.dart';
+import 'game_character.dart';
 import 'space_body.dart';
 
 final Paint _alienPaint = Paint()..color = Palette.warning.color;
-final Paint _alienCorePaint = Paint()..color = Palette.dull.color;
 
 class Alien extends SpaceBody {
   Alien({
@@ -15,12 +13,13 @@ class Alien extends SpaceBody {
     required super.radius,
   }) : super(paint: _alienPaint);
 
-  late final CircleComponent hole = CircleComponent(
-    radius: 0,
-    anchor: Anchor.center,
-    paint: _alienCorePaint,
-    position: Vector2.all(radius),
-  );
+  @override
+  // ignore: overridden_fields
+  String defaultSpritePath = "alien.png";
+
+  @override
+  // ignore: overridden_fields
+  String? overlaySpritePath = "alien_overlay.png";
 
   @override
   // ignore: overridden_fields
@@ -31,35 +30,28 @@ class Alien extends SpaceBody {
   final bool canAccelerate = true;
 
   @override
-  void damage(double d) {
-    super.damage(d);
-    health -= d;
-    hole.radius = radius * (1 - health).clamp(0, 0.95);
+  void setHealth(double h) {
+    super.setHealth(h);
     if (health <= 0) {
       removeFromParent();
     }
   }
 
   @override
-  // ignore: overridden_fields
-  String defaultSpritePath = "alien.png";
-
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-    add(hole);
+  void damage(double d) {
+    super.damage(d);
+    setHealth(health - d);
   }
 
-  final Vector2 _oneTimeGoal = Vector2(0, 0);
   @override
   Future<void> update(double dt) async {
     await super.update(dt);
-    _oneTimeGoal
-      ..x = ship.position.x - position.x
-      ..y = ship.position.y - position.y;
-    final double oneTimeGoalLength = _oneTimeGoal.length;
+    GameCharacter.reusableVector
+      ..setFrom(ship.position)
+      ..sub(position);
+    final double distanceToShip = GameCharacter.reusableVector.length;
     acceleration
-      ..setFrom(_oneTimeGoal)
-      ..scale(1 / oneTimeGoalLength * 5 * radius);
+      ..setFrom(GameCharacter.reusableVector)
+      ..scale(1 / distanceToShip * 5 * radius);
   }
 }

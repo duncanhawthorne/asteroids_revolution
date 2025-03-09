@@ -38,7 +38,7 @@ import 'pacman_world.dart';
 // flame_forge2d has a maximum allowed speed for physical objects.
 // Reducing map size 30x, scaling up gravity 30x, & zooming 30x changes nothing,
 // but reduces chance of hitting maximum allowed speed
-const double flameGameZoom = 1.0;
+const double flameGameZoom = 30.0;
 const double _visualZoomMultiplier = 1;
 const double kVirtualGameSize = 1700; //determines speed of game
 

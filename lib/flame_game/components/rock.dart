@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
 
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
@@ -40,23 +39,17 @@ class Rock extends SpaceBody {
 
   int numberExplosionsLeft;
 
-  late final CircleComponent hole = CircleComponent(
-    radius: 0,
-    anchor: Anchor.center,
-    paint: Paint()..color = Palette.dull.color,
-    position: Vector2.all(radius),
-  );
+  @override
+  // ignore: overridden_fields
+  String defaultSpritePath = "asteroid1.png";
+
+  @override
+  // ignore: overridden_fields
+  String? overlaySpritePath = "asteroid2.png";
 
   @override
   void setHealth(double h) {
     super.setHealth(h);
-    if (h == 1) {
-      removeRockHole();
-    } else {
-      addRockHole();
-    }
-    hole.radius = radius * (1 - health).clamp(0, 0.95);
-    spriteHole?.size.setAll(hole.radius * 2);
     if (health < 0) {
       explode();
     }
@@ -129,33 +122,8 @@ class Rock extends SpaceBody {
   }
 
   @override
-  // ignore: overridden_fields
-  String defaultSpritePath = "asteroid1.png";
-
-  @override
   Future<void> onMount() async {
     await super.onMount();
     updateOpacity();
-    spriteHole?.position.setAll(radius);
-  }
-
-  Sprite? rockHoleSprite;
-  SpriteComponent? spriteHole;
-
-  Future<void> addRockHole() async {
-    rockHoleSprite = await Sprite.load("asteroid2.png");
-
-    spriteHole = SpriteComponent(
-      sprite: rockHoleSprite,
-      angle: -tau / 4,
-      anchor: Anchor.center,
-      position: Vector2.all(radius),
-      size: Vector2.all(0),
-    );
-    add(spriteHole!);
-  }
-
-  Future<void> removeRockHole() async {
-    spriteHole?.removeFromParent();
   }
 }

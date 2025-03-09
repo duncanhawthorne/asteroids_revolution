@@ -49,6 +49,15 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   @mustCallSuper
   void setHealth(double h) {
     health = h;
+    if (overlaySpritePath != null) {
+      if (h == 1) {
+        removeOverlaySprite();
+      } else {
+        addOverlaySprite();
+      }
+      final double holeRadius = radius * (1 - health).clamp(0, 0.95);
+      overlaySprite?.size.setAll(holeRadius * 2);
+    }
   }
 
   @mustCallSuper

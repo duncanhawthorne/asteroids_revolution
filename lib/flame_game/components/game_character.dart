@@ -10,11 +10,13 @@ import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
+import 'alien.dart';
 import 'bullet.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
 
 final Vector2 _kVector2Zero = Vector2.zero();
+final Vector2 north = Vector2(0, 1);
 
 /// The [GameCharacter] is the generic object that is linked to a [PhysicsBall]
 class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
@@ -32,10 +34,15 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     _simpleVelocity = Vector2.zero()..setFrom(velocity);
   }
 
+  static Vector2 reusableVector = Vector2.zero();
+
   bool possiblePhysicsConnection = true;
   final bool canAccelerate = false;
   double friction = 1;
   String defaultSpritePath = "";
+
+  SpriteComponent? overlaySprite;
+  String? overlaySpritePath;
 
   late final double _radius = size.x / 2;
   double get radius => size.x.toDouble() / 2;
@@ -63,7 +70,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   Vector2 get velocity => connectedToBall ? _ballVel : _simpleVelocity;
 
-  late final bool _freeRotation = this is! Ship;
+  late final bool _freeRotation = this is! Ship && this is! Alien;
 
   bool connectedToBall = true;
 
@@ -128,6 +135,21 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
   }
 
+  Future<void> addOverlaySprite() async {
+    overlaySprite = SpriteComponent(
+      sprite: await Sprite.load(overlaySpritePath!),
+      //angle: -tau / 4,
+      anchor: Anchor.center,
+      position: Vector2.all(radius),
+      size: Vector2.all(0),
+    );
+    add(overlaySprite!);
+  }
+
+  Future<void> removeOverlaySprite() async {
+    overlaySprite?.removeFromParent();
+  }
+
   void bringBallToSprite() {
     assert(possiblePhysicsConnection, this);
     if (!possiblePhysicsConnection) {
@@ -186,6 +208,14 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       if (openSpaceMovement) {
         if (_freeRotation) {
           angle = _ball.angle;
+        } else {
+          if (this is Alien) {
+            angle = north.angleToSigned(
+              GameCharacter.reusableVector
+                ..setFrom(position)
+                ..sub(world.space.ship.position),
+            );
+          }
         }
       } else {
         angle += speed * dt / _radius * _spinParity;
@@ -206,6 +236,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       ); //should be added to static parent but risks going stray
     }
     add(hitBox);
+    overlaySprite?.position.setAll(radius);
   }
 
   @mustCallSuper

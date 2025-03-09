@@ -52,7 +52,8 @@ class CameraWrapper extends WrapperNoEvents
     fullGrid: false,
   );
 
-  int get _zoomOrderOfMagnitude => logOrder(1 / zoom * 75).floor();
+  int get _zoomOrderOfMagnitude =>
+      logOrder(1 / zoom * flameGameZoom * 75).floor();
 
   void fixSpaceDots() {
     _smallDots.tidyUpdate(
