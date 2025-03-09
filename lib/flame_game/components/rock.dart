@@ -45,7 +45,7 @@ class Rock extends SpaceBody {
 
   @override
   // ignore: overridden_fields
-  String? overlaySpritePath = "asteroid2.png";
+  String? overlaySpritePath = "asteroid1.png";
 
   @override
   void setHealth(double h) {

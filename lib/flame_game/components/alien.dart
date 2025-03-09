@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flame/effects.dart';
+
 import '../../style/palette.dart';
 import 'game_character.dart';
 import 'space_body.dart';
@@ -15,11 +17,11 @@ class Alien extends SpaceBody {
 
   @override
   // ignore: overridden_fields
-  String defaultSpritePath = "alien.png";
+  String defaultSpritePath = "ship.png";
 
   @override
   // ignore: overridden_fields
-  String? overlaySpritePath = "alien_overlay.png";
+  String? overlaySpritePath = "ship.png";
 
   @override
   // ignore: overridden_fields
@@ -41,6 +43,12 @@ class Alien extends SpaceBody {
   void damage(double d) {
     super.damage(d);
     setHealth(health - d);
+  }
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    add(ColorEffect(Palette.warning.color, instantController));
   }
 
   @override

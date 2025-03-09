@@ -2,9 +2,12 @@ import 'dart:core';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/geometry.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
@@ -14,6 +17,11 @@ import 'alien.dart';
 import 'bullet.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
+
+final EffectController instantController = EffectController(
+  duration: 0.001,
+  curve: Curves.linear,
+);
 
 final Vector2 _kVector2Zero = Vector2.zero();
 final Vector2 north = Vector2(0, 1);
@@ -136,14 +144,19 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   }
 
   Future<void> addOverlaySprite() async {
-    overlaySprite = SpriteComponent(
-      sprite: await Sprite.load(overlaySpritePath!),
-      //angle: -tau / 4,
-      anchor: Anchor.center,
-      position: Vector2.all(radius),
-      size: Vector2.all(0),
-    );
-    add(overlaySprite!);
+    if (overlaySprite == null) {
+      overlaySprite = SpriteComponent(
+        sprite: await Sprite.load(overlaySpritePath!),
+        //angle: -tau / 4,
+        anchor: Anchor.center,
+        position: Vector2.all(radius),
+        size: Vector2.all(0),
+      );
+      overlaySprite!.add(
+        ColorEffect(Palette.background.color, instantController),
+      ); //FIXME, should just change the images
+      add(overlaySprite!);
+    }
   }
 
   Future<void> removeOverlaySprite() async {
