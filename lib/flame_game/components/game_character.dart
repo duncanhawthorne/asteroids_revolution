@@ -26,7 +26,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
         HasGameReference<PacmanGame> {
   GameCharacter({
     super.position,
-    this.original,
     super.paint,
     required double radius,
     required Vector2 velocity,
@@ -89,10 +88,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
           ? CollisionType.active
           : CollisionType.passive;
 
-  final bool _cloneEverMade = false; //could just test clone is null
-  GameCharacter? _clone;
-  late final GameCharacter? original;
-  bool isClone = false;
+  static const bool isClone = false;
 
   late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
@@ -234,7 +230,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
         //FIXME
       }
       disconnectFromBall(); //sync but within async function
-      _cloneEverMade ? _clone?.removeFromParent() : null;
       removeEffects(this); //sync and async
     }
   }
