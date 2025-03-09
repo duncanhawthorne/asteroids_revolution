@@ -13,11 +13,13 @@ class PhysicsBall extends BodyComponent with IgnoreEvents {
     required double radius,
     required Vector2 velocity,
     required double damping,
+    required double density,
   }) : super(
          fixtureDefs: <FixtureDef>[
            FixtureDef(
              restitution: openSpaceMovement ? 1 : 0,
              friction: damping != 0 ? 1 : 0,
+             density: density,
              CircleShape(radius: radius),
            ),
          ],

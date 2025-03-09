@@ -67,6 +67,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     radius: radius,
     velocity: _simpleVelocity,
     damping: 1 - friction,
+    density: this is Alien ? 0.001 : 1,
   ); //never created for clone
 
   late final Vector2 _ballPos = _ball.position;

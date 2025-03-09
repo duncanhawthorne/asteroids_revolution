@@ -10,7 +10,7 @@ import 'space_body.dart';
 final Paint _rockPaint = Paint()..color = Palette.transp.color;
 
 double _breakupSizeFactor() {
-  const List<double> breakupSizes = <double>[0.2, 0.4, 0.5, 0.6, 0.7, 0.75];
+  const List<double> breakupSizes = <double>[0.2, 0.4, 0.5, 0.45, 0.3, 0.25];
   return breakupSizes[random.nextInt(breakupSizes.length)];
 }
 
@@ -88,7 +88,7 @@ class Rock extends SpaceBody {
   }
 
   void explode() {
-    final bool shouldSplit = !isSmall && numberExplosionsLeft >= 1;
+    final bool shouldSplit = !isSmall; // && numberExplosionsLeft >= 1;
     if (shouldSplit) {
       for (int i = 0; i < 2; i++) {
         if (_isLuckyHeart()) {

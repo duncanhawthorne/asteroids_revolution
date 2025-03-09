@@ -12,7 +12,6 @@ import 'gun.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
-import 'wall.dart';
 
 final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
@@ -59,6 +58,7 @@ class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
   @override
   void damage(double d) {
     super.damage(d);
+    d = d.clamp(-100, 0.8);
     setHealth(health * (1 - d));
     if (d > 0) {
       world.space.addSmallRocksOnDamage();
@@ -128,19 +128,15 @@ class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
   void _onCollideWith(PositionComponent other) {
     if (other is Rock) {
       if (!other.isSmall) {
-        damage(0.2);
+        damage(0.05 * other.radius / radius);
         other.explode();
-      } else {
-        other.velocity.scale(-1);
       }
     } else if (other is Alien) {
-      damage(0.75); //huge
+      damage(0.75 * other.radius / radius); //huge
       other.damage(1);
     } else if (other is Heart) {
       other.removeFromParent();
-      damage(-0.2);
-    } else if (other is WallRectangleVisual) {
-      velocity.scale(-1);
+      damage(-0.2 * other.radius / radius);
     } else if (other is Cherry) {
       addMultiGun();
       other.removeFromParent();
