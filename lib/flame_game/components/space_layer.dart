@@ -23,7 +23,7 @@ import 'ship.dart';
 import 'space_body.dart';
 import 'wrapper_no_events.dart';
 
-final Paint seedPaint = Paint()..color = Palette.seed.color;
+//final Paint seedPaint = Paint()..color = Palette.seed.color;
 final Paint warningPaint = Paint()..color = Palette.seed.color;
 
 const double _kHubbleLimitMult = 1.4;

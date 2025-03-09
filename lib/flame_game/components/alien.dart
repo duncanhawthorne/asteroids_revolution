@@ -1,19 +1,23 @@
 import 'dart:ui';
 
-import 'package:flame/effects.dart';
-
 import '../../style/palette.dart';
 import 'game_character.dart';
 import 'space_body.dart';
 
-final Paint _alienPaint = Paint()..color = Palette.warning.color;
+final Paint _alienOverridePaint =
+    Paint()
+      //.color = Palette.seed.color
+      ..colorFilter = ColorFilter.mode(
+        Palette.warning.color,
+        BlendMode.modulate,
+      );
 
 class Alien extends SpaceBody {
   Alien({
     required super.position,
     required super.velocity,
     required super.radius,
-  }) : super(paint: _alienPaint);
+  }) : super(paint: _alienOverridePaint);
 
   @override
   // ignore: overridden_fields
@@ -48,7 +52,6 @@ class Alien extends SpaceBody {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    add(ColorEffect(Palette.warning.color, instantController));
   }
 
   @override

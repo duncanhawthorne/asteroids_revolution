@@ -2,10 +2,9 @@ import 'dart:core';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame/geometry.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
@@ -18,10 +17,13 @@ import 'bullet.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
 
-final EffectController instantController = EffectController(
-  duration: 0.001,
-  curve: Curves.linear,
-);
+final Paint backgroundOverridePaint =
+    Paint()
+      //.color = Palette.seed.color
+      ..colorFilter = ColorFilter.mode(
+        Palette.background.color,
+        BlendMode.modulate,
+      );
 
 final Vector2 _kVector2Zero = Vector2.zero();
 final Vector2 north = Vector2(0, 1);
@@ -152,10 +154,8 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
         anchor: Anchor.center,
         position: Vector2.all(radius),
         size: Vector2.all(0),
+        paint: backgroundOverridePaint,
       );
-      overlaySprite!.add(
-        ColorEffect(Palette.background.color, instantController),
-      ); //FIXME, should just change the images
       add(overlaySprite!);
     }
   }
