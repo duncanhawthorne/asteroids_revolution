@@ -64,7 +64,7 @@ double _centeredRandomNoMiddle() {
   return a;
 }
 
-Vector2 velocityNoise(double scale) {
+Vector2 noiseVector(double scale) {
   final double ringRadius = (0.5 + random.nextDouble() * 0.5) * scale;
   final double ringAngle = tau * random.nextDouble();
   return Vector2(ringRadius * cos(ringAngle), ringRadius * sin(ringAngle));

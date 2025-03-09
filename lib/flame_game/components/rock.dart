@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:flame/components.dart';
-
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import 'heart.dart';
@@ -64,8 +62,8 @@ class Rock extends SpaceBody {
   void _addSubRock() {
     world.space.rocks.add(
       Rock(
-        position: position + Vector2.random() * radius / 2,
-        velocity: velocity + velocityNoise(2 * radius),
+        position: position + noiseVector(radius / 2),
+        velocity: velocity + noiseVector(2 * radius),
         radius: radius * _breakupSizeFactor(),
         numberExplosionsLeft: numberExplosionsLeft - 1,
       ),
@@ -75,8 +73,8 @@ class Rock extends SpaceBody {
   void _addSubHeart() {
     world.space.add(
       Heart(
-        position: position + Vector2.random() * radius / 2,
-        velocity: velocity + velocityNoise(2 * radius),
+        position: position + noiseVector(radius / 2),
+        velocity: velocity + noiseVector(2 * radius),
         radius: ship.radius,
       ),
     );
