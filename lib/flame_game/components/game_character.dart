@@ -4,9 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
-import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
@@ -16,14 +14,6 @@ import 'alien.dart';
 import 'bullet.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
-
-final Paint backgroundOverridePaint =
-    Paint()
-      //.color = Palette.seed.color
-      ..colorFilter = ColorFilter.mode(
-        Palette.background.color,
-        BlendMode.modulate,
-      );
 
 final Vector2 _kVector2Zero = Vector2.zero();
 final Vector2 north = Vector2(0, 1);
@@ -50,9 +40,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   final bool canAccelerate = false;
   double friction = 1;
   String defaultSpritePath = "";
-
-  SpriteComponent? overlaySprite;
-  String? overlaySpritePath;
 
   late final double _radius = size.x / 2;
   double get radius => size.x.toDouble() / 2;
@@ -146,24 +133,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
   }
 
-  Future<void> addOverlaySprite() async {
-    if (overlaySprite == null) {
-      overlaySprite = SpriteComponent(
-        sprite: await Sprite.load(overlaySpritePath!),
-        //angle: -tau / 4,
-        anchor: Anchor.center,
-        position: Vector2.all(radius),
-        size: Vector2.all(0),
-        paint: backgroundOverridePaint,
-      );
-      add(overlaySprite!);
-    }
-  }
-
-  Future<void> removeOverlaySprite() async {
-    overlaySprite?.removeFromParent();
-  }
-
   void bringBallToSprite() {
     assert(possiblePhysicsConnection, this);
     if (!possiblePhysicsConnection) {
@@ -251,7 +220,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       ); //should be added to static parent but risks going stray
     }
     add(hitBox);
-    overlaySprite?.position.setAll(radius);
   }
 
   @mustCallSuper

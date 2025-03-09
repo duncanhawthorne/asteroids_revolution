@@ -17,7 +17,7 @@ final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
-class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
+class Ship extends SpaceBody with CollisionCallbacks, Gun {
   Ship({required super.position, required super.velocity})
     : super(radius: defaultShipRadius);
 
@@ -104,7 +104,7 @@ class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
   }
 
   @override
-  Future<void> update(double dt) async {
+  void update(double dt) {
     angle = -atan2(world.downDirection.x, world.downDirection.y);
     if (accelerating) {
       acceleration
@@ -113,7 +113,7 @@ class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
     } else {
       acceleration.setAll(0);
     }
-    await super.update(dt);
+    super.update(dt);
   }
 
   @override

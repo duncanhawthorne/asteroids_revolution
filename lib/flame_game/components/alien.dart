@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import '../../style/palette.dart';
 import 'game_character.dart';
+import 'overlay_sprite.dart';
 import 'space_body.dart';
 
 final Paint _alienOverridePaint =
@@ -12,7 +13,7 @@ final Paint _alienOverridePaint =
         BlendMode.modulate,
       );
 
-class Alien extends SpaceBody {
+class Alien extends SpaceBody with OverlaySprite {
   Alien({
     required super.position,
     required super.velocity,
@@ -55,8 +56,8 @@ class Alien extends SpaceBody {
   }
 
   @override
-  Future<void> update(double dt) async {
-    await super.update(dt);
+  void update(double dt) {
+    super.update(dt);
     GameCharacter.reusableVector
       ..setFrom(ship.position)
       ..sub(position);

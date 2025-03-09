@@ -4,9 +4,9 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import 'bullet.dart';
-import 'game_character.dart';
+import 'space_body.dart';
 
-mixin GunEnabled on GameCharacter {
+mixin Gun on SpaceBody {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -20,7 +20,7 @@ mixin GunEnabled on GameCharacter {
   }
 
   @override
-  Future<void> update(double dt) async {
+  void update(double dt) {
     _multiGunTimer.update(dt);
     if (_multiGunTimer.finished) {
       _removeMultiGun();

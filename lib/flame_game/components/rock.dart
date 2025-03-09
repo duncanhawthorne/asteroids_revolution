@@ -3,6 +3,7 @@ import 'dart:ui';
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import 'heart.dart';
+import 'overlay_sprite.dart';
 import 'space_body.dart';
 
 final Paint _rockPaint = Paint()..color = Palette.transp.color;
@@ -22,7 +23,7 @@ int randomStartingHits() {
   return startingHits[random.nextInt(startingHits.length)];
 }
 
-class Rock extends SpaceBody {
+class Rock extends SpaceBody with OverlaySprite {
   Rock({
     required super.position,
     required super.velocity,
