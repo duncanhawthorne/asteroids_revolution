@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -9,6 +10,7 @@ import '../maze.dart';
 import 'alien.dart';
 import 'bullet.dart';
 import 'cherry.dart';
+import 'game_character.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
@@ -18,7 +20,7 @@ final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
-class Ship extends SpaceBody with CollisionCallbacks {
+class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
   Ship({required super.position, required super.velocity})
     : super(radius: defaultShipRadius);
 
@@ -34,60 +36,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
   @override
   // ignore: overridden_fields
   final bool canAccelerate = true;
-
-  final Timer _multiGunTimer = Timer(15);
-
-  final Vector2 _oneTimeVelocity = Vector2(0, 0);
-  Vector2 _fBulletVelocity() {
-    _oneTimeVelocity
-      ..setFrom(world.downDirection)
-      ..scale(-2 * radius)
-      ..add(velocity);
-    return _oneTimeVelocity;
-  }
-
-  final Vector2 _oneTimePosition = Vector2(0, 0);
-  Vector2 _fBulletPosition(double offset) {
-    _oneTimePosition
-      ..setFrom(position)
-      ..x += radius * cos(angle) * offset
-      ..y += radius * sin(angle) * offset;
-    return _oneTimePosition;
-  }
-
-  late final SpawnComponent gun = SpawnComponent(
-    multiFactory: (int i) => _bullets(),
-    selfPositioning: true,
-    period: 0.15,
-  );
-
-  List<PositionComponent> _bullets() {
-    final List<PositionComponent> out = <PositionComponent>[
-      RecycledBullet(
-        position: position,
-        velocity: _fBulletVelocity(),
-        radius: radius * 0.25,
-      ),
-    ];
-    if (_withMultiGun) {
-      out
-        ..add(
-          RecycledBullet(
-            position: _fBulletPosition(0.5),
-            velocity: _fBulletVelocity(),
-            radius: radius * 0.25,
-          ),
-        )
-        ..add(
-          RecycledBullet(
-            position: _fBulletPosition(-0.5),
-            velocity: _fBulletVelocity(),
-            radius: radius * 0.25,
-          ),
-        );
-    }
-    return out;
-  }
 
   void accel(bool on) {
     if (on) {
@@ -129,19 +77,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
     });
   }
 
-  bool _withMultiGun = false;
-  void _addMultiGun() {
-    _withMultiGun = true;
-    _multiGunTimer
-      ..reset()
-      ..start();
-  }
-
-  void _removeMultiGun() {
-    _withMultiGun = false;
-    _multiGunTimer.pause();
-  }
-
   @override
   Future<Map<CharacterState, SpriteAnimation>> getAnimations([
     int size = 1,
@@ -162,7 +97,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
     animations = await getAnimations(100); //FIXME
     current = CharacterState.normal;
     hitBox.collisionType = CollisionType.active;
-    world.space.bullets.add(gun);
     reset();
   }
 
@@ -184,10 +118,6 @@ class Ship extends SpaceBody with CollisionCallbacks {
         ..scale(-radius); //* 1.4
     } else {
       acceleration.setAll(0);
-    }
-    _multiGunTimer.update(dt);
-    if (_multiGunTimer.finished) {
-      _removeMultiGun();
     }
     await super.update(dt);
   }
@@ -221,5 +151,105 @@ class Ship extends SpaceBody with CollisionCallbacks {
       _addMultiGun();
       other.removeFromParent();
     }
+  }
+}
+
+mixin GunEnabled on GameCharacter {
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    world.space.bullets.add(gun);
+  }
+
+  @override
+  Future<void> onRemove() async {
+    await super.onLoad();
+    gun.removeFromParent();
+  }
+
+  @override
+  Future<void> update(double dt) async {
+    _multiGunTimer.update(dt);
+    if (_multiGunTimer.finished) {
+      _removeMultiGun();
+    }
+    super.update(dt);
+  }
+
+  final Timer _multiGunTimer = Timer(15);
+
+  final Vector2 _oneTimeVelocity = Vector2(0, 0);
+  Vector2 _fBulletVelocity() {
+    if (!isMounted) {
+      return _oneTimeVelocity;
+    }
+    _oneTimeVelocity
+      ..x = sin(-angle)
+      ..y = cos(-angle)
+      ..scale(world.downDirection.length)
+      //..setFrom(world.downDirection)
+      ..scale(-2 * radius)
+      ..add(velocity);
+    return _oneTimeVelocity;
+  }
+
+  final Vector2 _oneTimePosition = Vector2(0, 0);
+  Vector2 _fBulletPosition(double offset) {
+    _oneTimePosition
+      ..setFrom(position)
+      ..x += radius * cos(angle) * offset
+      ..y += radius * sin(angle) * offset;
+    return _oneTimePosition;
+  }
+
+  late final SpawnComponent gun = SpawnComponent(
+    multiFactory: (int i) => _bullets(),
+    selfPositioning: true,
+    period: 0.15,
+  );
+
+  List<PositionComponent> _bullets() {
+    final Paint bulletPaint = paint;
+    final List<PositionComponent> out = <PositionComponent>[
+      RecycledBullet(
+        position: position,
+        velocity: _fBulletVelocity(),
+        radius: radius * 0.25,
+        paint: bulletPaint,
+      ),
+    ];
+    if (_withMultiGun) {
+      out
+        ..add(
+          RecycledBullet(
+            position: _fBulletPosition(0.5),
+            velocity: _fBulletVelocity(),
+            radius: radius * 0.25,
+            paint: bulletPaint,
+          ),
+        )
+        ..add(
+          RecycledBullet(
+            position: _fBulletPosition(-0.5),
+            velocity: _fBulletVelocity(),
+            radius: radius * 0.25,
+            paint: bulletPaint,
+          ),
+        );
+    }
+    return out;
+  }
+
+  bool _withMultiGun = false;
+  void _addMultiGun() {
+    _withMultiGun = true;
+    _multiGunTimer
+      ..reset()
+      ..start();
+  }
+
+  void _removeMultiGun() {
+    _withMultiGun = false;
+    _multiGunTimer.pause();
   }
 }

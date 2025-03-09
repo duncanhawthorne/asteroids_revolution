@@ -24,6 +24,7 @@ import 'space_body.dart';
 import 'wrapper_no_events.dart';
 
 final Paint seedPaint = Paint()..color = Palette.seed.color;
+final Paint warningPaint = Paint()..color = Palette.seed.color;
 
 const double _kHubbleLimitMult = 1.4;
 
@@ -61,8 +62,8 @@ class SpaceWrapper extends WrapperNoEvents
 
   final int _visibleRockLimit = (30 * pow(_kHubbleLimitMult, 2)).floor();
   late final int _transparentRockLimit = _visibleRockLimit ~/ 20;
-  late final double heartLimit = _visibleRockLimit / 4 / 6 / 2;
-  static const int _alienLimit = kDebugMode ? 0 : 1; //1;
+  late final double heartLimit = _visibleRockLimit / 4 / 6;
+  static const int _alienLimit = kDebugMode ? 1 : 1; //1;
   static const int _cherryLimit = 4;
 
   Iterable<Rock> get _allRocks => rocks.children.whereType<Rock>();

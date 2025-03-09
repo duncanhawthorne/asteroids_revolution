@@ -1,10 +1,11 @@
+import 'dart:ui';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import 'alien.dart';
 import 'rock.dart';
 import 'space_body.dart';
-import 'space_layer.dart';
 
 final Vector2 _offscreen = Vector2(1000, 1000);
 
@@ -13,7 +14,8 @@ class Bullet extends SpaceBody with CollisionCallbacks {
     required super.position,
     required super.velocity,
     required super.radius,
-  }) : super(paint: seedPaint);
+    required super.paint,
+  });
 
   @override
   // ignore: overridden_fields
@@ -68,12 +70,14 @@ Bullet RecycledBullet({
   required Vector2 position,
   required Vector2 velocity,
   required double radius,
+  required Paint paint,
 }) {
   if (_spareBits.isEmpty) {
     final Bullet newBit = Bullet(
       position: position,
       velocity: velocity,
       radius: radius,
+      paint: paint,
     );
     _allBits.add(newBit);
     return newBit;
@@ -84,7 +88,9 @@ Bullet RecycledBullet({
     assert(_spareBits.isEmpty || _spareBits.first != recycledBit);
     recycledBit.position.setFrom(position);
     recycledBit.velocity.setFrom(velocity);
-    recycledBit.radius = radius;
+    recycledBit
+      ..radius = radius
+      ..paint = paint;
     recycledBit.hitBox.collisionType = recycledBit.defaultCollisionType;
     return recycledBit;
   }

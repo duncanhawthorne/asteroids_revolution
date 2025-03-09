@@ -95,7 +95,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       current != CharacterState.spawning;
 
   late final CollisionType defaultCollisionType =
-      this is Bullet || this is Ship
+      this is Ship || this is Bullet
           ? CollisionType.active
           : CollisionType.passive;
 
@@ -238,6 +238,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     _loadStubAnimationsOnDebugMode();
     if (this is! Ship) {
       animations = await getAnimations(100);
