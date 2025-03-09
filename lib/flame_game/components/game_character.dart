@@ -187,14 +187,6 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       if (openSpaceMovement) {
         if (_freeRotation) {
           angle = _ball.angle;
-        } else {
-          if (this is Alien) {
-            angle = north.angleToSigned(
-              GameCharacter.reusableVector
-                ..setFrom(position)
-                ..sub(world.space.ship.position),
-            );
-          }
         }
       } else {
         angle += speed * dt / _radius * _spinParity;

@@ -65,5 +65,10 @@ class Alien extends SpaceBody with OverlaySprite {
     acceleration
       ..setFrom(GameCharacter.reusableVector)
       ..scale(1 / distanceToShip * 5 * radius);
+    angle = north.angleToSigned(
+      GameCharacter.reusableVector
+        ..setFrom(position)
+        ..sub(world.space.ship.position),
+    );
   }
 }
