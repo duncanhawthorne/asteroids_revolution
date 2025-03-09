@@ -18,9 +18,6 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   double health = 1;
   final bool cleanIfTiny = true;
   bool ensureVelocityTowardsCenter = false;
-  bool isActive = true; //do not in spareBits
-
-  bool neverRender = false;
 
   Ship get ship => world.space.ship;
 
@@ -68,7 +65,6 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
 
   @override
   Future<void> onMount() async {
-    isActive = true; //already set sync but set here anyway
     super.onMount();
     if (ensureVelocityTowardsCenter) {
       fixVelocityTowardsCenter();
@@ -147,11 +143,5 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     if (oneFrameDue) {
       distanceFromShipCache = position.distanceTo(ship.position);
     }
-  }
-
-  @override
-  Future<void> onRemove() async {
-    isActive = false;
-    await super.onRemove();
   }
 }

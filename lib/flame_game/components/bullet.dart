@@ -29,6 +29,14 @@ class Bullet extends SpaceBody with CollisionCallbacks {
   // ignore: overridden_fields
   String defaultSpritePath = "bullet.png";
 
+  bool isActive = true; //do not in spareBits
+
+  @override
+  Future<void> onMount() async {
+    isActive = true; //already set sync but set here anyway
+    await super.onMount();
+  }
+
   @override
   Future<void> update(double dt) async {
     if (position.distanceTo(ship.position) > world.space.mappedUniverseRadius) {
@@ -37,6 +45,12 @@ class Bullet extends SpaceBody with CollisionCallbacks {
       removeFromParent();
     }
     await super.update(dt);
+  }
+
+  @override
+  Future<void> onRemove() async {
+    isActive = false;
+    await super.onRemove();
   }
 
   @override

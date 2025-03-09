@@ -22,10 +22,6 @@ class Ship extends SpaceBody with CollisionCallbacks, GunEnabled {
   Ship({required super.position, required super.velocity})
     : super(radius: defaultShipRadius);
 
-  @override
-  // ignore: overridden_fields
-  bool neverRender = true;
-
   bool accelerating = false;
   @override
   // ignore: overridden_fields
