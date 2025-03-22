@@ -64,11 +64,13 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
       world.space.addSmallRocksOnDamage();
     }
 
-    //i-frames
-    hitBox.collisionType = CollisionType.inactive;
-    Future<void>.delayed(const Duration(milliseconds: 250), () {
-      hitBox.collisionType = CollisionType.active;
-    });
+    if (d > 0) {
+      //i-frames
+      hitBox.collisionType = CollisionType.inactive;
+      Future<void>.delayed(const Duration(milliseconds: 250), () {
+        hitBox.collisionType = CollisionType.active;
+      });
+    }
   }
 
   @override
