@@ -67,6 +67,17 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   Vector2 get velocity => connectedToBall ? _ballVel : _simpleVelocity;
 
+  set velocity(Vector2 target) => _setVel(target);
+
+  void _setVel(Vector2 target) {
+    if (connectedToBall) {
+      _ball.velocity = target;
+    }
+    else {
+      _simpleVelocity.setFrom(target);
+    }
+  }
+
   late final bool _freeRotation = this is! Ship && this is! Alien;
 
   bool connectedToBall = true;
