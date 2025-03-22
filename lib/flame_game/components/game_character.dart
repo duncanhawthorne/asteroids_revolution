@@ -72,8 +72,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   void _setVel(Vector2 target) {
     if (connectedToBall) {
       _ball.velocity = target;
-    }
-    else {
+    } else {
       _simpleVelocity.setFrom(target);
     }
   }
@@ -103,7 +102,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
-    collisionType: CollisionType.passive,
+    collisionType: defaultCollisionType,
     anchor: Anchor.center,
   );
 
