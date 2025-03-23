@@ -30,6 +30,8 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
   // ignore: overridden_fields
   final bool canAccelerate = true;
 
+  bool _invincibleFrames = false;
+
   void accel(bool on) {
     if (on) {
       accelerating = true;
@@ -65,10 +67,9 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
     }
 
     if (d > 0) {
-      //i-frames
-      hitBox.collisionType = CollisionType.inactive;
+      _invincibleFrames = true;
       Future<void>.delayed(const Duration(milliseconds: 250), () {
-        hitBox.collisionType = CollisionType.active;
+        _invincibleFrames = false;
       });
     }
   }
@@ -130,8 +131,10 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
   void _onCollideWith(PositionComponent other) {
     if (other is Rock) {
       if (!other.isSmall) {
-        damage(0.05 * other.radius / radius);
-        other.explode();
+        if (!_invincibleFrames) {
+          damage(0.05 * other.radius / radius);
+        }
+        other.damage(4 * radius / other.radius);
       }
     } else if (other is Alien) {
       damage(0.75 * other.radius / radius); //huge

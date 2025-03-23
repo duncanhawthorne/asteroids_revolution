@@ -21,18 +21,22 @@ mixin OverlaySprite on SpaceBody {
   @override
   void setHealth(double h) {
     super.setHealth(h);
+    _setHealth(h);
+  }
+
+  Future<void> _setHealth(double h) async {
     if (overlaySpritePath != null) {
       if (h == 1) {
-        removeOverlaySprite();
+        await _removeOverlaySprite();
       } else {
-        addOverlaySprite();
+        await _addOverlaySprite();
       }
       final double holeRadius = radius * (1 - health).clamp(0, 0.9);
       overlaySprite?.size.setAll(holeRadius * 2);
     }
   }
 
-  Future<void> addOverlaySprite() async {
+  Future<void> _addOverlaySprite() async {
     if (overlaySprite == null) {
       overlaySprite = SpriteComponent(
         sprite: await Sprite.load(overlaySpritePath!),
@@ -47,7 +51,7 @@ mixin OverlaySprite on SpaceBody {
     }
   }
 
-  Future<void> removeOverlaySprite() async {
+  Future<void> _removeOverlaySprite() async {
     overlaySprite?.removeFromParent();
   }
 }

@@ -50,7 +50,7 @@ class Rock extends SpaceBody with OverlaySprite {
   void setHealth(double h) {
     super.setHealth(h);
     if (health < 0) {
-      explode();
+      _explode();
     }
   }
 
@@ -86,7 +86,7 @@ class Rock extends SpaceBody with OverlaySprite {
         world.space.hearts.length < world.space.heartLimit * 1.5;
   }
 
-  void explode() {
+  void _explode() {
     final bool shouldSplit = !isSmall; // && numberExplosionsLeft >= 1;
     if (shouldSplit) {
       for (int i = 0; i < 2; i++) {
