@@ -14,6 +14,7 @@ import 'alien.dart';
 import 'bullet.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
+import 'space_body.dart';
 
 final Vector2 _kVector2Zero = Vector2.zero();
 final Vector2 north = Vector2(0, 1);
@@ -56,6 +57,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     velocity: _simpleVelocity,
     damping: 1 - friction,
     density: this is Alien ? 0.001 : 1,
+    owner: this as SpaceBody,
   ); //never created for clone
 
   late final Vector2 _ballPos = _ball.position;

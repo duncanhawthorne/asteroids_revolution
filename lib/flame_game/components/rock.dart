@@ -47,17 +47,27 @@ class Rock extends SpaceBody with OverlaySprite {
   String? overlaySpritePath = "asteroid1.png";
 
   @override
-  void setHealth(double h) {
+  void setHealth(double h, {bool dontExplode = false}) {
     super.setHealth(h);
-    if (health < 0) {
+    if (health < 0 && !dontExplode) {
+      //if dontExplode, can't do this synchronously, so fix this later
       _explode();
     }
   }
 
   @override
-  void damage(double d) {
+  void damage(double d, {bool dontExplode = false}) {
     super.damage(d);
-    setHealth(health - d / 3 * 2);
+    setHealth(health - d / 3 * 2, dontExplode: dontExplode);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (health < 0) {
+      //fix explosions where were not able to do this synchronously
+      _explode();
+    }
   }
 
   void _addSubRock() {
