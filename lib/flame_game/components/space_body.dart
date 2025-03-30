@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
+import 'bullet.dart';
 import 'game_character.dart';
 import 'ship.dart';
 
@@ -95,7 +96,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
 
   void setUpdateMode() {
     if (isOutsideVisiblePlusUniverseCache) {
-      if (connectedToBall) {
+      if (connectedToBall && this is! Bullet) {
         disconnectFromBall();
       }
     } else {
@@ -109,6 +110,9 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   @override
   void update(double dt) {
     super.update(dt);
+    if (health <= -1 && !isRemoving) {
+      removeFromParent();
+    }
     setUpdateMode();
 
     bool oneFrameDue = true;
@@ -138,4 +142,8 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
       distanceFromShipCache = position.distanceTo(ship.position);
     }
   }
+
+  void onCollideWith(SpaceBody other) {}
+
+  void onContactWith(SpaceBody other) {}
 }

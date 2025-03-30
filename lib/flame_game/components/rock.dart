@@ -4,6 +4,7 @@ import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import 'heart.dart';
 import 'overlay_sprite.dart';
+import 'ship.dart';
 import 'space_body.dart';
 
 final Paint _rockPaint = Paint()..color = Palette.transp.color;
@@ -97,6 +98,9 @@ class Rock extends SpaceBody with OverlaySprite {
   }
 
   void _explode() {
+    if (isRemoving) {
+      return;
+    }
     final bool shouldSplit = !isSmall; // && numberExplosionsLeft >= 1;
     if (shouldSplit) {
       for (int i = 0; i < 2; i++) {
@@ -111,11 +115,13 @@ class Rock extends SpaceBody with OverlaySprite {
         _addSubHeart();
       }
     }
-    removalActions();
     removeFromParent();
   }
 
   void updateOpacity() {
+    if (!isMounted) {
+      return;
+    }
     if (!isSmall) {
       opacity = 1;
     } else if (isTiny) {
@@ -134,5 +140,12 @@ class Rock extends SpaceBody with OverlaySprite {
   Future<void> onMount() async {
     await super.onMount();
     updateOpacity();
+  }
+
+  @override
+  void onContactWith(SpaceBody other) {
+    if (other is Rock || other is Ship) {
+      damage(0.2 * other.radius / radius, dontExplode: true);
+    }
   }
 }

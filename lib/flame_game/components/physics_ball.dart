@@ -3,7 +3,6 @@ import 'package:flame/geometry.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
 import '../../utils/helper.dart';
-import 'rock.dart';
 import 'space_body.dart';
 
 const bool openSpaceMovement = true;
@@ -86,17 +85,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   void beginContact(Object other, Contact contact) {
     super.beginContact(other, contact);
     if (other is PhysicsBall) {
-      if (owner is Rock && other.owner is Rock) {
-        //damage but dont explode as can't modidy bodies during a contact
-        (owner as Rock).damage(
-          0.05 * other.owner.radius / owner.radius,
-          dontExplode: true,
-        );
-        (other.owner as Rock).damage(
-          0.05 * owner.radius / other.owner.radius,
-          dontExplode: true,
-        );
-      }
+      owner.onContactWith(other.owner);
     }
   }
 }

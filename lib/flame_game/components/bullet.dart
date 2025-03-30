@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
@@ -19,11 +17,11 @@ class Bullet extends SpaceBody with CollisionCallbacks {
 
   @override
   // ignore: overridden_fields
-  final bool connectedToBall = false;
+  final bool connectedToBall = true;
 
   @override
   // ignore: overridden_fields
-  final bool possiblePhysicsConnection = false;
+  final bool possiblePhysicsConnection = true;
 
   @override
   // ignore: overridden_fields
@@ -59,10 +57,11 @@ class Bullet extends SpaceBody with CollisionCallbacks {
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
-    _onCollideWith(other);
+    onCollideWith(other as SpaceBody);
   }
 
-  void _onCollideWith(PositionComponent other) {
+  @override
+  void onCollideWith(SpaceBody other) {
     if (other is Rock) {
       other.damage(4 * radius / other.radius);
       position = _offscreen; //stop repeat hits
@@ -72,40 +71,5 @@ class Bullet extends SpaceBody with CollisionCallbacks {
       position = _offscreen; //stop repeat hits
       removeFromParent();
     }
-  }
-}
-
-final List<Bullet> _allBits = <Bullet>[];
-Iterable<Bullet> get _spareBits =>
-    _allBits.where((Bullet item) => !item.isActive);
-
-// ignore: non_constant_identifier_names
-Bullet RecycledBullet({
-  required Vector2 position,
-  required Vector2 velocity,
-  required double radius,
-  required Paint paint,
-}) {
-  if (_spareBits.isEmpty) {
-    final Bullet newBit = Bullet(
-      position: position,
-      velocity: velocity,
-      radius: radius,
-      paint: paint,
-    );
-    _allBits.add(newBit);
-    return newBit;
-  } else {
-    final Bullet recycledBit = _spareBits.first;
-    // ignore: cascade_invocations
-    recycledBit.isActive = true;
-    assert(_spareBits.isEmpty || _spareBits.first != recycledBit);
-    recycledBit.position.setFrom(position);
-    recycledBit.velocity.setFrom(velocity);
-    recycledBit
-      ..radius = radius
-      ..paint = paint;
-    recycledBit.hitBox.collisionType = recycledBit.defaultCollisionType;
-    return recycledBit;
   }
 }

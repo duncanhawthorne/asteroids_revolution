@@ -125,10 +125,11 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
-    _onCollideWith(other);
+    onCollideWith(other as SpaceBody);
   }
 
-  void _onCollideWith(PositionComponent other) {
+  @override
+  void onCollideWith(SpaceBody other) {
     if (other is Rock) {
       if (!other.isSmall) {
         if (!_invincibleFrames) {

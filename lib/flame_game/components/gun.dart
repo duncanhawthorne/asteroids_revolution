@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 
 import 'bullet.dart';
 import 'space_body.dart';
@@ -15,7 +16,7 @@ mixin Gun on SpaceBody {
 
   @override
   Future<void> onRemove() async {
-    await super.onLoad();
+    await super.onRemove();
     gun.removeFromParent();
   }
 
@@ -47,9 +48,9 @@ mixin Gun on SpaceBody {
   final Vector2 _oneTimePosition = Vector2(0, 0);
   Vector2 _fBulletPosition(double offset) {
     _oneTimePosition
-      ..setFrom(position)
-      ..x += radius * cos(angle) * offset
-      ..y += radius * sin(angle) * offset;
+      ..x = radius * 2 * cos(angle - tau / 4 + offset * 1.2 / 4)
+      ..y = radius * 2 * sin(angle - tau / 4 + offset * 1.2 / 4)
+      ..add(position);
     return _oneTimePosition;
   }
 
@@ -62,8 +63,8 @@ mixin Gun on SpaceBody {
   List<PositionComponent> _bullets() {
     final Paint bulletPaint = paint;
     final List<PositionComponent> out = <PositionComponent>[
-      RecycledBullet(
-        position: position,
+      Bullet(
+        position: _fBulletPosition(0),
         velocity: _fBulletVelocity(),
         radius: radius * 0.25,
         paint: bulletPaint,
@@ -72,7 +73,7 @@ mixin Gun on SpaceBody {
     if (_withMultiGun) {
       out
         ..add(
-          RecycledBullet(
+          Bullet(
             position: _fBulletPosition(0.5),
             velocity: _fBulletVelocity(),
             radius: radius * 0.25,
@@ -80,7 +81,7 @@ mixin Gun on SpaceBody {
           ),
         )
         ..add(
-          RecycledBullet(
+          Bullet(
             position: _fBulletPosition(-0.5),
             velocity: _fBulletVelocity(),
             radius: radius * 0.25,

@@ -56,7 +56,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     radius: radius,
     velocity: _simpleVelocity,
     damping: 1 - friction,
-    density: this is Alien ? 0.001 : 1,
+    density: (this is Alien || this is Bullet) ? 0.001 : 1,
     owner: this as SpaceBody,
   ); //never created for clone
 
