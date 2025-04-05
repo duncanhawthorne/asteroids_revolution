@@ -29,9 +29,8 @@ class CameraWrapper extends WrapperNoEvents
 
   @override
   Future<void> reset() async {
-    fixSpaceDots();
-
     zoom = _optimalZoom;
+    fixSpaceDots();
   }
 
   double get _optimalZoom => 30 / world.everythingScale;

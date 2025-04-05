@@ -1,13 +1,15 @@
-import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame_forge2d/flame_forge2d.dart';
+import 'dart:ui';
 
-import '../../utils/helper.dart';
+import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
+
+import '../../style/palette.dart';
 import 'space_body.dart';
 
 const bool openSpaceMovement = true;
 
-double spriteVsPhysicsScale = 2;
+double spriteVsPhysicsScale = 2; //FIXME fix new Vector2 creation every frame
 
 // ignore: always_specify_types
 class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
@@ -15,6 +17,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
     required Vector2 position,
     required double radius,
     required Vector2 velocity,
+    required double angularVelocity,
     required double damping,
     required double density,
     required this.owner,
@@ -32,7 +35,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
            position: position / spriteVsPhysicsScale,
            linearVelocity: velocity / spriteVsPhysicsScale,
            linearDamping: damping * 20,
-           angularVelocity: (random.nextDouble() - 0.5) * tau / 2,
+           angularVelocity: angularVelocity,
            type: BodyType.dynamic,
            fixedRotation: !openSpaceMovement,
          ),
@@ -42,7 +45,11 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
 
   @override
   // ignore: overridden_fields
-  final bool renderBody = false;
+  final bool renderBody = kDebugMode && false;
+
+  @override
+  // ignore: overridden_fields
+  final Paint paint = Paint()..color = Palette.warning.color;
 
   @override
   int priority = -100;
@@ -62,7 +69,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
       body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;
 
   void _setPositionNow(Vector2 pos) {
-    body.setTransform(pos, 0);
+    body.setTransform(pos, owner.angle);
   }
 
   void setDynamic() {

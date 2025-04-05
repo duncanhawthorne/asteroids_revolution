@@ -55,6 +55,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     position: position,
     radius: radius,
     velocity: _simpleVelocity,
+    angularVelocity: _simpleAngularVelocity,
     damping: 1 - friction,
     density: (this is Alien || this is Bullet) ? 0.001 : 1,
     owner: this as SpaceBody,
@@ -68,6 +69,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
 
   final Vector2 acceleration = Vector2(0, 0);
   late Vector2 _simpleVelocity;
+  double _simpleAngularVelocity = (random.nextDouble() - 0.5) * tau / 2;
 
   Vector2 get velocity => connectedToBall ? _ballVel : _simpleVelocity;
 
@@ -172,6 +174,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   void disconnectFromBall({bool spawning = false}) {
     assert(!isClone); //as for clone have no way to turn collisionType back on
     _simpleVelocity.setFrom(velocity);
+    _simpleAngularVelocity = _ball.body.angularVelocity;
     if (!spawning) {
       /// if body not yet initialised, this will crash
       _ball.setStatic();
@@ -187,7 +190,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
     connectedToBall = true;
     _ball.setDynamic();
-    _ball.body.angularVelocity = (random.nextDouble() - 0.5) * tau / 2;
+    _ball.body.angularVelocity = _simpleAngularVelocity;
     hitBox.collisionType = defaultCollisionType;
     assert(!isClone); //not called on clones
   }
@@ -199,6 +202,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
         _ball.acceleration = acceleration;
       }
       position.setFrom(_ballPos);
+      _simpleVelocity.setFrom(velocity);
       if (openSpaceMovement) {
         if (_freeRotation) {
           angle = _ball.angle;

@@ -29,6 +29,12 @@ mixin Gun on SpaceBody {
     super.update(dt);
   }
 
+  @override
+  void reset() {
+    _removeMultiGun();
+    super.reset();
+  }
+
   final Timer _multiGunTimer = Timer(15);
 
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
