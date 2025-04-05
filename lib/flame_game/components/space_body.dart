@@ -106,7 +106,27 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     }
   }
 
-  double dtCache = 0;
+  double _dtCache = 0;
+  @override
+  void updateTree(double dt) {
+    if (isOutsideVisiblePlusUniverseCache && !connectedToBall) {
+      bool oneFrameDue = true;
+      if (_dtCache < 1) {
+        _dtCache += dt;
+        oneFrameDue = false;
+      } else {
+        dt = _dtCache;
+        _dtCache = 0;
+      }
+      if (oneFrameDue) {
+        super.updateTree(dt);
+      }
+    } else {
+      _dtCache = 0;
+      super.updateTree(dt);
+    }
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
@@ -115,32 +135,18 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     }
     setUpdateMode();
 
-    bool oneFrameDue = true;
     if (!connectedToBall) {
-      if (isOutsideVisiblePlusUniverseCache) {
-        if (dtCache < 1) {
-          dtCache += dt;
-          oneFrameDue = false;
-        } else {
-          dt = dtCache;
-          dtCache = 0;
-        }
+      if (canAccelerate) {
+        velocity.addScaled(acceleration, dt);
       }
-      if (oneFrameDue) {
-        if (canAccelerate) {
-          velocity.addScaled(acceleration, dt);
-        }
-        if (friction != 1) {
-          velocity.scale(friction);
-        }
-        position.addScaled(velocity, dt);
+      if (friction != 1) {
+        velocity.scale(friction);
       }
+      position.addScaled(velocity, dt);
     } else {
       oneFrameOfPhysics(dt);
     }
-    if (oneFrameDue) {
-      distanceFromShipCache = position.distanceTo(ship.position);
-    }
+    distanceFromShipCache = position.distanceTo(ship.position);
   }
 
   void onCollideWith(SpaceBody other) {}
