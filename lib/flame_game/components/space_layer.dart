@@ -276,6 +276,18 @@ class SpaceWrapper extends WrapperNoEvents
     _cameraManager.fixSpaceDots();
   }
 
+  void resetSpriteVsPhysicsScale() {
+    for (SpaceBody item in _otherSpaceBodies) {
+      item.resetSpriteVsPhysicsScale();
+    }
+    for (Rock rock in _allRocks) {
+      rock.resetSpriteVsPhysicsScale();
+    }
+    for (Bullet bullet in _bullets) {
+      bullet.resetSpriteVsPhysicsScale();
+    }
+  }
+
   @override
   Future<void> onLoad() async {
     super.onLoad();

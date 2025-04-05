@@ -94,6 +94,10 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     }
   }
 
+  void resetSpriteVsPhysicsScale() {
+    bringBallToSprite();
+  }
+
   void setUpdateMode() {
     if (isOutsideVisiblePlusUniverseCache) {
       if (connectedToBall && this is! Bullet) {

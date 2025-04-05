@@ -7,6 +7,8 @@ import 'space_body.dart';
 
 const bool openSpaceMovement = true;
 
+double spriteVsPhysicsScale = 2;
+
 // ignore: always_specify_types
 class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   PhysicsBall({
@@ -22,13 +24,13 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
              restitution: openSpaceMovement ? 1 : 0,
              friction: damping != 0 ? 1 : 0,
              density: density,
-             CircleShape(radius: radius),
+             CircleShape(radius: radius / spriteVsPhysicsScale),
            ),
          ],
          bodyDef: BodyDef(
            angularDamping: openSpaceMovement ? 0 : 0,
-           position: position,
-           linearVelocity: velocity,
+           position: position / spriteVsPhysicsScale,
+           linearVelocity: velocity / spriteVsPhysicsScale,
            linearDamping: damping * 20,
            angularVelocity: (random.nextDouble() - 0.5) * tau / 2,
            type: BodyType.dynamic,
@@ -48,9 +50,16 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   // ignore: unused_field
   bool _subConnectedBall = true;
 
-  set velocity(Vector2 vel) => body.linearVelocity.setFrom(vel);
+  set position(Vector2 pos) => _setPositionNow(pos / spriteVsPhysicsScale);
 
-  set position(Vector2 pos) => _setPositionNow(pos);
+  set velocity(Vector2 vel) =>
+      body.linearVelocity.setFrom(vel / spriteVsPhysicsScale);
+
+  set acceleration(Vector2 acceleration) =>
+      body.applyForce(acceleration * (body.mass / spriteVsPhysicsScale));
+
+  set radius(double rad) =>
+      body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;
 
   void _setPositionNow(Vector2 pos) {
     body.setTransform(pos, 0);

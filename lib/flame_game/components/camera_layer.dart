@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import '../pacman_game.dart';
 import '../pacman_world.dart';
+import 'physics_ball.dart';
 import 'ship.dart';
 import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
@@ -55,7 +56,13 @@ class CameraWrapper extends WrapperNoEvents
   int get _zoomOrderOfMagnitude =>
       logOrder(1 / zoom * flameGameZoom * 75).floor();
 
+  int _zoomOrderOfMagnitudeLast = -1;
   void fixSpaceDots() {
+    if (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast) {
+      _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
+      spriteVsPhysicsScale = ship.radius / defaultShipRadius;
+      world.space.resetSpriteVsPhysicsScale();
+    }
     _smallDots.tidyUpdate(
       newOrderMagnitude: _zoomOrderOfMagnitude + 0,
       shipPosition: ship.position,

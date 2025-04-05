@@ -47,7 +47,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   void _setRadius(double x) {
     size = Vector2.all(x * 2);
     if (isMounted && possiblePhysicsConnection) {
-      _ball.body.fixtures.first.shape.radius = x;
+      _ball.radius = x;
     }
   }
 
@@ -60,8 +60,10 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     owner: this as SpaceBody,
   ); //never created for clone
 
-  late final Vector2 _ballPos = _ball.position;
-  late final Vector2 _ballVel = _ball.body.linearVelocity;
+  Vector2 get _ballPos => _ballPosReal * spriteVsPhysicsScale;
+  late final Vector2 _ballPosReal = _ball.position;
+  Vector2 get _ballVel => _ballVelReal * spriteVsPhysicsScale;
+  late final Vector2 _ballVelReal = _ball.body.linearVelocity;
   late final Vector2 _gravitySign = world.gravitySign;
 
   final Vector2 acceleration = Vector2(0, 0);
@@ -149,6 +151,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     if (isMounted && !isRemoving) {
       _ball.position = position;
       _ball.velocity = _simpleVelocity;
+      _ball.radius = radius;
     }
 
     if (isMounted && !isRemoving) {
@@ -193,7 +196,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     if (connectedToBall) {
       assert(!isClone);
       if (canAccelerate) {
-        _ball.body.applyForce(acceleration * _ball.body.mass);
+        _ball.acceleration = acceleration;
       }
       position.setFrom(_ballPos);
       if (openSpaceMovement) {
