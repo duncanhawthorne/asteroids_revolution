@@ -3,9 +3,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
-import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import '../maze.dart';
 import '../pacman_game.dart';
@@ -22,9 +20,6 @@ import 'ship.dart';
 import 'space_body.dart';
 import 'triple.dart';
 import 'wrapper_no_events.dart';
-
-//final Paint seedPaint = Paint()..color = Palette.seed.color;
-final Paint warningPaint = Paint()..color = Palette.seed.color;
 
 const double _kHubbleLimitMult = 1.4;
 
