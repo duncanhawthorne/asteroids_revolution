@@ -61,10 +61,16 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     owner: this as SpaceBody,
   ); //never created for clone
 
-  Vector2 get _ballPos => _ballPosReal * spriteVsPhysicsScale;
-  late final Vector2 _ballPosReal = _ball.position;
-  Vector2 get _ballVel => _ballVelReal * spriteVsPhysicsScale;
-  late final Vector2 _ballVelReal = _ball.body.linearVelocity;
+  Vector2 get _ballPos =>
+      reusableVector
+        ..setFrom(_ballPosUnscaled)
+        ..scale(spriteVsPhysicsScale);
+  late final Vector2 _ballPosUnscaled = _ball.position;
+  Vector2 get _ballVel =>
+      reusableVector
+        ..setFrom(_ballVelUnscaled)
+        ..scale(spriteVsPhysicsScale);
+  late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
   late final Vector2 _gravitySign = world.gravitySign;
 
   final Vector2 acceleration = Vector2(0, 0);

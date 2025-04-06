@@ -9,7 +9,7 @@ import 'space_body.dart';
 
 const bool openSpaceMovement = true;
 
-double spriteVsPhysicsScale = 2; //FIXME fix new Vector2 creation every frame
+double spriteVsPhysicsScale = 2;
 
 // ignore: always_specify_types
 class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
@@ -57,13 +57,18 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   // ignore: unused_field
   bool _subConnectedBall = true;
 
+  static Vector2 reusableVector = Vector2.zero();
+
   set position(Vector2 pos) => _setPositionNow(pos / spriteVsPhysicsScale);
 
   set velocity(Vector2 vel) =>
       body.linearVelocity.setFrom(vel / spriteVsPhysicsScale);
 
-  set acceleration(Vector2 acceleration) =>
-      body.applyForce(acceleration * (body.mass / spriteVsPhysicsScale));
+  set acceleration(Vector2 acceleration) => body.applyForce(
+    reusableVector
+      ..setFrom(acceleration)
+      ..scale(body.mass / spriteVsPhysicsScale),
+  );
 
   set radius(double rad) =>
       body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;

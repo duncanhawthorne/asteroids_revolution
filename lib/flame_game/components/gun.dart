@@ -68,11 +68,12 @@ mixin Gun on SpaceBody {
 
   List<PositionComponent> _bullets() {
     final Paint bulletPaint = paint;
+    final double bulletRadius = radius * 0.25;
     final List<PositionComponent> out = <PositionComponent>[
       Bullet(
         position: _fBulletPosition(0),
         velocity: _fBulletVelocity(),
-        radius: radius * 0.25,
+        radius: bulletRadius,
         paint: bulletPaint,
       ),
     ];
@@ -82,7 +83,7 @@ mixin Gun on SpaceBody {
           Bullet(
             position: _fBulletPosition(0.5),
             velocity: _fBulletVelocity(),
-            radius: radius * 0.25,
+            radius: bulletRadius,
             paint: bulletPaint,
           ),
         )
@@ -90,7 +91,7 @@ mixin Gun on SpaceBody {
           Bullet(
             position: _fBulletPosition(-0.5),
             velocity: _fBulletVelocity(),
-            radius: radius * 0.25,
+            radius: bulletRadius,
             paint: bulletPaint,
           ),
         );
