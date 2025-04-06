@@ -14,13 +14,13 @@ import 'alien.dart';
 import 'bullet.dart';
 import 'bullet_layer.dart';
 import 'camera_layer.dart';
-import 'cherry.dart';
 import 'debug_circle.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'rock_layer.dart';
 import 'ship.dart';
 import 'space_body.dart';
+import 'triple.dart';
 import 'wrapper_no_events.dart';
 
 //final Paint seedPaint = Paint()..color = Palette.seed.color;
@@ -64,7 +64,7 @@ class SpaceWrapper extends WrapperNoEvents
   late final int _transparentRockLimit = _visibleRockLimit ~/ 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6;
   static const int _alienLimit = kDebugMode ? 0 : 1;
-  static const int _cherryLimit = 4;
+  static const int _tripleLimit = 4;
 
   Iterable<Rock> get _allRocks => rocks.children.whereType<Rock>();
   Iterable<Rock> get _visibleRocks =>
@@ -74,7 +74,7 @@ class SpaceWrapper extends WrapperNoEvents
   Iterable<Bullet> get _bullets => bullets.children.whereType<Bullet>();
   Iterable<Heart> get hearts => children.whereType<Heart>();
   Iterable<Alien> get _aliens => children.whereType<Alien>();
-  Iterable<Cherry> get _cherries => children.whereType<Cherry>();
+  Iterable<Triple> get _triples => children.whereType<Triple>();
   Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
   double get _visibleUniverseRadius =>
@@ -120,7 +120,7 @@ class SpaceWrapper extends WrapperNoEvents
   @override
   Future<void> reset() async {
     removeWhere((Component item) => item is Heart);
-    removeWhere((Component item) => item is Cherry);
+    removeWhere((Component item) => item is Triple);
     removeWhere((Component item) => item is Alien);
 
     ship.reset();
@@ -161,9 +161,9 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
+    for (int i = 0; i < _tripleLimit - _triples.length; i++) {
       add(
-        Cherry(
+        Triple(
           position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
@@ -232,9 +232,9 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _cherryLimit - _cherries.length; i++) {
+    for (int i = 0; i < _tripleLimit - _triples.length; i++) {
       add(
-        Cherry(
+        Triple(
           position: _randomPositionInTwilightZone(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,

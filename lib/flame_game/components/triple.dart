@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import '../../style/palette.dart';
 import 'space_body.dart';
 
-final Paint _cherryOverridePaint =
+final Paint _tripleOverridePaint =
     Paint()
       //.color = Palette.seed.color
       ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
 
-class Cherry extends SpaceBody {
-  Cherry({
+class Triple extends SpaceBody {
+  Triple({
     required super.position,
     required super.velocity,
     this.ensureVelocityTowardsCenter = true,
     required super.radius,
-  }) : super(paint: _cherryOverridePaint);
+  }) : super(paint: _tripleOverridePaint);
 
   @override
   // ignore: overridden_fields

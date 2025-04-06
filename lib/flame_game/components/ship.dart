@@ -7,11 +7,11 @@ import 'package:flutter/foundation.dart';
 import '../icons/stub_sprites.dart';
 import '../maze.dart';
 import 'alien.dart';
-import 'cherry.dart';
 import 'gun.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
+import 'triple.dart';
 
 final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
@@ -143,7 +143,7 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
     } else if (other is Heart) {
       other.removeFromParent();
       damage(-0.2 * other.radius / radius);
-    } else if (other is Cherry) {
+    } else if (other is Triple) {
       addMultiGun();
       other.removeFromParent();
     }
