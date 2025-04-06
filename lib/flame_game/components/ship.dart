@@ -1,9 +1,11 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../style/palette.dart';
 import '../icons/stub_sprites.dart';
 import '../maze.dart';
 import 'alien.dart';
@@ -17,9 +19,13 @@ final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
+final Paint _shipOverridePaint =
+    Paint()
+      ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
+
 class Ship extends SpaceBody with CollisionCallbacks, Gun {
   Ship({required super.position, required super.velocity})
-    : super(radius: defaultShipRadius);
+    : super(radius: defaultShipRadius, paint: _shipOverridePaint);
 
   bool accelerating = false;
   @override

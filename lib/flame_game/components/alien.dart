@@ -7,11 +7,7 @@ import 'space_body.dart';
 
 final Paint _alienOverridePaint =
     Paint()
-      //.color = Palette.seed.color
-      ..colorFilter = ColorFilter.mode(
-        Palette.warning.color,
-        BlendMode.modulate,
-      );
+      ..colorFilter = ColorFilter.mode(Palette.enemy.color, BlendMode.modulate);
 
 class Alien extends SpaceBody with OverlaySprite {
   Alien({
