@@ -49,7 +49,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
 
   @override
   // ignore: overridden_fields
-  final Paint paint = Paint()..color = Palette.warning.color;
+  final Paint paint = Paint()..color = Palette.pacman.color;
 
   @override
   int priority = -100;

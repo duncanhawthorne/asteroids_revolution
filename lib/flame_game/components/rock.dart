@@ -41,11 +41,14 @@ class Rock extends SpaceBody with OverlaySprite {
 
   @override
   // ignore: overridden_fields
-  String defaultSpritePath = "asteroid1.png";
+  late final String defaultSpritePath =
+      random.nextDouble() < 1 / 3
+          ? "asteroid1.png"
+          : (random.nextDouble() < 0.5 ? "asteroid0.png" : "asteroid2.png");
 
   @override
   // ignore: overridden_fields
-  String? overlaySpritePath = "asteroid1.png";
+  late final String? overlaySpritePath = defaultSpritePath;
 
   @override
   void setHealth(double h, {bool dontExplode = false}) {
