@@ -136,65 +136,6 @@ class SpaceWrapper extends WrapperNoEvents
     _startTimerTidySpaceBodies();
   }
 
-  void _addStarterSpaceBodyField() {
-    for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
-      rocks.add(
-        Rock(
-          position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(
-            scale: 5 * zoomAdjustedEverythingScale,
-          ),
-          numberExplosionsLeft: randomStartingHits(),
-          radius: ship.radius * 0.8 * randomRadiusFactor(),
-        ),
-      );
-    }
-    for (int i = 0; i < heartLimit - hearts.length; i++) {
-      add(
-        Heart(
-          position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(
-            scale: 5 * zoomAdjustedEverythingScale,
-          ),
-          radius: ship.radius,
-        ),
-      );
-    }
-    for (int i = 0; i < _tripleLimit - _triples.length; i++) {
-      add(
-        Triple(
-          position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(
-            scale: 5 * zoomAdjustedEverythingScale,
-          ),
-          radius: ship.radius,
-        ),
-      );
-    }
-    for (int i = 0; i < _alienBombLimit - _alienBombs.length; i++) {
-      add(
-        AlienBomb(
-          position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(
-            scale: 5 * zoomAdjustedEverythingScale,
-          ),
-          radius: ship.radius,
-        ),
-      );
-    }
-    for (int i = 0; i < _alienGunLimit - _alienGuns.length; i++) {
-      add(
-        AlienGun(
-          position: _randomPositionInMappedUniverse(),
-          velocity: randomVelocityOffset(
-            scale: 5 * zoomAdjustedEverythingScale,
-          ),
-          radius: ship.radius,
-        ),
-      );
-    }
-  }
-
   void addSmallRocksOnDamage() {
     for (int i = 0; i < _transparentRockLimit - _transparentRocks.length; i++) {
       rocks.add(
@@ -210,7 +151,17 @@ class SpaceWrapper extends WrapperNoEvents
     }
   }
 
-  void _topUpSpaceBodies() {
+  void _addStarterSpaceBodyField() {
+    _topUpSpaceBodies(initial: true);
+  }
+
+  Vector2 _newBodyPosition(bool initial) {
+    return initial
+        ? _randomPositionInMappedUniverse()
+        : _randomPositionInTwilightZone();
+  }
+
+  void _topUpSpaceBodies({bool initial = false}) {
     if (game.paused) {
       return;
     }
@@ -220,7 +171,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _visibleRockLimit - _visibleRocks.length; i++) {
       rocks.add(
         Rock(
-          position: _randomPositionInTwilightZone(),
+          position: _newBodyPosition(initial),
           velocity: randomVelocityOffset(
             scale: 10 * zoomAdjustedEverythingScale,
           ),
@@ -233,7 +184,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < heartLimit - hearts.length; i++) {
       add(
         Heart(
-          position: _randomPositionInTwilightZone(),
+          position: _newBodyPosition(initial),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
           ),
@@ -245,7 +196,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _tripleLimit - _triples.length; i++) {
       add(
         Triple(
-          position: _randomPositionInTwilightZone(),
+          position: _newBodyPosition(initial),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
           ),
@@ -257,7 +208,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _alienBombLimit - _alienBombs.length; i++) {
       add(
         AlienBomb(
-          position: _randomPositionInTwilightZone(),
+          position: _newBodyPosition(initial),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
           ),
@@ -268,7 +219,7 @@ class SpaceWrapper extends WrapperNoEvents
     for (int i = 0; i < _alienGunLimit - _alienGuns.length; i++) {
       add(
         AlienGun(
-          position: _randomPositionInTwilightZone(),
+          position: _newBodyPosition(initial),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
           ),
