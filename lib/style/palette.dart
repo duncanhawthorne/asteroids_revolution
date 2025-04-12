@@ -11,7 +11,8 @@ class Palette {
   static const PaletteEntry warning = PaletteEntry(_red);
   static const PaletteEntry transp = PaletteEntry(_transp);
   static const PaletteEntry dull = PaletteEntry(dullColor);
-  static const PaletteEntry enemy = PaletteEntry(_alienRed);
+  static const PaletteEntry alienBomb = PaletteEntry(_alienRed);
+  static const PaletteEntry alienGun = PaletteEntry(_alienYellow);
 
   static const Color seedColor = _snakeGreen;
   static const Color textColor = _white;
@@ -29,4 +30,5 @@ class Palette {
   static const MaterialColor _grey = Colors.grey;
   static const MaterialAccentColor _snakeGreen = Colors.greenAccent;
   static const MaterialAccentColor _alienRed = Colors.redAccent;
+  static const MaterialAccentColor _alienYellow = Colors.yellowAccent;
 }

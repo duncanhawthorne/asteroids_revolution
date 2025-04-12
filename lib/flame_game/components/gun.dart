@@ -5,9 +5,12 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 
 import 'bullet.dart';
+import 'ship.dart';
 import 'space_body.dart';
 
 mixin Gun on SpaceBody {
+  late final double bulletDensity = this is Ship ? 0.001 : 0.00001;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -63,7 +66,7 @@ mixin Gun on SpaceBody {
   late final SpawnComponent gun = SpawnComponent(
     multiFactory: (int i) => _bullets(),
     selfPositioning: true,
-    period: 0.15,
+    period: this is Ship ? 0.15 : 0.5,
   );
 
   List<PositionComponent> _bullets() {
@@ -75,6 +78,7 @@ mixin Gun on SpaceBody {
         velocity: _fBulletVelocity(),
         radius: bulletRadius,
         paint: bulletPaint,
+        density: bulletDensity,
       ),
     ];
     if (_withMultiGun) {
@@ -85,6 +89,7 @@ mixin Gun on SpaceBody {
             velocity: _fBulletVelocity(),
             radius: bulletRadius,
             paint: bulletPaint,
+            density: bulletDensity,
           ),
         )
         ..add(
@@ -93,6 +98,7 @@ mixin Gun on SpaceBody {
             velocity: _fBulletVelocity(),
             radius: bulletRadius,
             paint: bulletPaint,
+            density: bulletDensity,
           ),
         );
     }

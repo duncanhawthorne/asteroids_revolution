@@ -28,10 +28,20 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
   GameCharacter({
     super.position,
     super.paint,
+    double density = 1,
     required double radius,
     required Vector2 velocity,
   }) : super(size: Vector2.all(radius * 2), anchor: Anchor.center) {
     _simpleVelocity = Vector2.zero()..setFrom(velocity);
+    _ball = PhysicsBall(
+      position: position,
+      radius: radius,
+      velocity: _simpleVelocity,
+      angularVelocity: _simpleAngularVelocity,
+      damping: 1 - friction,
+      density: density,
+      owner: this as SpaceBody,
+    );
   }
 
   static Vector2 reusableVector = Vector2.zero();
@@ -51,15 +61,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
   }
 
-  late final PhysicsBall _ball = PhysicsBall(
-    position: position,
-    radius: radius,
-    velocity: _simpleVelocity,
-    angularVelocity: _simpleAngularVelocity,
-    damping: 1 - friction,
-    density: (this is Alien || this is Bullet) ? 0.001 : 1,
-    owner: this as SpaceBody,
-  ); //never created for clone
+  late final PhysicsBall _ball;
 
   Vector2 get _ballPos =>
       reusableVector

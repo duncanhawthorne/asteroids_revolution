@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import '../../style/palette.dart';
 import '../icons/stub_sprites.dart';
 import '../maze.dart';
-import 'alien.dart';
+import 'alien_bomb.dart';
 import 'gun.dart';
 import 'heart.dart';
 import 'rock.dart';
@@ -143,9 +143,9 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
         }
         other.damage(4 * radius / other.radius);
       }
-    } else if (other is Alien) {
+    } else if (other is AlienBomb) {
       damage(0.75 * other.radius / radius); //huge
-      other.damage(1);
+      other.damage(1); //destroy
     } else if (other is Heart) {
       other.removeFromParent();
       damage(-0.2 * other.radius / radius);

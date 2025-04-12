@@ -1,20 +1,14 @@
-import 'dart:ui';
-
-import '../../style/palette.dart';
 import 'game_character.dart';
 import 'overlay_sprite.dart';
 import 'space_body.dart';
-
-final Paint _alienOverridePaint =
-    Paint()
-      ..colorFilter = ColorFilter.mode(Palette.enemy.color, BlendMode.modulate);
 
 class Alien extends SpaceBody with OverlaySprite {
   Alien({
     required super.position,
     required super.velocity,
     required super.radius,
-  }) : super(paint: _alienOverridePaint);
+    required super.paint,
+  }) : super(density: 0.001);
 
   @override
   // ignore: overridden_fields

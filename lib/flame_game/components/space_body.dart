@@ -13,6 +13,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     required super.position,
     required super.velocity,
     required super.radius,
+    super.density,
     super.paint,
   });
 

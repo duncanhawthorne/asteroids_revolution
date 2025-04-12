@@ -8,7 +8,8 @@ import '../../utils/helper.dart';
 import '../maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
-import 'alien.dart';
+import 'alien_bomb.dart';
+import 'alien_gun.dart';
 import 'bullet.dart';
 import 'bullet_layer.dart';
 import 'camera_layer.dart';
@@ -58,7 +59,8 @@ class SpaceWrapper extends WrapperNoEvents
   final int _visibleRockLimit = (30 * pow(_kHubbleLimitMult, 2)).floor();
   late final int _transparentRockLimit = _visibleRockLimit ~/ 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6;
-  static const int _alienLimit = kDebugMode ? 0 : 1;
+  static const int _alienBombLimit = kDebugMode ? 1 : 1;
+  static const int _alienGunLimit = kDebugMode ? 1 : 0;
   static const int _tripleLimit = 4;
 
   Iterable<Rock> get _allRocks => rocks.children.whereType<Rock>();
@@ -68,7 +70,8 @@ class SpaceWrapper extends WrapperNoEvents
       rocks.children.whereType<Rock>().where((Rock item) => item.opacity != 1);
   Iterable<Bullet> get _bullets => bullets.children.whereType<Bullet>();
   Iterable<Heart> get hearts => children.whereType<Heart>();
-  Iterable<Alien> get _aliens => children.whereType<Alien>();
+  Iterable<AlienBomb> get _alienBombs => children.whereType<AlienBomb>();
+  Iterable<AlienGun> get _alienGuns => children.whereType<AlienGun>();
   Iterable<Triple> get _triples => children.whereType<Triple>();
   Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
@@ -116,7 +119,8 @@ class SpaceWrapper extends WrapperNoEvents
   Future<void> reset() async {
     removeWhere((Component item) => item is Heart);
     removeWhere((Component item) => item is Triple);
-    removeWhere((Component item) => item is Alien);
+    removeWhere((Component item) => item is AlienBomb);
+    removeWhere((Component item) => item is AlienGun);
 
     ship.reset();
     async.unawaited(_cameraManager.reset());
@@ -167,9 +171,20 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _alienLimit - _aliens.length; i++) {
+    for (int i = 0; i < _alienBombLimit - _alienBombs.length; i++) {
       add(
-        Alien(
+        AlienBomb(
+          position: _randomPositionInMappedUniverse(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
+    }
+    for (int i = 0; i < _alienGunLimit - _alienGuns.length; i++) {
+      add(
+        AlienGun(
           position: _randomPositionInMappedUniverse(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
@@ -239,9 +254,20 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _alienLimit - _aliens.length; i++) {
+    for (int i = 0; i < _alienBombLimit - _alienBombs.length; i++) {
       add(
-        Alien(
+        AlienBomb(
+          position: _randomPositionInTwilightZone(),
+          velocity: randomVelocityOffset(
+            scale: 5 * zoomAdjustedEverythingScale,
+          ),
+          radius: ship.radius,
+        ),
+      );
+    }
+    for (int i = 0; i < _alienGunLimit - _alienGuns.length; i++) {
+      add(
+        AlienGun(
           position: _randomPositionInTwilightZone(),
           velocity: randomVelocityOffset(
             scale: 5 * zoomAdjustedEverythingScale,
