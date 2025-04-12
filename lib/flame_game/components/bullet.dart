@@ -20,23 +20,7 @@ class Bullet extends SpaceBody with CollisionCallbacks {
 
   @override
   // ignore: overridden_fields
-  final bool connectedToBall = true;
-
-  @override
-  // ignore: overridden_fields
-  final bool possiblePhysicsConnection = true;
-
-  @override
-  // ignore: overridden_fields
   String defaultSpritePath = "bullet.png";
-
-  bool isActive = true; //do not in spareBits
-
-  @override
-  Future<void> onMount() async {
-    isActive = true; //already set sync but set here anyway
-    await super.onMount();
-  }
 
   @override
   void update(double dt) {
@@ -46,12 +30,6 @@ class Bullet extends SpaceBody with CollisionCallbacks {
       removeFromParent();
     }
     super.update(dt);
-  }
-
-  @override
-  Future<void> onRemove() async {
-    isActive = false;
-    await super.onRemove();
   }
 
   @override
