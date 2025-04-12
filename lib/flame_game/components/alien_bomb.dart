@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+
 import '../../style/palette.dart';
 import 'alien.dart';
 
@@ -16,4 +18,6 @@ class AlienBomb extends Alien {
     required super.velocity,
     required super.radius,
   }) : super(paint: _alienBombOverridePaint);
+
+  static const int limit = kDebugMode ? 1 : 1;
 }

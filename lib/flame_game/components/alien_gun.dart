@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+
 import '../../style/palette.dart';
 import 'alien.dart';
 import 'gun.dart';
@@ -17,4 +19,6 @@ class AlienGun extends Alien with Gun {
     required super.velocity,
     required super.radius,
   }) : super(paint: _alienGunOverridePaint);
+
+  static const int limit = kDebugMode ? 1 : 1;
 }

@@ -59,9 +59,6 @@ class SpaceWrapper extends WrapperNoEvents
   final int _visibleRockLimit = (30 * pow(_kHubbleLimitMult, 2)).floor();
   late final int _transparentRockLimit = _visibleRockLimit ~/ 20;
   late final double heartLimit = _visibleRockLimit / 4 / 6;
-  static const int _alienBombLimit = kDebugMode ? 1 : 1;
-  static const int _alienGunLimit = kDebugMode ? 1 : 0;
-  static const int _tripleLimit = 4;
 
   Iterable<Rock> get _allRocks => rocks.children.whereType<Rock>();
   Iterable<Rock> get _visibleRocks =>
@@ -70,9 +67,6 @@ class SpaceWrapper extends WrapperNoEvents
       rocks.children.whereType<Rock>().where((Rock item) => item.opacity != 1);
   Iterable<Bullet> get _bullets => bullets.children.whereType<Bullet>();
   Iterable<Heart> get hearts => children.whereType<Heart>();
-  Iterable<AlienBomb> get _alienBombs => children.whereType<AlienBomb>();
-  Iterable<AlienGun> get _alienGuns => children.whereType<AlienGun>();
-  Iterable<Triple> get _triples => children.whereType<Triple>();
   Iterable<SpaceBody> get _otherSpaceBodies => children.whereType<SpaceBody>();
 
   double get _visibleUniverseRadius =>
@@ -193,7 +187,11 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _tripleLimit - _triples.length; i++) {
+    for (
+      int i = 0;
+      i < Triple.limit - children.whereType<Triple>().length;
+      i++
+    ) {
       add(
         Triple(
           position: _newBodyPosition(initial),
@@ -205,7 +203,11 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _alienBombLimit - _alienBombs.length; i++) {
+    for (
+      int i = 0;
+      i < AlienBomb.limit - children.whereType<AlienBomb>().length;
+      i++
+    ) {
       add(
         AlienBomb(
           position: _newBodyPosition(initial),
@@ -216,7 +218,11 @@ class SpaceWrapper extends WrapperNoEvents
         ),
       );
     }
-    for (int i = 0; i < _alienGunLimit - _alienGuns.length; i++) {
+    for (
+      int i = 0;
+      i < AlienGun.limit - children.whereType<AlienGun>().length;
+      i++
+    ) {
       add(
         AlienGun(
           position: _newBodyPosition(initial),

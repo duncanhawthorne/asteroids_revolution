@@ -16,6 +16,8 @@ class Triple extends SpaceBody {
     required super.radius,
   }) : super(paint: _tripleOverridePaint);
 
+  static const int limit = 4;
+
   @override
   // ignore: overridden_fields
   String defaultSpritePath = "triple.png";
