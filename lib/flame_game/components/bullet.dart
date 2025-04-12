@@ -74,7 +74,7 @@ class Bullet extends SpaceBody with CollisionCallbacks {
       position = _offscreen; //stop repeat hits
       removeFromParent();
     } else if (other is AlienGun) {
-      other.damage(1);
+      other.damage(1 / 3);
       position = _offscreen; //stop repeat hits
       removeFromParent();
     } else if (other is Ship) {
