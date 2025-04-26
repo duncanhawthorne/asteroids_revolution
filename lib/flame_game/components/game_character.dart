@@ -230,7 +230,7 @@ class GameCharacter extends SpriteAnimationGroupComponent<CharacterState>
       current = CharacterState.normal;
     }
     if (connectedToBall && !isClone) {
-      parent!.add(
+      await parent!.add(
         _ball,
       ); //should be added to static parent but risks going stray
     }
