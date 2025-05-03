@@ -19,5 +19,5 @@ class AlienBomb extends Alien {
     required super.radius,
   }) : super(paint: _alienBombOverridePaint);
 
-  static const int limit = kDebugMode ? 1 : 1;
+  static const int limit = kDebugMode ? 0 : 1;
 }

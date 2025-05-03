@@ -20,5 +20,5 @@ class AlienGun extends Alien with Gun {
     required super.radius,
   }) : super(paint: _alienGunOverridePaint);
 
-  static const int limit = kDebugMode ? 1 : 1;
+  static const int limit = kDebugMode ? 2 : 2;
 }

@@ -28,7 +28,7 @@ class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);
 
-  final Ship ship = Ship(position: Vector2(-1, -1), velocity: Vector2(0, 0));
+  final Ship ship = Ship(position: Vector2(0, 0), velocity: Vector2(0, 0));
   final CameraWrapper _cameraManager = CameraWrapper();
   final BulletWrapper bullets = BulletWrapper();
   final RockWrapper rocks = RockWrapper();
