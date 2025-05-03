@@ -79,7 +79,7 @@ class Alien extends SpaceBody with OverlaySprite {
     final num discriminant = pow(b, 2) - 4 * a * c;
 
     if (discriminant < 0 || a == 0) {
-      logGlobal(<Object>["no solution", discriminant, a, b, c]);
+      //logGlobal(<Object>["no solution", discriminant, a, b, c]);
       return null;
     }
 
@@ -112,8 +112,8 @@ class Alien extends SpaceBody with OverlaySprite {
       ..add(_vd)
       ..scale(1 / w);
 
-    if ((_target.x - (-cos(acos(cosThetaRoot)))).abs() < 0.01 &&
-        (_target.y - sin(acos(cosThetaRoot))).abs() < 0.01) {
+    if ((_target.x - (-cos(acos(cosThetaRoot)))).abs() < 0.01 * radius &&
+        (_target.y - sin(acos(cosThetaRoot))).abs() < 0.01 * radius) {
       theta = acos(cosThetaRoot);
     } else {
       theta = tau - acos(cosThetaRoot);
