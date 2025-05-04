@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
-import 'package:vector_math/vector_math.dart';
 
 import '../../utils/helper.dart';
 import '../effects/rotate_effect.dart';
@@ -59,7 +60,7 @@ class Alien extends SpaceBody with OverlaySprite {
   double? bullseye() {
     if (!ship.isMounted && !isMounted) {
       logGlobal("not mounted");
-      return 0;
+      return null;
     }
     final double bulletSpeed = world.downDirection.length * radius * 2;
     _pd
