@@ -195,7 +195,7 @@ class PacmanWorld extends Forge2DWorld
         game.isLive &&
         game.openingScreenCleared &&
         !game.playbackMode) {
-      setMazeAngle(game.camera.viewfinder.angle - angleDelta);
+      setMazeAngle(cameraAngle - angleDelta);
       if (!doingLevelResetFlourish && !game.isWonOrLost) {
         game.startRegularItems();
       }
@@ -208,9 +208,17 @@ class PacmanWorld extends Forge2DWorld
   static const bool _updateGravityOnRotation = false;
   final Vector2 gravitySign = Vector2(0, 0);
 
+  static bool _kRotatingCamera = true;
+  double get cameraAngle =>
+      _kRotatingCamera ? game.camera.viewfinder.angle : _debugFakeAngle;
+  set cameraAngle(double z) =>
+      _kRotatingCamera ? game.camera.viewfinder.angle = z : _debugFakeAngle = z;
+
+  double _debugFakeAngle = 0;
+
   void setMazeAngle(double angle) {
     game.recordAngle(angle);
-    game.camera.viewfinder.angle = angle;
+    cameraAngle = angle;
     downDirection
       ..setValues(-sin(angle), cos(angle))
       ..scale(game.level.levelSpeed);

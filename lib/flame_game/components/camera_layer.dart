@@ -20,12 +20,14 @@ class CameraWrapper extends WrapperNoEvents
   @override
   final int priority = -100;
 
-  double debugFakeZoom = 1;
+  double _debugFakeZoom = 1;
 
   double get zoom =>
-      _kAutoZoomingCamera ? game.camera.viewfinder.zoom : debugFakeZoom;
+      _kAutoZoomingCamera ? game.camera.viewfinder.zoom : _debugFakeZoom;
   set zoom(double z) =>
-      _kAutoZoomingCamera ? game.camera.viewfinder.zoom = z : debugFakeZoom = z;
+      _kAutoZoomingCamera
+          ? game.camera.viewfinder.zoom = z
+          : _debugFakeZoom = z;
 
   @override
   Future<void> reset() async {
