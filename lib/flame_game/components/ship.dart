@@ -107,11 +107,9 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
   @override
   void reset() {
     super.reset();
-    connectedToBall = false; //as on first run, ball not yet created
-    velocity = Vector2(0, 0);
-    connectedToBall = true; //as on first run, ball not yet created
-    position = Vector2(0, 0);
-    bringBallToSprite();
+    position.setAll(0);
+    velocity.setAll(0);
+    initialisePhysics();
     setHealth(1);
   }
 

@@ -96,17 +96,17 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   }
 
   void resetSpriteVsPhysicsScale() {
-    bringBallToSprite();
+    initialisePhysics();
   }
 
   void setUpdateMode() {
     if (isOutsideVisiblePlusUniverseCache) {
       if (connectedToBall && this is! Bullet) {
-        disconnectFromBall();
+        initialiseSimplePhysics();
       }
     } else {
       if (possiblePhysicsConnection && !connectedToBall) {
-        bringBallToSprite();
+        initialisePhysics();
       }
     }
   }
@@ -139,18 +139,6 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
       removeFromParent();
     }
     setUpdateMode();
-
-    if (!connectedToBall) {
-      if (canAccelerate) {
-        velocity.addScaled(acceleration, dt);
-      }
-      if (friction != 1) {
-        velocity.scale(friction);
-      }
-      position.addScaled(velocity, dt);
-    } else {
-      oneFrameOfPhysics(dt);
-    }
     distanceFromShipCache = position.distanceTo(ship.position);
   }
 
