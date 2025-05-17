@@ -6,6 +6,7 @@ import 'heart.dart';
 import 'overlay_sprite.dart';
 import 'ship.dart';
 import 'space_body.dart';
+import 'space_layer.dart';
 
 final Paint _rockPaint = Paint()..color = Palette.transp.color;
 
@@ -147,6 +148,9 @@ class Rock extends SpaceBody with OverlaySprite {
 
   @override
   void onContactWith(SpaceBody other) {
+    if (!contactActionsEnabled) {
+      return;
+    }
     if (other is Rock || other is Ship) {
       damage(0.2 * other.radius / radius, dontExplode: true);
     }

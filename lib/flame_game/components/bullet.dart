@@ -6,6 +6,7 @@ import 'alien_gun.dart';
 import 'rock.dart';
 import 'ship.dart';
 import 'space_body.dart';
+import 'space_layer.dart';
 
 final Vector2 _offscreen = Vector2(1000, 1000);
 
@@ -43,6 +44,9 @@ class Bullet extends SpaceBody with CollisionCallbacks {
 
   @override
   void onCollideWith(SpaceBody other) {
+    if (!contactActionsEnabled) {
+      return;
+    }
     if (other is Rock) {
       other.damage(4 * radius / other.radius);
       position = _offscreen; //stop repeat hits

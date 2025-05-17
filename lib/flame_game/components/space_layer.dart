@@ -24,6 +24,8 @@ import 'wrapper_no_events.dart';
 
 const double _kHubbleLimitMult = 1.4;
 
+const bool contactActionsEnabled = !kDebugMode || true;
+
 class SpaceWrapper extends WrapperNoEvents
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);

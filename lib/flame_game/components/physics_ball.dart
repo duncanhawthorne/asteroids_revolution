@@ -11,6 +11,9 @@ const bool openSpaceMovement = true;
 
 double spriteVsPhysicsScale = 2;
 
+final Paint _activePaint = Paint()..color = Palette.pacman.color;
+final Paint _inactivePaint = Paint()..color = Palette.warning.color;
+
 // ignore: always_specify_types
 class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   PhysicsBall({
@@ -49,7 +52,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
 
   @override
   // ignore: overridden_fields
-  final Paint paint = Paint()..color = Palette.pacman.color;
+  Paint paint = _activePaint;
 
   @override
   int priority = -100;
@@ -82,6 +85,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
       ..setType(BodyType.dynamic)
       ..setActive(true);
     _subConnectedBall = true;
+    paint = _activePaint;
   }
 
   @override
@@ -100,6 +104,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
         ..setActive(false);
     }
     _subConnectedBall = false;
+    paint = _inactivePaint;
   }
 
   @override

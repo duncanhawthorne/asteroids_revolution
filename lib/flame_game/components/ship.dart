@@ -13,6 +13,7 @@ import 'gun.dart';
 import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
+import 'space_layer.dart';
 import 'triple.dart';
 
 final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
@@ -138,6 +139,9 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
 
   @override
   void onCollideWith(SpaceBody other) {
+    if (!contactActionsEnabled) {
+      return;
+    }
     if (other is Rock) {
       if (!other.isSmall) {
         if (!_invincibleFrames) {
