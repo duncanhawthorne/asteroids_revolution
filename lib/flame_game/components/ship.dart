@@ -9,6 +9,7 @@ import '../../style/palette.dart';
 import '../icons/stub_sprites.dart';
 import '../maze.dart';
 import 'alien_bomb.dart';
+import 'game_character.dart';
 import 'gun.dart';
 import 'heart.dart';
 import 'rock.dart';
@@ -109,7 +110,7 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
     super.reset();
     position.setAll(0);
     velocity.setAll(0);
-    setPreciseMode();
+    setPhysicsState(PhysicsState.full);
     setHealth(1);
   }
 

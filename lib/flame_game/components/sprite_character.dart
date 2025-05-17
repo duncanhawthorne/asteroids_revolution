@@ -82,17 +82,18 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   }
 
   @mustCallSuper
-  void setPreciseMode() {
-    hitBox.collisionType = defaultCollisionType;
-    hitBox.debugColor = Palette.pacman.color;
+  void setPhysicsState(PhysicsState state) {
     assert(!isClone); //not called on clones
-  }
-
-  @mustCallSuper
-  void setImpreciseMode() {
-    hitBox.collisionType = CollisionType.inactive;
-    hitBox.debugColor = Palette.warning.color;
-    assert(!isClone); //not called on clones
+    if (state == PhysicsState.full) {
+      hitBox.collisionType = defaultCollisionType;
+      hitBox.debugColor = Palette.pacman.color;
+    } else if (state == PhysicsState.partial) {
+      hitBox.collisionType = CollisionType.inactive;
+      hitBox.debugColor = Palette.warning.color;
+    } else {
+      hitBox.collisionType = CollisionType.inactive;
+      hitBox.debugColor = Palette.seed.color;
+    }
   }
 
   @override

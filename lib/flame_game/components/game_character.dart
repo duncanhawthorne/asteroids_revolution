@@ -28,8 +28,6 @@ class GameCharacter extends SpriteCharacter {
 
   bool possiblePhysicsConnection = true;
 
-  bool connectedToBall = true;
-
   final bool canAccelerate = false;
 
   set velocity(Vector2 v) => _velocity.setFrom(v);
@@ -47,7 +45,7 @@ class GameCharacter extends SpriteCharacter {
   double friction = 1;
   static Vector2 reusableVector = Vector2.zero();
 
-  bool get typical => connectedToBall && stateTypical;
+  bool get typical => state == PhysicsState.full && stateTypical;
 
   final bool _cloneEverMade = false; //could just test clone is null
   GameCharacter? _clone;
@@ -66,83 +64,70 @@ class GameCharacter extends SpriteCharacter {
   late final Physics _physics = Physics(owner: this);
   late final SimplePhysics _simplePhysics = SimplePhysics(owner: this);
 
-  void disconnectFromBall({bool spawning = false}) {
-    if (!spawning) {
-      //FIXME deal with spawning
-      setImpreciseMode();
-    }
+  bool _isFullyMounted(Component x) {
+    return x.isMounted && !x.isRemoving;
   }
 
-  void bringBallToSprite() {
-    if (isMounted && !isRemoving) {
-      //FIXME check if still need this test
-      // must test isMounted as bringBallToSprite typically runs after a delay
-      // and could have reset to remove the ball in the meantime
-      setPositionStill(position);
-    }
-  }
-
+  PhysicsState state = PhysicsState.full;
   @override
-  void setPreciseMode() {
-    super.setPreciseMode();
-    _initialisePhysics();
-  }
-
-  @override
-  void setImpreciseMode() {
-    super.setImpreciseMode();
-    _initialiseSimplePhysics();
-  }
-
-  void _initialisePhysics() {
-    _physics.initaliseFromOwner();
-    connectedToBall = true;
-    if (children.contains(_simplePhysics)) {
-      _simplePhysics.removeFromParent();
+  void setPhysicsState(PhysicsState state) {
+    super.setPhysicsState(state);
+    if (state == PhysicsState.full) {
+      state = PhysicsState.full;
+      _physics.initaliseFromOwnerAndSetDynamic();
+      if (!_isFullyMounted(_physics)) {
+        add(_physics);
+      }
+      if (_isFullyMounted(_simplePhysics)) {
+        _simplePhysics.removeFromParent();
+      }
+    } else if (state == PhysicsState.partial) {
+      state = PhysicsState.partial;
+      if (!_isFullyMounted(_simplePhysics)) {
+        add(_simplePhysics);
+      }
+      if (_isFullyMounted(_physics)) {
+        _physics.removeFromParent();
+      }
+    } else {
+      state = PhysicsState.none;
+      assert(!isClone); //as for clone have no way to turn collisionType back on
+      if (_isFullyMounted(_physics)) {
+        _physics.removeFromParent();
+      }
+      if (_isFullyMounted(_simplePhysics)) {
+        _simplePhysics.removeFromParent();
+      }
     }
-    if (!children.contains(_physics)) {
-      add(_physics);
-    }
   }
 
-  void _initialiseSimplePhysics() {
-    if (children.contains(_physics)) {
-      _physics.removeFromParent();
-    }
-    if (!children.contains(_simplePhysics)) {
-      add(_simplePhysics);
-    }
-    connectedToBall = false;
+  void setPositionStillActiveCurrentPosition() {
+    //separate function so can be called from effects
+    setPositionStillActive(position);
   }
 
-  void _disconnectFromBall() {
-    _physics.removeFromParent();
-    assert(!isClone); //as for clone have no way to turn collisionType back on
-    connectedToBall = false;
-  }
-
-  void setPositionStill(Vector2 targetLoc) {
+  void setPositionStillActive(Vector2 targetLoc) {
     position.setFrom(targetLoc);
     velocity.setAll(0);
     acceleration.setAll(0);
     angularVelocity = 0;
-    _physics.initaliseFromOwner();
-    setPreciseMode();
+    _physics.initaliseFromOwnerAndSetDynamic();
+    setPhysicsState(PhysicsState.full);
   }
 
-  void setPositionStillInactive(Vector2 targetLoc) {
+  void setPositionStillStatic(Vector2 targetLoc) {
+    setPhysicsState(PhysicsState.none);
     position.setFrom(targetLoc);
     velocity.setAll(0);
     acceleration.setAll(0);
     angularVelocity = 0;
-    _physics.initaliseFromOwner();
   }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     if (!isClone) {
-      setPreciseMode();
+      setPhysicsState(PhysicsState.full);
     }
   }
 
@@ -150,8 +135,8 @@ class GameCharacter extends SpriteCharacter {
   void removalActions() {
     super.removalActions();
     if (!isClone) {
+      setPhysicsState(PhysicsState.none);
       _physics.ownerRemovedActions();
-      _disconnectFromBall(); //sync but within async function
       _cloneEverMade ? _clone?.removeFromParent() : null;
       removeEffects(this); //sync and async
     }
@@ -169,3 +154,5 @@ class GameCharacter extends SpriteCharacter {
     await super.onRemove();
   }
 }
+
+enum PhysicsState { full, partial, none, unset }

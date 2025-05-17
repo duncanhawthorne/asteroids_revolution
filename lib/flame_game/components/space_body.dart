@@ -96,17 +96,17 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   }
 
   void resetSpriteVsPhysicsScale() {
-    setPreciseMode();
+    setPhysicsState(PhysicsState.full);
   }
 
   void _setUpdateMode() {
     if (isOutsideVisiblePlusUniverseCache) {
-      if (connectedToBall && this is! Bullet) {
-        setImpreciseMode();
+      if (state == PhysicsState.full && this is! Bullet) {
+        setPhysicsState(PhysicsState.partial);
       }
     } else {
-      if (possiblePhysicsConnection && !connectedToBall) {
-        setPreciseMode();
+      if (possiblePhysicsConnection && state != PhysicsState.full) {
+        setPhysicsState(PhysicsState.full);
       }
     }
   }
@@ -114,7 +114,8 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   double _dtCache = 0;
   @override
   void updateTree(double dt) {
-    if (isOutsideVisiblePlusUniverseCache && !connectedToBall) {
+    //FIXME move into follow_simple_physics
+    if (isOutsideVisiblePlusUniverseCache && state != PhysicsState.full) {
       bool oneFrameDue = true;
       if (_dtCache < 1) {
         _dtCache += dt;

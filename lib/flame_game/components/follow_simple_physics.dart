@@ -24,6 +24,9 @@ class SimplePhysics extends Component with HasWorldReference<PacmanWorld> {
   @override
   void update(double dt) {
     super.update(dt);
+    if (owner.state != PhysicsState.partial) {
+      return;
+    }
     _oneFrameOfSimpleMovement(dt);
   }
 

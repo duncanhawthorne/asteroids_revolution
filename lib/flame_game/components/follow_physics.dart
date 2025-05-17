@@ -2,7 +2,6 @@ import 'dart:core';
 
 import 'package:flame/components.dart';
 
-import '../../utils/helper.dart';
 import '../pacman_world.dart';
 import 'alien.dart';
 import 'bullet.dart';
@@ -35,7 +34,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   late final bool _freeRotation =
       owner is! Ship && owner is! Alien && owner is! Bullet;
 
-  double get speed => _ballVel.length;
+  double get speed => !_ball.isMounted ? 0 : _ballVel.length;
 
   late final double _initialRadius = owner.size.x / 2;
 
@@ -58,22 +57,27 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
         ..scale(spriteVsPhysicsScale);
   late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
 
-  Future<void> initaliseFromOwner() async {
-    if (!_ball.isLoaded) {
-      logGlobal("ball not loaded");
-      //await loaded; //FIXME
-      return;
+  Future<void> _initaliseFromOwner() async {
+    if (!_ball.isLoaded || !_ball.isMounted) {
+      await loaded;
+      await mounted;
+      await _ball.loaded;
+      await _ball.mounted;
     }
-    owner.connectedToBall = true;
+    assert(_ball.isLoaded);
     _ball.position = owner.position;
     _ball.velocity = owner.velocity;
     _ball.radius = owner.radius;
     _ball.body.angularVelocity = owner.angularVelocity;
-    _ball.setDynamic();
+  }
+
+  Future<void> initaliseFromOwnerAndSetDynamic() async {
+    await _initaliseFromOwner();
+    await _ball.setDynamic();
   }
 
   void _oneFrameOfPhysics(double dt) {
-    if (!isMounted || !_ball.isMounted || !owner.connectedToBall) {
+    if (!isMounted || !_ball.isMounted || !_ball.isLoaded) {
       return;
     }
     if (owner.canAccelerate) {
@@ -94,27 +98,32 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   @override
   void update(double dt) {
     super.update(dt);
+    if (owner.state != PhysicsState.full) {
+      return;
+    }
     _oneFrameOfPhysics(dt);
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    await initaliseFromOwner();
-    if (!owner.isClone) {
-      await world.add(_ball);
-    }
-  }
-
-  @override
-  Future<void> onMount() async {
-    super.onMount();
-    await initaliseFromOwner();
     if (!_ball.isMounted) {
       if (!owner.isClone) {
         await world.add(_ball);
       }
     }
+    await initaliseFromOwnerAndSetDynamic();
+  }
+
+  @override
+  Future<void> onMount() async {
+    super.onMount();
+    if (!_ball.isMounted) {
+      if (!owner.isClone) {
+        await world.add(_ball);
+      }
+    }
+    await initaliseFromOwnerAndSetDynamic();
   }
 
   void ownerRemovedActions() {
@@ -123,7 +132,6 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   }
 
   void removalActions() {
-    owner.connectedToBall = false;
     _ball.setStatic();
   }
 
