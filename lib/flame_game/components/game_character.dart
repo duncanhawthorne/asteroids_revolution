@@ -96,8 +96,7 @@ class GameCharacter extends SpriteCharacter {
     connectedToBall = false;
   }
 
-  // ignore: unused_element
-  void _setPositionStill(Vector2 targetLoc) {
+  void setPositionStill(Vector2 targetLoc) {
     position.setFrom(targetLoc);
     velocity.setAll(0);
     acceleration.setAll(0);
