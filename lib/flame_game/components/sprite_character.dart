@@ -69,6 +69,18 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
   }
 
+  @mustCallSuper
+  void setPreciseMode() {
+    hitBox.collisionType = defaultCollisionType;
+    assert(!isClone); //not called on clones
+  }
+
+  @mustCallSuper
+  void setImpreciseMode() {
+    hitBox.collisionType = CollisionType.inactive;
+    assert(!isClone); //not called on clones
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();

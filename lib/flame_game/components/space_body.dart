@@ -96,17 +96,17 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   }
 
   void resetSpriteVsPhysicsScale() {
-    initialisePhysics();
+    setPreciseMode();
   }
 
-  void setUpdateMode() {
+  void _setUpdateMode() {
     if (isOutsideVisiblePlusUniverseCache) {
       if (connectedToBall && this is! Bullet) {
-        initialiseSimplePhysics();
+        setImpreciseMode();
       }
     } else {
       if (possiblePhysicsConnection && !connectedToBall) {
-        initialisePhysics();
+        setPreciseMode();
       }
     }
   }
@@ -138,7 +138,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     if (health <= -1 && !isRemoving) {
       removeFromParent();
     }
-    setUpdateMode();
+    _setUpdateMode();
     distanceFromShipCache = position.distanceTo(ship.position);
   }
 

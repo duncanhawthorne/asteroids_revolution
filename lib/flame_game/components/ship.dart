@@ -109,7 +109,7 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
     super.reset();
     position.setAll(0);
     velocity.setAll(0);
-    initialisePhysics();
+    setPreciseMode();
     setHealth(1);
   }
 

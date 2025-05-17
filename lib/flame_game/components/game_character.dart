@@ -19,7 +19,7 @@ class GameCharacter extends SpriteCharacter {
     this.density = 1,
     super.paint,
   }) {
-    this.velocity = Vector2.zero()..setFrom(velocity);
+    this.velocity = velocity; //uses setter
     size = Vector2.all(radius * 2);
   }
 
@@ -51,39 +51,47 @@ class GameCharacter extends SpriteCharacter {
 
   void _setRadius(double x) {
     size = Vector2.all(x * 2);
-    physics.setBallRadius(x);
+    _physics.setBallRadius(x);
   }
 
-  late final Physics physics = Physics(owner: this);
-  late final SimplePhysics simplePhysics = SimplePhysics(owner: this);
+  late final Physics _physics = Physics(owner: this);
+  late final SimplePhysics _simplePhysics = SimplePhysics(owner: this);
 
-  void initialisePhysics() {
-    physics.initaliseFromOwner();
+  @override
+  void setPreciseMode() {
+    super.setPreciseMode();
+    _initialisePhysics();
+  }
+
+  @override
+  void setImpreciseMode() {
+    super.setImpreciseMode();
+    _initialiseSimplePhysics();
+  }
+
+  void _initialisePhysics() {
+    _physics.initaliseFromOwner();
     connectedToBall = true;
-    if (children.contains(simplePhysics)) {
-      simplePhysics.removeFromParent();
+    if (children.contains(_simplePhysics)) {
+      _simplePhysics.removeFromParent();
     }
-    if (!children.contains(physics)) {
-      add(physics);
+    if (!children.contains(_physics)) {
+      add(_physics);
     }
-    hitBox.collisionType = defaultCollisionType; //FIXME move to sprite
-    assert(!isClone); //not called on clones
   }
 
-  void initialiseSimplePhysics() {
-    if (children.contains(physics)) {
-      physics.removeFromParent();
+  void _initialiseSimplePhysics() {
+    if (children.contains(_physics)) {
+      _physics.removeFromParent();
     }
-    if (!children.contains(simplePhysics)) {
-      add(simplePhysics);
+    if (!children.contains(_simplePhysics)) {
+      add(_simplePhysics);
     }
     connectedToBall = false;
-    hitBox.collisionType =
-        defaultCollisionType; //FIXME change, and move to sprite
   }
 
-  void disconnectFromBall() {
-    physics.removeFromParent();
+  void _disconnectFromBall() {
+    _physics.removeFromParent();
     assert(!isClone); //as for clone have no way to turn collisionType back on
     connectedToBall = false;
   }
@@ -94,21 +102,21 @@ class GameCharacter extends SpriteCharacter {
     velocity.setAll(0);
     acceleration.setAll(0);
     angularVelocity = 0;
-    physics.initaliseFromOwner();
+    _physics.initaliseFromOwner();
   }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    initialisePhysics();
+    setPreciseMode();
   }
 
   @override
   void removalActions() {
     super.removalActions();
     if (!isClone) {
-      physics.ownerRemovedActions();
-      disconnectFromBall(); //sync but within async function
+      _physics.ownerRemovedActions();
+      _disconnectFromBall(); //sync but within async function
       removeEffects(this); //sync and async
     }
   }
