@@ -12,7 +12,7 @@ import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
 const bool _kPanTrackingCamera = true;
-const bool _kAutoZoomingCameraOnDebug = true;
+const bool _kAutoZoomingCameraOnDebug = false;
 const bool _kAutoZoomingCamera = _kAutoZoomingCameraOnDebug || !kDebugMode;
 
 class CameraWrapper extends WrapperNoEvents
@@ -61,7 +61,9 @@ class CameraWrapper extends WrapperNoEvents
   void fixSpaceDots() {
     if (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast) {
       _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
-      spriteVsPhysicsScale = ship.radius / defaultShipRadius * 1.5;
+      spriteVsPhysicsScale =
+          // ignore: dead_code
+          kDebugMode && false ? 1 : ship.radius / defaultShipRadius * 1.5;
       world.space.resetSpriteVsPhysicsScale();
     }
     _smallDots.tidyUpdate(

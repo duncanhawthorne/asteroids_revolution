@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import '../../utils/helper.dart';
 import '../pacman_world.dart';
 import 'alien.dart';
+import 'bullet.dart';
 import 'game_character.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
@@ -32,7 +33,8 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
           ? _gravitySign.y * _ballVel.x.sign
           : -_gravitySign.x * _ballVel.y.sign;
 
-  late final bool _freeRotation = owner is! Ship && owner is! Alien;
+  late final bool _freeRotation =
+      owner is! Ship && owner is! Alien && owner is! Bullet;
 
   double get speed => _ballVel.length;
 

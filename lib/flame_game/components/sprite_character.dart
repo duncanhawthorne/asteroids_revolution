@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../style/palette.dart';
 import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
 import '../pacman_game.dart';
@@ -34,7 +35,7 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     isSolid: true,
     collisionType: defaultCollisionType,
     anchor: Anchor.center,
-  );
+  )..debugMode = kDebugMode && false;
 
   Future<Map<CharacterState, SpriteAnimation>> getSingleSprite([
     int size = 1,
@@ -72,12 +73,14 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   @mustCallSuper
   void setPreciseMode() {
     hitBox.collisionType = defaultCollisionType;
+    hitBox.debugColor = Palette.pacman.color;
     assert(!isClone); //not called on clones
   }
 
   @mustCallSuper
   void setImpreciseMode() {
     hitBox.collisionType = CollisionType.inactive;
+    hitBox.debugColor = Palette.warning.color;
     assert(!isClone); //not called on clones
   }
 

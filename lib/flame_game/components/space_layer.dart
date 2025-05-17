@@ -123,7 +123,7 @@ class SpaceWrapper extends WrapperNoEvents
     async.unawaited(bullets.reset());
     async.unawaited(rocks.reset());
 
-    _addStarterSpaceBodyField();
+    //_addStarterSpaceBodyField(); //FIXME causes crash when reset from small scale
 
     _timerTopUpSpaceBodies?.cancel();
     _timerTidySpaceBodies?.cancel();
