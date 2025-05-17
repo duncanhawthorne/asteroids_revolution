@@ -48,12 +48,12 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   late final Vector2 _gravitySign = world.gravitySign;
 
   Vector2 get _ballPos =>
-      _reusableVector
+      spriteVsPhysicsScaleConstant ? _ballPosUnscaled : _reusableVector
         ..setFrom(_ballPosUnscaled)
         ..scale(spriteVsPhysicsScale);
   late final Vector2 _ballPosUnscaled = _ball.position;
   Vector2 get _ballVel =>
-      _reusableVector
+      spriteVsPhysicsScaleConstant ? _ballVelUnscaled : _reusableVector
         ..setFrom(_ballVelUnscaled)
         ..scale(spriteVsPhysicsScale);
   late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
@@ -101,7 +101,9 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   Future<void> onLoad() async {
     super.onLoad();
     await initaliseFromOwner();
-    await world.add(_ball); //FIXME but only !isClone
+    if (!owner.isClone) {
+      await world.add(_ball);
+    }
   }
 
   @override
@@ -109,7 +111,9 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     super.onMount();
     await initaliseFromOwner();
     if (!_ball.isMounted) {
-      await world.add(_ball); //FIXME but only !isClone
+      if (!owner.isClone) {
+        await world.add(_ball);
+      }
     }
   }
 

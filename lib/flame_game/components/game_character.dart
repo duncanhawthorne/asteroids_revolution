@@ -17,6 +17,7 @@ class GameCharacter extends SpriteCharacter {
     required Vector2 velocity,
     required double radius,
     this.density = 1,
+    super.original,
     super.paint,
   }) {
     this.velocity = velocity; //uses setter
@@ -32,10 +33,12 @@ class GameCharacter extends SpriteCharacter {
   final bool canAccelerate = false;
 
   set velocity(Vector2 v) => _velocity.setFrom(v);
+
   Vector2 get velocity => _velocity;
   final Vector2 _velocity = Vector2(0, 0);
 
   set acceleration(Vector2 v) => _acceleration.setFrom(v);
+
   Vector2 get acceleration => _acceleration;
   final Vector2 _acceleration = Vector2(0, 0);
 
@@ -46,8 +49,14 @@ class GameCharacter extends SpriteCharacter {
 
   bool get typical => connectedToBall && stateTypical;
 
+  final bool _cloneEverMade = false; //could just test clone is null
+  GameCharacter? _clone;
+
   double get radius => size.x.toDouble() / 2;
+
   set radius(double x) => _setRadius(x);
+
+  double get speed => _physics.speed;
 
   void _setRadius(double x) {
     size = Vector2.all(x * 2);
@@ -56,6 +65,22 @@ class GameCharacter extends SpriteCharacter {
 
   late final Physics _physics = Physics(owner: this);
   late final SimplePhysics _simplePhysics = SimplePhysics(owner: this);
+
+  void disconnectFromBall({bool spawning = false}) {
+    if (!spawning) {
+      //FIXME deal with spawning
+      setImpreciseMode();
+    }
+  }
+
+  void bringBallToSprite() {
+    if (isMounted && !isRemoving) {
+      //FIXME check if still need this test
+      // must test isMounted as bringBallToSprite typically runs after a delay
+      // and could have reset to remove the ball in the meantime
+      setPositionStill(position);
+    }
+  }
 
   @override
   void setPreciseMode() {
@@ -102,12 +127,23 @@ class GameCharacter extends SpriteCharacter {
     acceleration.setAll(0);
     angularVelocity = 0;
     _physics.initaliseFromOwner();
+    setPreciseMode();
+  }
+
+  void setPositionStillInactive(Vector2 targetLoc) {
+    position.setFrom(targetLoc);
+    velocity.setAll(0);
+    acceleration.setAll(0);
+    angularVelocity = 0;
+    _physics.initaliseFromOwner();
   }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    setPreciseMode();
+    if (!isClone) {
+      setPreciseMode();
+    }
   }
 
   @override
@@ -116,6 +152,7 @@ class GameCharacter extends SpriteCharacter {
     if (!isClone) {
       _physics.ownerRemovedActions();
       _disconnectFromBall(); //sync but within async function
+      _cloneEverMade ? _clone?.removeFromParent() : null;
       removeEffects(this); //sync and async
     }
   }

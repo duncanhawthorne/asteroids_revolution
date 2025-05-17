@@ -44,7 +44,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   @mustCallSuper
   void setSize(double h) {
     radius = h;
-    hitBox.position.setAll(radius);
+    //hitBox.position.setAll(radius);
     hitBox.radius = radius;
   }
 

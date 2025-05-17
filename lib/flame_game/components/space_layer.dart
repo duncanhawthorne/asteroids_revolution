@@ -147,6 +147,7 @@ class SpaceWrapper extends WrapperNoEvents
     }
   }
 
+  // ignore: unused_element
   void _addStarterSpaceBodyField() {
     _topUpSpaceBodies(initial: true);
   }

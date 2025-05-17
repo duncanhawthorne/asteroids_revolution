@@ -5,14 +5,20 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
+import '../maze.dart';
 import 'space_body.dart';
 
 const bool openSpaceMovement = true;
 
 double spriteVsPhysicsScale = 2;
+const bool spriteVsPhysicsScaleConstant = false;
 
 final Paint _activePaint = Paint()..color = Palette.pacman.color;
 final Paint _inactivePaint = Paint()..color = Palette.warning.color;
+
+double get playerSize => maze.spriteWidth / 2 * _lubricationScaleFactor;
+const double _lubricationScaleFactor = 0.99;
+const bool _kVerticalPortalsEnabled = false;
 
 // ignore: always_specify_types
 class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
@@ -64,6 +70,10 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
 
   set position(Vector2 pos) => _setPositionNow(pos / spriteVsPhysicsScale);
 
+  bool get _outsideMazeBounds =>
+      position.x.abs() > maze.mazeHalfWidth ||
+      (_kVerticalPortalsEnabled && position.y.abs() > maze.mazeHalfHeight);
+
   set velocity(Vector2 vel) =>
       body.linearVelocity.setFrom(vel / spriteVsPhysicsScale);
 
@@ -107,6 +117,23 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
     paint = _inactivePaint;
   }
 
+  Vector2 _teleportedPosition() {
+    reusableVector.setValues(
+      _smallMod(position.x, maze.mazeWidth),
+      !_kVerticalPortalsEnabled
+          ? position.y
+          : _smallMod(position.y, maze.mazeHeight),
+    );
+    return reusableVector;
+  }
+
+  // ignore: unused_element
+  void _moveThroughPipePortal() {
+    if (_subConnectedBall && _outsideMazeBounds) {
+      position = _teleportedPosition();
+    }
+  }
+
   @override
   void beginContact(Object other, Contact contact) {
     super.beginContact(other, contact);
@@ -114,4 +141,10 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
       owner.onContactWith(other.owner);
     }
   }
+}
+
+double _smallMod(double value, double mod) {
+  //produces number between -mod / 2 and +mod / 2
+  value = value % mod;
+  return value > mod / 2 ? value - mod : value;
 }

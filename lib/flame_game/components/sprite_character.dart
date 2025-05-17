@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -10,14 +11,25 @@ import '../icons/stub_sprites.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'bullet.dart';
+import 'game_character.dart';
 import 'ship.dart';
+
+// ignore: unused_element
+final Paint _highQualityPaint =
+    Paint()
+      ..filterQuality = FilterQuality.high
+      //..color = const Color.fromARGB(255, 255, 255, 255)
+      ..isAntiAlias = true;
 
 class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     with
         HasWorldReference<PacmanWorld>,
         HasGameReference<PacmanGame>,
         IgnoreEvents {
-  SpriteCharacter({super.position, super.paint}) : super(anchor: Anchor.center);
+  SpriteCharacter({super.position, super.paint, this.original})
+    : super(anchor: Anchor.center);
+
+  late final GameCharacter? original;
 
   String defaultSpritePath = "";
 
@@ -34,7 +46,6 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
     collisionType: defaultCollisionType,
-    anchor: Anchor.center,
   )..debugMode = kDebugMode && false;
 
   Future<Map<CharacterState, SpriteAnimation>> getSingleSprite([
