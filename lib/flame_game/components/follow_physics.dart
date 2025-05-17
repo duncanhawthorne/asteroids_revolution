@@ -12,21 +12,20 @@ import 'ship.dart';
 import 'space_body.dart';
 
 class Physics extends Component with HasWorldReference<PacmanWorld> {
-  Physics({required this.owner}) {
-    _ball = PhysicsBall(
-      position: owner.position,
-      radius: owner.radius,
-      velocity: owner.velocity,
-      angularVelocity: owner.angularVelocity,
-      damping: 1 - owner.friction,
-      density: owner.density,
-      owner: owner as SpaceBody,
-    );
-  }
+  Physics({required this.owner});
 
   late final GameCharacter owner;
   static final Vector2 _reusableVector = Vector2.zero();
-  late PhysicsBall _ball;
+
+  late final PhysicsBall _ball = PhysicsBall(
+    position: owner.position,
+    radius: owner.radius,
+    velocity: owner.velocity,
+    angularVelocity: owner.angularVelocity,
+    damping: 1 - owner.friction,
+    density: owner.density,
+    owner: owner as SpaceBody,
+  );
 
   double get _spinParity =>
       _ballVel.x.abs() > _ballVel.y.abs()
