@@ -118,12 +118,6 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
     }
     assert(isMounted);
     assert(isLoaded);
-    if (!body.isActive) {
-      // avoid crashes if body not yet initialised
-      // Probably about to remove ball anyway
-      print("already not active"); //FIXME
-      return;
-    }
     body
       ..setType(BodyType.static)
       ..setActive(false);
