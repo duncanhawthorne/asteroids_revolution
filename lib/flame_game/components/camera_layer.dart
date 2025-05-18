@@ -88,7 +88,7 @@ class CameraWrapper extends WrapperNoEvents
   }
 
   @override
-  Future<void> update(double dt) async {
+  void update(double dt) {
     if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
       zoom *= pow(1 / overZoomError, dt / 30);
     }

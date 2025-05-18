@@ -35,24 +35,26 @@ class SpaceWrapper extends WrapperNoEvents
   final BulletWrapper bullets = BulletWrapper();
   final RockWrapper rocks = RockWrapper();
 
-  async.Timer? _timerTopUpSpaceBodies;
+  late final Timer _timerTopUpSpaceBodies = Timer(
+    1,
+    repeat: true,
+    onTick: _topUpSpaceBodies,
+  );
   void _startTimerTopUpSpaceBodies() {
-    _timerTopUpSpaceBodies = async.Timer.periodic(
-      const Duration(milliseconds: 1000),
-      (async.Timer timer) {
-        _topUpSpaceBodies();
-      },
-    );
+    _timerTopUpSpaceBodies
+      ..reset()
+      ..start();
   }
 
-  async.Timer? _timerTidySpaceBodies;
+  late final Timer _timerTidySpaceBodies = Timer(
+    1,
+    repeat: true,
+    onTick: _tidySpaceBodies,
+  );
   void _startTimerTidySpaceBodies() {
-    _timerTidySpaceBodies = async.Timer.periodic(
-      const Duration(milliseconds: 1000),
-      (async.Timer timer) {
-        _tidySpaceBodies();
-      },
-    );
+    _timerTidySpaceBodies
+      ..reset()
+      ..start();
   }
 
   double get zoomAdjustedEverythingScale =>
@@ -125,8 +127,8 @@ class SpaceWrapper extends WrapperNoEvents
 
     //_addStarterSpaceBodyField(); //FIXME causes crash when reset from small scale
 
-    _timerTopUpSpaceBodies?.cancel();
-    _timerTidySpaceBodies?.cancel();
+    _timerTopUpSpaceBodies.stop();
+    _timerTidySpaceBodies.stop();
 
     _startTimerTopUpSpaceBodies();
     _startTimerTidySpaceBodies();
@@ -288,8 +290,10 @@ class SpaceWrapper extends WrapperNoEvents
   }
 
   @override
-  Future<void> update(double dt) async {
+  void update(double dt) {
     super.update(dt);
+    _timerTopUpSpaceBodies.update(dt);
+    _timerTidySpaceBodies.update(dt);
 
     visibleUniverseRadius = _visibleUniverseRadius;
     mappedUniverseRadius = _mappedUniverseRadius;
