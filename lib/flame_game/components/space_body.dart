@@ -80,10 +80,12 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
 
   double distanceFromShipCache = 0;
 
+  bool get isOutsideVisiblePlusUniverseLive =>
+      distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
+
   void tidy() {
     distanceFromShipCache = position.distanceTo(ship.position);
-    isOutsideVisiblePlusUniverseCache =
-        distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
+    isOutsideVisiblePlusUniverseCache = isOutsideVisiblePlusUniverseLive;
 
     if (cleanIfTiny) {
       if (isTiny) {

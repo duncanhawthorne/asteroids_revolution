@@ -23,6 +23,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     angularVelocity: owner.angularVelocity,
     damping: 1 - owner.friction,
     density: owner.density,
+    active: (owner as SpaceBody).isOutsideVisiblePlusUniverseLive,
     owner: owner as SpaceBody,
   );
 
@@ -58,12 +59,6 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
 
   Future<void> _initaliseFromOwner() async {
-    if (!_ball.isLoaded || !_ball.isMounted) {
-      await loaded;
-      await mounted;
-      await _ball.loaded;
-      await _ball.mounted;
-    }
     assert(_ball.isLoaded);
     _ball.position = owner.position;
     _ball.velocity = owner.velocity;
@@ -71,9 +66,10 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     _ball.body.angularVelocity = owner.angularVelocity;
   }
 
-  Future<void> initaliseFromOwnerAndSetDynamic() async {
-    await _initaliseFromOwner();
-    await _ball.setDynamic();
+  void initaliseFromOwnerAndSetDynamic() {
+    assert(_ball.isLoaded);
+    _initaliseFromOwner();
+    _ball.setDynamic();
   }
 
   void _oneFrameOfPhysics(double dt) {
@@ -107,23 +103,31 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    if (!_ball.isMounted) {
-      if (!owner.isClone) {
+    if (owner.isClone) {
+      return;
+    }
+    if (!_ball.isLoaded) {
+      if (!_ball.isLoading) {
         await world.add(_ball);
       }
+    } else {
+      initaliseFromOwnerAndSetDynamic();
     }
-    await initaliseFromOwnerAndSetDynamic();
   }
 
   @override
   Future<void> onMount() async {
     super.onMount();
-    if (!_ball.isMounted) {
-      if (!owner.isClone) {
+    if (owner.isClone) {
+      return;
+    }
+    if (!_ball.isLoaded) {
+      if (!_ball.isLoading) {
         await world.add(_ball);
       }
+    } else {
+      initaliseFromOwnerAndSetDynamic();
     }
-    await initaliseFromOwnerAndSetDynamic();
   }
 
   void ownerRemovedActions() {
@@ -132,6 +136,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   }
 
   void removalActions() {
+    assert(_ball.isLoaded);
     _ball.setStatic();
   }
 
