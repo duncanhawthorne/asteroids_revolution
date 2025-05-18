@@ -70,6 +70,9 @@ class GameCharacter extends SpriteCharacter {
     super.setPhysicsState(targetState);
     if (targetState == PhysicsState.full) {
       state = PhysicsState.full;
+      if (_physics.isLoaded) {
+        _physics.initaliseFromOwnerAndSetDynamic();
+      }
     } else if (targetState == PhysicsState.partial) {
       state = PhysicsState.partial;
     } else {

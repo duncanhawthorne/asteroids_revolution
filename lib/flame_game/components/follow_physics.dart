@@ -23,7 +23,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     angularVelocity: owner.angularVelocity,
     damping: 1 - owner.friction,
     density: owner.density,
-    active: (owner as SpaceBody).isOutsideVisiblePlusUniverseLive,
+    active: true,
     owner: owner as SpaceBody,
   );
 
