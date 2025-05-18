@@ -95,6 +95,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   void update(double dt) {
     super.update(dt);
     if (owner.state != PhysicsState.full) {
+      deactivate();
       return;
     }
     _oneFrameOfPhysics(dt);
@@ -106,38 +107,16 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     if (owner.isClone) {
       return;
     }
-    if (!_ball.isLoaded) {
-      if (!_ball.isLoading) {
-        await world.add(_ball);
-        await _ball.mounted;
-      }
-    } else {
-      initaliseFromOwnerAndSetDynamic();
-    }
+    await world.add(_ball);
+    await _ball.mounted;
   }
 
-  @override
-  Future<void> onMount() async {
-    super.onMount();
-    if (owner.isClone) {
-      return;
-    }
-    if (!_ball.isLoaded) {
-      if (!_ball.isLoading) {
-        await world.add(_ball);
-        await _ball.mounted;
-      }
-    } else {
-      initaliseFromOwnerAndSetDynamic();
-    }
-  }
-
-  void ownerRemovedActions() {
+  void removalActions() {
     _ball.removeFromParent();
     //world.destroyBody(_ball.body); //FIXME investigate
   }
 
-  void removalActions() {
+  void deactivate() {
     if (owner.isRemoving) {
       return;
     }
