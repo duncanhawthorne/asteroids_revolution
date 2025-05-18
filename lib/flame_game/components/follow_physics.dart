@@ -136,6 +136,9 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   }
 
   void removalActions() {
+    if (owner.isRemoving) {
+      return;
+    }
     assert(_ball.isLoaded);
     _ball.setStatic();
   }
