@@ -109,6 +109,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     if (!_ball.isLoaded) {
       if (!_ball.isLoading) {
         await world.add(_ball);
+        await _ball.mounted;
       }
     } else {
       initaliseFromOwnerAndSetDynamic();
@@ -124,6 +125,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     if (!_ball.isLoaded) {
       if (!_ball.isLoading) {
         await world.add(_ball);
+        await _ball.mounted;
       }
     } else {
       initaliseFromOwnerAndSetDynamic();
