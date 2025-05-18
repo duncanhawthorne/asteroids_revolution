@@ -8,7 +8,6 @@ import 'ship.dart';
 const double greyThreshold = 0.5;
 const double transpThreshold = 0.5 * 0.2;
 
-//
 class SpaceBody extends GameCharacter with IgnoreEvents {
   SpaceBody({
     required super.position,
