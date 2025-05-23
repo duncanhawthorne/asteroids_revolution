@@ -10,6 +10,8 @@ import 'game_character.dart';
 import 'overlay_sprite.dart';
 import 'space_body.dart';
 
+final Vector2 _north = Vector2(0, 1);
+
 class Alien extends SpaceBody with OverlaySprite {
   Alien({
     required super.position,
@@ -140,7 +142,7 @@ class Alien extends SpaceBody with OverlaySprite {
     final double? bullseyeAngle = bullseye();
     angle =
         bullseyeAngle ??
-        north.angleToSigned(
+        _north.angleToSigned(
           GameCharacter.reusableVector
             ..setFrom(position)
             ..sub(world.space.ship.position),

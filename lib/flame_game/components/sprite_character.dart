@@ -13,6 +13,7 @@ import '../pacman_world.dart';
 import 'bullet.dart';
 import 'game_character.dart';
 import 'ship.dart';
+import 'removal_actions.dart';
 
 // ignore: unused_element
 final Paint _highQualityPaint =
@@ -25,6 +26,7 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     with
         HasWorldReference<PacmanWorld>,
         HasGameReference<PacmanGame>,
+        RemovalActions,
         IgnoreEvents {
   SpriteCharacter({super.position, super.paint, this.original})
     : super(anchor: Anchor.center);
@@ -107,23 +109,12 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     add(hitBox);
   }
 
-  @mustCallSuper
+  @override
   void removalActions() {
     hitBox.collisionType = CollisionType.inactive;
     if (!isClone) {
       removeEffects(this); //sync and async
     }
-  }
-
-  @override
-  void removeFromParent() {
-    removalActions();
-    super.removeFromParent(); //async
-  }
-
-  @override
-  Future<void> onRemove() async {
-    removalActions();
-    super.onRemove();
+    super.removalActions();
   }
 }

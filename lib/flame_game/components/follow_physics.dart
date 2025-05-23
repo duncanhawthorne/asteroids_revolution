@@ -2,16 +2,22 @@ import 'dart:core';
 
 import 'package:flame/components.dart';
 
+import '../../utils/helper.dart';
 import '../pacman_world.dart';
 import 'alien.dart';
 import 'bullet.dart';
 import 'game_character.dart';
 import 'physics_ball.dart';
+import 'removal_actions.dart';
 import 'ship.dart';
 import 'space_body.dart';
 
-class Physics extends Component with HasWorldReference<PacmanWorld> {
+class Physics extends Component
+    with HasWorldReference<PacmanWorld>, RemovalActions, IgnoreEvents {
   Physics({required this.owner});
+
+  @override
+  final int priority = 1000;
 
   late final GameCharacter owner;
   static final Vector2 _reusableVector = Vector2.zero();
@@ -23,7 +29,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     angularVelocity: owner.angularVelocity,
     damping: 1 - owner.friction,
     density: owner.density,
-    active: true,
+    active: _isActive,
     owner: owner as SpaceBody,
   );
 
@@ -38,6 +44,8 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   double get speed => !_ball.isMounted ? 0 : _ballVel.length;
 
   late final double _initialRadius = owner.size.x / 2;
+
+  bool _isActive = true;
 
   void setBallRadius(double x) {
     if (isMounted && _ball.isMounted) {
@@ -70,6 +78,7 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     assert(_ball.isLoaded);
     _initaliseFromOwner();
     _ball.setDynamic();
+    _isActive = true;
   }
 
   void _oneFrameOfPhysics(double dt) {
@@ -95,7 +104,10 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
   void update(double dt) {
     super.update(dt);
     if (owner.state != PhysicsState.full) {
-      deactivate();
+      if (_isActive) {
+        logGlobal("physics deactivated on update");
+        deactivate();
+      }
       return;
     }
     _oneFrameOfPhysics(dt);
@@ -111,28 +123,16 @@ class Physics extends Component with HasWorldReference<PacmanWorld> {
     await _ball.mounted;
   }
 
+  @override
   void removalActions() {
+    deactivate();
     _ball.removeFromParent();
     //world.destroyBody(_ball.body); //FIXME investigate
+    super.removalActions();
   }
 
   void deactivate() {
-    if (owner.isRemoving) {
-      return;
-    }
-    assert(_ball.isLoaded);
+    _isActive = false; //before _ball first reference where _ball is initialised
     _ball.setStatic();
-  }
-
-  @override
-  void removeFromParent() {
-    removalActions();
-    super.removeFromParent(); //async
-  }
-
-  @override
-  Future<void> onRemove() async {
-    removalActions();
-    super.onRemove();
   }
 }

@@ -5,7 +5,9 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
+import '../../utils/helper.dart';
 import '../maze.dart';
+import 'removal_actions.dart';
 import 'space_body.dart';
 
 const bool openSpaceMovement = true;
@@ -16,12 +18,12 @@ const bool spriteVsPhysicsScaleConstant = false;
 final Paint _activePaint = Paint()..color = Palette.pacman.color;
 final Paint _inactivePaint = Paint()..color = Palette.warning.color;
 
-double get playerSize => maze.spriteWidth / 2 * _lubricationScaleFactor;
-const double _lubricationScaleFactor = 0.99;
+const double _lubricationScaleFactor = 1;
 const bool _kVerticalPortalsEnabled = false;
 
 // ignore: always_specify_types
-class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
+class PhysicsBall extends BodyComponent
+    with RemovalActions, ContactCallbacks, IgnoreEvents {
   PhysicsBall({
     required Vector2 position,
     required double radius,
@@ -37,7 +39,9 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
              restitution: openSpaceMovement ? 1 : 0,
              friction: damping != 0 ? 1 : 0,
              density: density,
-             CircleShape(radius: radius / spriteVsPhysicsScale),
+             CircleShape(
+               radius: radius * _lubricationScaleFactor / spriteVsPhysicsScale,
+             ),
            ),
          ],
          bodyDef: BodyDef(
@@ -50,7 +54,9 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
            active: active,
            fixedRotation: !openSpaceMovement,
          ),
-       );
+       ) {
+    _subConnectedBall = active;
+  }
 
   final SpaceBody owner;
 
@@ -66,7 +72,7 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
   int priority = -100;
 
   // ignore: unused_field
-  bool _subConnectedBall = true;
+  late bool _subConnectedBall;
 
   static Vector2 reusableVector = Vector2.zero();
 
@@ -115,6 +121,10 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
     if (isRemoving) {
       return;
     }
+    if (_subConnectedBall == false && !isMounted) {
+      //just test subConnectedBall as body not yet initialised
+      return;
+    }
     if (body.isActive == false && _subConnectedBall == false) {
       //no action required
       return;
@@ -158,6 +168,16 @@ class PhysicsBall extends BodyComponent with IgnoreEvents, ContactCallbacks {
     if (other is PhysicsBall) {
       owner.onContactWith(other.owner);
     }
+  }
+
+  @override
+  void removalActions() {
+    try {
+      setStatic();
+    } catch (e) {
+      logGlobal("catch ball removalactions set static");
+    }
+    super.removalActions();
   }
 }
 

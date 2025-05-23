@@ -5,11 +5,15 @@ import 'package:flame/geometry.dart';
 
 import '../../utils/helper.dart';
 import '../effects/remove_effects.dart';
+import '../maze.dart';
 import 'follow_physics.dart';
 import 'follow_simple_physics.dart';
 import 'sprite_character.dart';
 
-final Vector2 north = Vector2(0, 1);
+// ignore: unused_element
+final Vector2 _north = Vector2(0, 1);
+
+double get playerSize => maze.spriteWidth / 2;
 
 class GameCharacter extends SpriteCharacter {
   GameCharacter({
@@ -64,7 +68,7 @@ class GameCharacter extends SpriteCharacter {
   late final Physics _physics = Physics(owner: this);
   late final SimplePhysics _simplePhysics = SimplePhysics(owner: this);
 
-  PhysicsState state = PhysicsState.full;
+  PhysicsState state = PhysicsState.unset;
   @override
   void setPhysicsState(PhysicsState targetState) {
     super.setPhysicsState(targetState);
@@ -75,8 +79,10 @@ class GameCharacter extends SpriteCharacter {
       }
     } else if (targetState == PhysicsState.partial) {
       state = PhysicsState.partial;
+      _physics.deactivate();
     } else {
       state = PhysicsState.none;
+      _physics.deactivate();
     }
   }
 
@@ -121,19 +127,8 @@ class GameCharacter extends SpriteCharacter {
       setPhysicsState(PhysicsState.none);
       _cloneEverMade ? _clone?.removeFromParent() : null;
       removeEffects(this); //sync and async
+      _physics.removeFromParent();
     }
-  }
-
-  @override
-  void removeFromParent() {
-    removalActions();
-    super.removeFromParent(); //async
-  }
-
-  @override
-  Future<void> onRemove() async {
-    removalActions();
-    await super.onRemove();
   }
 }
 
