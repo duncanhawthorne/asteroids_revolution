@@ -57,8 +57,8 @@ mixin Gun on SpaceBody {
   final Vector2 _oneTimePosition = Vector2(0, 0);
   Vector2 _fBulletPosition(double offset) {
     _oneTimePosition
-      ..x = radius * 2 * cos(angle - tau / 4 + offset * 1.2 / 4)
-      ..y = radius * 2 * sin(angle - tau / 4 + offset * 1.2 / 4)
+      ..x = radius * 4 * cos(angle - tau / 4 + offset * 1.2 / 4)
+      ..y = radius * 4 * sin(angle - tau / 4 + offset * 1.2 / 4)
       ..add(position);
     return _oneTimePosition;
   }

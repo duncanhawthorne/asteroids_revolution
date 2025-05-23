@@ -208,7 +208,7 @@ class PacmanWorld extends Forge2DWorld
   static const bool _updateGravityOnRotation = false;
   final Vector2 gravitySign = Vector2(0, 0);
 
-  static const bool _kRotatingCamera = true;
+  static const bool _kRotatingCamera = !kDebugMode || true;
   double get cameraAngle =>
       _kRotatingCamera ? game.camera.viewfinder.angle : _debugFakeAngle;
   set cameraAngle(double z) =>
