@@ -84,6 +84,9 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
       distanceFromShipCache > world.space.visiblePlusUniverseRadius + radius;
 
   void tidy() {
+    if (!isLoaded) {
+      return;
+    }
     distanceFromShipCache = position.distanceTo(ship.position);
     isOutsideVisiblePlusUniverseCache = isOutsideVisiblePlusUniverseLive;
 
@@ -102,6 +105,9 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   }
 
   void _setUpdateMode() {
+    if (!isLoaded) {
+      return;
+    }
     if (isOutsideVisiblePlusUniverseCache) {
       if (state == PhysicsState.full && this is! Bullet) {
         setPhysicsState(PhysicsState.partial);

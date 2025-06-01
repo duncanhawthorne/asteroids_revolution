@@ -63,7 +63,7 @@ class CameraWrapper extends WrapperNoEvents
       _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
       spriteVsPhysicsScale =
           // ignore: dead_code
-          kDebugMode && false ? 1 : ship.radius / defaultShipRadius * 1.5;
+          kDebugMode && true ? 1 : ship.radius / defaultShipRadius * 1.5;
       world.space.resetSpriteVsPhysicsScale();
     }
     _smallDots.tidyUpdate(
