@@ -122,11 +122,11 @@ class GameCharacter extends SpriteCharacter {
   @override
   Future<void> onLoad() async {
     if (!isClone) {
-      setPhysicsState(PhysicsState.full);
-    }
-    if (!isClone) {
       add(_physics);
       add(_simplePhysics);
+    }
+    if (!isClone) {
+      setPhysicsState(PhysicsState.full, starting: true);
     }
     await super.onLoad();
   }
