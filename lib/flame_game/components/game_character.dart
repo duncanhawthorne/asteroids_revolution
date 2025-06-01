@@ -84,9 +84,6 @@ class GameCharacter extends SpriteCharacter {
         }
       }
       state = PhysicsState.full;
-      if (_physics.isLoaded) {
-        _physics.initaliseFromOwnerAndSetDynamic();
-      }
     } else if (targetState == PhysicsState.partial) {
       state = PhysicsState.partial;
       _physics.deactivate();
