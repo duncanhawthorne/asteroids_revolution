@@ -74,7 +74,7 @@ class PhysicsBall extends BodyComponent
   // ignore: unused_field
   late bool _subConnectedBall;
 
-  static Vector2 reusableVector = Vector2.zero();
+  static final Vector2 _reusableVector = Vector2.zero();
 
   set position(Vector2 pos) => _setPositionNow(pos / spriteVsPhysicsScale);
 
@@ -86,7 +86,7 @@ class PhysicsBall extends BodyComponent
       body.linearVelocity.setFrom(vel / spriteVsPhysicsScale);
 
   set acceleration(Vector2 acceleration) => body.applyForce(
-    reusableVector
+    _reusableVector
       ..setFrom(acceleration)
       ..scale(body.mass / spriteVsPhysicsScale),
   );
@@ -139,13 +139,13 @@ class PhysicsBall extends BodyComponent
   }
 
   Vector2 _teleportedPosition() {
-    reusableVector.setValues(
+    _reusableVector.setValues(
       _smallMod(position.x, maze.mazeWidth),
       !_kVerticalPortalsEnabled
           ? position.y
           : _smallMod(position.y, maze.mazeHeight),
     );
-    return reusableVector;
+    return _reusableVector;
   }
 
   // ignore: unused_element

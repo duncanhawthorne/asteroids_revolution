@@ -6,7 +6,6 @@ import 'package:flame/geometry.dart';
 
 import '../../utils/helper.dart';
 import '../effects/rotate_effect.dart';
-import 'game_character.dart';
 import 'overlay_sprite.dart';
 import 'space_body.dart';
 
@@ -19,6 +18,8 @@ class Alien extends SpaceBody with OverlaySprite {
     required super.radius,
     required super.paint,
   }) : super(density: 0.001);
+
+  static final Vector2 _reusableVector = Vector2.zero();
 
   @override
   // ignore: overridden_fields
@@ -132,18 +133,18 @@ class Alien extends SpaceBody with OverlaySprite {
   @override
   void update(double dt) {
     super.update(dt);
-    GameCharacter.reusableVector
+    _reusableVector
       ..setFrom(ship.position)
       ..sub(position);
-    final double distanceToShip = GameCharacter.reusableVector.length;
+    final double distanceToShip = _reusableVector.length;
     acceleration
-      ..setFrom(GameCharacter.reusableVector)
+      ..setFrom(_reusableVector)
       ..scale(1 / distanceToShip * 5 * radius);
     final double? bullseyeAngle = bullseye();
     angle =
         bullseyeAngle ??
         _north.angleToSigned(
-          GameCharacter.reusableVector
+          _reusableVector
             ..setFrom(position)
             ..sub(world.space.ship.position),
         ); //move to alien gun

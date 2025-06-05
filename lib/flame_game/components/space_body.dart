@@ -17,6 +17,8 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
     super.paint,
   });
 
+  static final Vector2 _reusableVector = Vector2.zero();
+
   double health = 1;
   final bool cleanIfTiny = true;
   bool ensureVelocityTowardsCenter = false;
@@ -28,15 +30,14 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   bool get isTiny => radius < ship.radius * transpThreshold;
 
   void fixVelocityTowardsCenter() {
-    GameCharacter.reusableVector.setFrom(velocity);
-    if (GameCharacter.reusableVector.x.sign ==
-        (position.x - ship.position.x).sign) {
-      GameCharacter.reusableVector.x *= -1;
+    _reusableVector.setFrom(velocity);
+    if (_reusableVector.x.sign == (position.x - ship.position.x).sign) {
+      _reusableVector.x *= -1;
     }
     if (velocity.y.sign == (position.y - ship.position.y).sign) {
-      GameCharacter.reusableVector.y *= -1;
+      _reusableVector.y *= -1;
     }
-    velocity = GameCharacter.reusableVector;
+    velocity = _reusableVector;
   }
 
   bool isOutsideVisiblePlusUniverseCache = false;

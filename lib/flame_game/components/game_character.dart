@@ -28,8 +28,6 @@ class GameCharacter extends SpriteCharacter {
     size = Vector2.all(radius * 2);
   }
 
-  static Vector2 reusableVector = Vector2.zero();
-
   bool possiblePhysicsConnection = true;
 
   Vector2 get velocity => _velocity;
