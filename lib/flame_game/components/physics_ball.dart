@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import '../../style/palette.dart';
 import '../../utils/helper.dart';
 import '../maze.dart';
+import '../pacman_game.dart';
 import 'removal_actions.dart';
 import 'space_body.dart';
 
@@ -21,8 +22,7 @@ final Paint _inactivePaint = Paint()..color = Palette.warning.color;
 const double _lubricationScaleFactor = 1;
 const bool _kVerticalPortalsEnabled = false;
 
-// ignore: always_specify_types
-class PhysicsBall extends BodyComponent
+class PhysicsBall extends BodyComponent<PacmanGame>
     with RemovalActions, ContactCallbacks, IgnoreEvents {
   PhysicsBall({
     required Vector2 position,
@@ -55,7 +55,7 @@ class PhysicsBall extends BodyComponent
            fixedRotation: !openSpaceMovement,
          ),
        ) {
-    _subConnectedBall = active;
+    _bodyIsActive = active;
   }
 
   final SpaceBody owner;
@@ -71,19 +71,24 @@ class PhysicsBall extends BodyComponent
   @override
   int priority = -100;
 
-  // ignore: unused_field
-  late bool _subConnectedBall;
+  ///[_bodyIsActive] is a mirror variable to [body.isActive]
+  ///for use when body not yet initialised
+  late bool _bodyIsActive;
 
   static final Vector2 _reusableVector = Vector2.zero();
 
-  set position(Vector2 pos) => _setPositionNow(pos / spriteVsPhysicsScale);
+  set position(Vector2 pos) => body.setTransform(
+    spriteVsPhysicsScaleConstant ? pos : pos / spriteVsPhysicsScale,
+    owner.angle,
+  );
 
   bool get _outsideMazeBounds =>
       position.x.abs() > maze.mazeHalfWidth ||
       (_kVerticalPortalsEnabled && position.y.abs() > maze.mazeHalfHeight);
 
-  set velocity(Vector2 vel) =>
-      body.linearVelocity.setFrom(vel / spriteVsPhysicsScale);
+  set velocity(Vector2 vel) => body.linearVelocity.setFrom(
+    spriteVsPhysicsScaleConstant ? vel : vel / spriteVsPhysicsScale,
+  );
 
   set acceleration(Vector2 acceleration) => body.applyForce(
     _reusableVector
@@ -94,48 +99,38 @@ class PhysicsBall extends BodyComponent
   set radius(double rad) =>
       body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;
 
-  void _setPositionNow(Vector2 pos) {
-    body.setTransform(pos, owner.angle);
-  }
-
-  void setDynamic() {
+  void setActive() {
     paint = _activePaint;
     if (isRemoving) {
       return;
     }
-    if (body.isActive == true && _subConnectedBall == true) {
+    if (body.isActive == true && _bodyIsActive == true) {
       //no action required
       return;
     }
     assert(isMounted);
     assert(isLoaded);
-    // ignore: avoid_single_cascade_in_expression_statements
-    body
-      //..setType(BodyType.dynamic)
-      ..setActive(true);
-    _subConnectedBall = true;
+    body.setActive(true);
+    _bodyIsActive = true;
   }
 
-  void setStatic() {
+  void setInactive() {
     paint = _inactivePaint;
     if (isRemoving) {
       return;
     }
-    if (_subConnectedBall == false && !isMounted) {
+    if (_bodyIsActive == false && !isMounted) {
       //just test subConnectedBall as body not yet initialised
       return;
     }
-    if (body.isActive == false && _subConnectedBall == false) {
+    if (body.isActive == false && _bodyIsActive == false) {
       //no action required
       return;
     }
     assert(isMounted);
     assert(isLoaded);
-    // ignore: avoid_single_cascade_in_expression_statements
-    body
-      //..setType(BodyType.static)
-      ..setActive(false);
-    _subConnectedBall = false;
+    body.setActive(false);
+    _bodyIsActive = false;
   }
 
   Vector2 _teleportedPosition() {
@@ -150,7 +145,7 @@ class PhysicsBall extends BodyComponent
 
   // ignore: unused_element
   void _moveThroughPipePortal() {
-    if (_subConnectedBall && _outsideMazeBounds) {
+    if (_bodyIsActive && _outsideMazeBounds) {
       position = _teleportedPosition();
     }
   }
@@ -173,7 +168,7 @@ class PhysicsBall extends BodyComponent
   @override
   void removalActions() {
     try {
-      setStatic();
+      setInactive();
     } catch (e) {
       logGlobal("catch ball removalactions set static");
     }

@@ -77,7 +77,7 @@ class Physics extends Component
   void initaliseFromOwnerAndSetDynamic() {
     assert(_ball.isLoaded);
     _initaliseFromOwner();
-    _ball.setDynamic();
+    _ball.setActive();
     _isActive = true;
   }
 
@@ -133,6 +133,6 @@ class Physics extends Component
 
   void deactivate() {
     _isActive = false; //before _ball first reference where _ball is initialised
-    _ball.setStatic();
+    _ball.setInactive();
   }
 }

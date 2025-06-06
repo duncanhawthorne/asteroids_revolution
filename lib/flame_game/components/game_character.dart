@@ -10,9 +10,6 @@ import 'follow_physics.dart';
 import 'follow_simple_physics.dart';
 import 'sprite_character.dart';
 
-// ignore: unused_element
-final Vector2 _north = Vector2(0, 1);
-
 double get playerSize => maze.spriteWidth / 2;
 
 class GameCharacter extends SpriteCharacter {
@@ -31,7 +28,6 @@ class GameCharacter extends SpriteCharacter {
   bool possiblePhysicsConnection = true;
 
   Vector2 get velocity => _velocity;
-
   set velocity(Vector2 v) => _velocity.setFrom(v);
   final Vector2 _velocity = Vector2(0, 0);
 
