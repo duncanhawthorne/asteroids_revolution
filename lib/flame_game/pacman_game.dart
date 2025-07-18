@@ -220,6 +220,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   void _lifecycleChangeListener() {
     appLifecycleStateNotifier.addListener(() {
       if (appLifecycleStateNotifier.value == AppLifecycleState.hidden) {
+        assert(!isRemoving);
         pauseGame();
       }
     });
@@ -231,6 +232,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       if (numberOfDeathsNotifier.value >= level.maxAllowedDeaths &&
           stopwatchStarted &&
           !playbackMode) {
+        assert(!isRemoving);
         assert(isWonOrLost);
         stopRegularItems();
         _handleLoseGame();
@@ -240,6 +242,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
       if (world.pellets.pelletsRemainingNotifier.value <= 0 &&
           stopwatchStarted &&
           !playbackMode) {
+        assert(!isRemoving);
         assert(isWonOrLost);
         stopRegularItems();
         _handleWinGame();
@@ -249,6 +252,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   static const int _minRecordableWinTimeMillis = 0 * 1000;
   void _handleWinGame() {
+    assert(!isRemoving);
     assert(isWonOrLost);
     assert(!stopwatch.isRunning());
     assert(stopwatchStarted);
@@ -265,6 +269,7 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   }
 
   void _handleLoseGame() {
+    assert(!isRemoving);
     assert(isWonOrLost);
     assert(stopwatchStarted);
     audioController.stopAllSounds();
@@ -387,8 +392,8 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   @override
   Future<void> onRemove() async {
     cleanDialogs();
-    await audioController.stopAllSounds();
     super.onRemove();
+    await audioController.stopAllSounds();
   }
 }
 
