@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ios_web_touch_override/flutter_ios_web_touch_override.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nes_ui/nes_ui.dart';
@@ -29,6 +30,7 @@ void main() async {
   setupGlobalLogger();
   fixTitlePerm();
   await firstInitialiseSoLoud();
+  blockTouchDefault(true);
   runApp(const MyGame());
 }
 
