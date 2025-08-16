@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import '../../style/palette.dart';
 import 'space_body.dart';
 
-final Paint _tripleOverridePaint =
-    Paint()
-      //.color = Palette.seed.color
-      ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
+final Paint _tripleOverridePaint = Paint()
+  //.color = Palette.seed.color
+  ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
 
 class Triple extends SpaceBody {
   Triple({

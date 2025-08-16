@@ -42,10 +42,9 @@ class Rock extends SpaceBody with OverlaySprite {
 
   @override
   // ignore: overridden_fields
-  late final String defaultSpritePath =
-      random.nextDouble() < 1 / 3
-          ? "asteroid1.png"
-          : (random.nextDouble() < 0.5 ? "asteroid0.png" : "asteroid2.png");
+  late final String defaultSpritePath = random.nextDouble() < 1 / 3
+      ? "asteroid1.png"
+      : (random.nextDouble() < 0.5 ? "asteroid0.png" : "asteroid2.png");
 
   @override
   // ignore: overridden_fields
@@ -134,9 +133,9 @@ class Rock extends SpaceBody with OverlaySprite {
       //update paint so can have separate transparency to other rocks
       paint = Paint()..color = Palette.transp.color;
       final double rFactor = radius / ship.radius;
-      opacity = ((rFactor - transpThreshold) /
-              (greyThreshold - transpThreshold))
-          .clamp(0, 1);
+      opacity =
+          ((rFactor - transpThreshold) / (greyThreshold - transpThreshold))
+              .clamp(0, 1);
     }
   }
 

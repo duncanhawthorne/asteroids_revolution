@@ -7,7 +7,8 @@ import 'package:flutter/foundation.dart';
 
 const bool googleOnReal = false;
 
-final String gID = (defaultTargetPlatform == TargetPlatform.iOS ||
+final String gID =
+    (defaultTargetPlatform == TargetPlatform.iOS ||
             defaultTargetPlatform == TargetPlatform.macOS) &&
         !kIsWeb
     ? 'X'

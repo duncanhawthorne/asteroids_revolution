@@ -5,12 +5,8 @@ import 'package:flutter/foundation.dart';
 import '../../style/palette.dart';
 import 'alien.dart';
 
-final Paint _alienBombOverridePaint =
-    Paint()
-      ..colorFilter = ColorFilter.mode(
-        Palette.alienBomb.color,
-        BlendMode.modulate,
-      );
+final Paint _alienBombOverridePaint = Paint()
+  ..colorFilter = ColorFilter.mode(Palette.alienBomb.color, BlendMode.modulate);
 
 class AlienBomb extends Alien {
   AlienBomb({

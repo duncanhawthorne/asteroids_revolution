@@ -3,10 +3,9 @@ import 'dart:ui';
 import '../../style/palette.dart';
 import 'space_body.dart';
 
-final Paint _heartOverridePaint =
-    Paint()
-      //.color = Palette.seed.color
-      ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
+final Paint _heartOverridePaint = Paint()
+  //.color = Palette.seed.color
+  ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
 
 class Heart extends SpaceBody {
   Heart({

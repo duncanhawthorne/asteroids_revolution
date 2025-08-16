@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 import '../../style/palette.dart';
 import 'space_body.dart';
 
-final Paint backgroundOverridePaint =
-    Paint()
-      //.color = Palette.seed.color
-      ..colorFilter = ColorFilter.mode(
-        Palette.background.color,
-        BlendMode.modulate,
-      );
+final Paint backgroundOverridePaint = Paint()
+  //.color = Palette.seed.color
+  ..colorFilter = ColorFilter.mode(
+    Palette.background.color,
+    BlendMode.modulate,
+  );
 
 mixin OverlaySprite on SpaceBody {
   SpriteComponent? overlaySprite;

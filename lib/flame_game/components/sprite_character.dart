@@ -12,15 +12,14 @@ import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'bullet.dart';
 import 'game_character.dart';
-import 'ship.dart';
 import 'removal_actions.dart';
+import 'ship.dart';
 
 // ignore: unused_element
-final Paint _highQualityPaint =
-    Paint()
-      ..filterQuality = FilterQuality.high
-      //..color = const Color.fromARGB(255, 255, 255, 255)
-      ..isAntiAlias = true;
+final Paint _highQualityPaint = Paint()
+  ..filterQuality = FilterQuality.high
+  //..color = const Color.fromARGB(255, 255, 255, 255)
+  ..isAntiAlias = true;
 
 class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     with
@@ -38,10 +37,9 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   bool get stateTypical =>
       current != CharacterState.dead && current != CharacterState.spawning;
 
-  late final CollisionType defaultCollisionType =
-      this is Ship || this is Bullet
-          ? CollisionType.active
-          : CollisionType.passive;
+  late final CollisionType defaultCollisionType = this is Ship || this is Bullet
+      ? CollisionType.active
+      : CollisionType.passive;
 
   final bool isClone = false;
 

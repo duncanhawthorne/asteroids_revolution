@@ -21,9 +21,8 @@ final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
-final Paint _shipOverridePaint =
-    Paint()
-      ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
+final Paint _shipOverridePaint = Paint()
+  ..colorFilter = ColorFilter.mode(Palette.seed.color, BlendMode.modulate);
 
 class Ship extends SpaceBody with CollisionCallbacks, Gun {
   Ship({required super.position, required super.velocity})

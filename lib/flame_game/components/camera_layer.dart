@@ -24,10 +24,9 @@ class CameraWrapper extends WrapperNoEvents
 
   double get zoom =>
       _kAutoZoomingCamera ? game.camera.viewfinder.zoom : _debugFakeZoom;
-  set zoom(double z) =>
-      _kAutoZoomingCamera
-          ? game.camera.viewfinder.zoom = z
-          : _debugFakeZoom = z;
+  set zoom(double z) => _kAutoZoomingCamera
+      ? game.camera.viewfinder.zoom = z
+      : _debugFakeZoom = z;
 
   @override
   Future<void> reset() async {
