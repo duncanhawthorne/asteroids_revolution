@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 // To actually use firebase, replace this file with a firebase_options file
 // downloaded from flutterfire and add one line to set firebaseOnReal = true;
 
-const firebaseOnReal = false;
+const bool firebaseOnReal = false;
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {

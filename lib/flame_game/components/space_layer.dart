@@ -295,6 +295,7 @@ class SpaceWrapper extends WrapperNoEvents
     _timerTopUpSpaceBodies.update(dt);
     _timerTidySpaceBodies.update(dt);
 
+    //slow functions so cache results once per frame
     visibleUniverseRadius = _visibleUniverseRadius;
     mappedUniverseRadius = _mappedUniverseRadius;
     fullUniverseRadius = _fullUniverseRadius;
