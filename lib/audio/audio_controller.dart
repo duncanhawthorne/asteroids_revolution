@@ -88,8 +88,7 @@ class AudioController {
 
   final Map<SfxType, Future<AudioSource>> _soLoudSources =
       <SfxType, Future<AudioSource>>{};
-  final Map<SfxType, Future<SoundHandle>> _soLoudHandles =
-      <SfxType, Future<SoundHandle>>{};
+  final Map<SfxType, SoundHandle> _soLoudHandles = <SfxType, SoundHandle>{};
   final Map<SfxType, AudioPlayer> _apPlayers = <SfxType, AudioPlayer>{};
 
   Future<AudioSource> _getSoLoudSound(
@@ -221,10 +220,10 @@ class AudioController {
           if (await _soLoudHandleValid(type)) {
             _log.info(() => "Retained handle, stopping to replay");
             //FIXME is this necessary to stop and then replay with different handle?
-            unawaited(soLoud.stop(await _soLoudHandles[type]!));
+            unawaited(soLoud.stop(_soLoudHandles[type]!));
           }
         }
-        final Future<SoundHandle> fHandle = soLoud.play(
+        final SoundHandle fHandle = soLoud.play(
           sound,
           paused: false,
           looping: looping,
@@ -233,7 +232,7 @@ class AudioController {
         if (retainForStopping) {
           _soLoudHandles[type] = fHandle;
         }
-        await fHandle;
+        fHandle; //previously awaited
       } catch (e) {
         _log
           ..severe('SoLoud play crash, reset $type')
@@ -332,11 +331,11 @@ class AudioController {
       assert(_useSoLoud);
       await soLoudEnsureInitialised();
       if (!(await _soLoudHandleValid(siren)) ||
-          soLoud.getPause(await _soLoudHandles[siren]!)) {
+          soLoud.getPause(_soLoudHandles[siren]!)) {
         _log.info('Restarting ghostsRoamingSiren');
         await playSfx(siren);
       }
-      final SoundHandle handle = await _soLoudHandles[siren]!;
+      final SoundHandle handle = _soLoudHandles[siren]!;
       currentVolume = soLoud.getVolume(handle);
       final double desiredSirenVolume = _getDesiredSirenVolume(
         normalisedAverageGhostSpeed,
@@ -360,9 +359,9 @@ class AudioController {
       assert(_useSoLoud);
       await soLoudEnsureInitialised();
       if (await _soLoudHandleValid(type)) {
-        final Future<SoundHandle> fHandle = _soLoudHandles[type]!;
-        await _soLoudHandles.remove(type); //so play from fresh
-        await soLoud.stop(await fHandle);
+        final SoundHandle fHandle = _soLoudHandles[type]!;
+        _soLoudHandles.remove(type); //so play from fresh
+        await soLoud.stop(fHandle);
       }
       if (type == SfxType.silence && _apPlayers.containsKey(SfxType.silence)) {
         await _apPlayers[SfxType.silence]!.stop();
@@ -408,7 +407,7 @@ class AudioController {
   Future<bool> _soLoudHandleValid(SfxType type) async {
     await soLoudEnsureInitialised();
     return _soLoudHandles.keys.contains(type) &&
-        soLoud.getIsValidVoiceHandle(await _soLoudHandles[type]!);
+        soLoud.getIsValidVoiceHandle(_soLoudHandles[type]!);
   }
 
   Future<bool> _soLoudSourceValid(SfxType type) async {

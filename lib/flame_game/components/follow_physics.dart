@@ -59,6 +59,7 @@ class Physics extends Component
         ..setFrom(_ballPosUnscaled)
         ..scale(spriteVsPhysicsScale);
   late final Vector2 _ballPosUnscaled = _ball.position;
+
   Vector2 get _ballVel =>
       spriteVsPhysicsScaleConstant ? _ballVelUnscaled : _reusableVector
         ..setFrom(_ballVelUnscaled)
@@ -131,7 +132,9 @@ class Physics extends Component
   }
 
   void deactivate() {
-    _isActive = false; //before _ball first reference where _ball is initialised
+    // disable _isActive before _ball first reference
+    // as _ball is initialised by referencing _ball as late final
+    _isActive = false;
     _ball.setInactive();
   }
 }

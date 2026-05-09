@@ -20,9 +20,6 @@ import 'pacman_game.dart';
 
 /// The world is where you place all the components that should live inside of
 /// the game, like the player, enemies, obstacles and points for example.
-/// The world can be much bigger than what the camera is currently looking at,
-/// but in this game all components that go outside of the size of the viewport
-/// are removed, since the player can't interact with those anymore.
 ///
 /// The [PacmanWorld] has two mixins added to it:
 ///  - The [DragCallbacks] that makes it possible to react to taps and drags
@@ -107,6 +104,7 @@ class PacmanWorld extends Forge2DWorld
   }
 
   static const bool enableMovingWalls = kDebugMode && false;
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -143,6 +141,7 @@ class PacmanWorld extends Forge2DWorld
   }
 
   final Vector2 _eventOffset = Vector2.zero();
+
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
@@ -209,8 +208,10 @@ class PacmanWorld extends Forge2DWorld
   final Vector2 gravitySign = Vector2(0, 0);
 
   static const bool _kRotatingCamera = !kDebugMode || true;
+
   double get cameraAngle =>
       _kRotatingCamera ? game.camera.viewfinder.angle : _debugFakeAngle;
+
   set cameraAngle(double z) =>
       _kRotatingCamera ? game.camera.viewfinder.angle = z : _debugFakeAngle = z;
 

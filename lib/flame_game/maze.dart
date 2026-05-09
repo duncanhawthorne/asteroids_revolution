@@ -150,7 +150,7 @@ class Maze {
         _mazeLayout[i][j] == _kMovingWall;
   }
 
-  final Vector2 _volatileInstantConsumeVector2 = Vector2.zero();
+  static final Vector2 _reusableVector = Vector2.zero();
 
   Vector2 _volatileVectorOfMazeListIndex(
     int icore,
@@ -161,15 +161,15 @@ class Maze {
     final double i = ioffset + icore;
     final double j = joffset + jcore;
 
-    /// using [_volatileInstantConsumeVector2]
+    /// using _reusableVector
     /// so we don't have to make new Vector2 every time called
     /// but therefore must instantly consume the output as it may change
     assert(blockWidth != 0); //i.e. not set yet
-    _volatileInstantConsumeVector2.setValues(
+    _reusableVector.setValues(
       (j + 1 / 2 - _mazeLayout[0].length / 2) * blockWidth,
       (i + 1 / 2 - _mazeLayout.length / 2) * blockWidth,
     );
-    return _volatileInstantConsumeVector2;
+    return _reusableVector;
   }
 
   Vector2 _volatileVectorOfMazeListCode(String code) {
