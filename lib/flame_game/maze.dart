@@ -183,6 +183,54 @@ class Maze {
     throw 'Missing maze code $code';
   }
 
+  bool _pelletCodeAtCell(int i, int j) {
+    return _mazeLayout[i][j] == _kMiniPellet ||
+        _mazeLayout[i][j] == _kSuperPellet ||
+        _mazeLayout[i][j] == _kMovingWall;
+  }
+
+  bool _pelletAt(int i, int j) {
+    return i >= 0 &&
+        j >= 0 &&
+        i + 1 < _mazeLayout.length &&
+        j + 1 < _mazeLayout[0].length &&
+        _pelletCodeAtCell(i, j) &&
+        _pelletCodeAtCell(i, j + 1) &&
+        _pelletCodeAtCell(i + 1, j) &&
+        _pelletCodeAtCell(i + 1, j + 1);
+  }
+
+  Iterable<Vector2> miniPelletPositions(bool superPelletsEnabled) sync* {
+    final Vector2 center = Vector2.zero();
+    for (int i = 0; i < _mazeLayout.length; i++) {
+      for (int j = 0; j < _mazeLayout[i].length; j++) {
+        if (_pelletAt(i, j)) {
+          final bool isSuperPellet = _mazeLayout[i][j] == _kSuperPellet;
+          if (!isSuperPellet || !superPelletsEnabled) {
+            center.setFrom(
+              _volatileVectorOfMazeListIndex(i, j, ioffset: 0.5, joffset: 0.5),
+            );
+            yield center;
+          }
+        }
+      }
+    }
+  }
+
+  Iterable<Vector2> superPelletPositions() sync* {
+    final Vector2 center = Vector2.zero();
+    for (int i = 0; i < _mazeLayout.length; i++) {
+      for (int j = 0; j < _mazeLayout[i].length; j++) {
+        if (_pelletAt(i, j) && _mazeLayout[i][j] == _kSuperPellet) {
+          center.setFrom(
+            _volatileVectorOfMazeListIndex(i, j, ioffset: 0.5, joffset: 0.5),
+          );
+          yield center;
+        }
+      }
+    }
+  }
+
   static const double _mazeInnerWallWidthFactor = 1;
   static const double _pixelationBuffer = 0.03;
 
