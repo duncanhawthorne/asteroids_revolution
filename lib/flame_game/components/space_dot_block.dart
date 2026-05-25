@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'space_dot.dart';
@@ -40,7 +40,7 @@ class SpaceDotWrapper extends PositionComponent
     }
 
     final double roundingScaled =
-        maze.blockWidth * pow(_kOrderBase, orderMagnitude);
+        maze.dimensions.blockWidth * pow(_kOrderBase, orderMagnitude);
     position.setValues(
       ((shipPosition.x / roundingScaled).round()) * roundingScaled,
       ((shipPosition.y / roundingScaled).round()) * roundingScaled,
@@ -49,7 +49,7 @@ class SpaceDotWrapper extends PositionComponent
 
   void reset() {
     removeAll(children);
-    roundingUnscaled = maze.blockWidth * pow(_kOrderBase, 0);
+    roundingUnscaled = maze.dimensions.blockWidth * pow(_kOrderBase, 0);
     final int halfGridSize = fullGrid ? (_kOrderBase / 2).ceil() : 0;
     for (int i = -halfGridSize; i <= halfGridSize; i++) {
       for (int j = -halfGridSize; j <= halfGridSize; j++) {

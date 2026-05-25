@@ -5,7 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../utils/helper.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'alien_bomb.dart';
@@ -77,7 +77,7 @@ class SpaceWrapper extends WrapperNoEvents
       max(game.size.y, game.size.x) / 2 / _cameraManager.zoom;
 
   double get _mappedUniverseRadius =>
-      maze.mazeWidth *
+      maze.dimensions.mazeWidth *
       flameGameZoom /
       30 *
       ship.radius /

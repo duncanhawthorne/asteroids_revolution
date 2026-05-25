@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import 'wrapper_no_events.dart';
 
@@ -22,7 +22,7 @@ class WallWrapper extends WrapperNoEvents
     if (children.isNotEmpty) {
       removeAll(children);
     }
-    await addAll(maze.mazeWalls(includeGround: false));
+    await addAll(maze.physicsFactory.walls(includeGround: false));
     clearSnapshot();
   }
 

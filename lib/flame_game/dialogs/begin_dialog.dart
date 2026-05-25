@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../router.dart';
 import '../../style/dialog.dart';
 import '../game_screen.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import 'game_start_dialog.dart';
 

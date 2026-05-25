@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
 import '../icons/stub_sprites.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import 'alien_bomb.dart';
 import 'game_character.dart';
 import 'gun.dart';
@@ -17,7 +17,7 @@ import 'space_body.dart';
 import 'space_layer.dart';
 import 'triple.dart';
 
-final double neutralShipRadius = maze.spriteWidth / 2 * 0.4 * 2;
+final double neutralShipRadius = maze.dimensions.spriteWidth / 2 * 0.4 * 2;
 
 double defaultShipRadius = neutralShipRadius / 18 * (kDebugMode ? 6 : 1);
 
@@ -118,10 +118,13 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
 
   @override
   void update(double dt) {
-    angle = -atan2(world.downDirection.x, world.downDirection.y);
+    angle = -atan2(
+      world.dragManager.downDirection.x,
+      world.dragManager.downDirection.y,
+    );
     if (accelerating) {
       acceleration
-        ..setFrom(world.downDirection)
+        ..setFrom(world.dragManager.downDirection)
         ..scale(-radius); //* 1.4
     } else {
       acceleration.setAll(0);

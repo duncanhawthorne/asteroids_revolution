@@ -48,7 +48,7 @@ mixin Gun on SpaceBody {
     _oneTimeVelocity
       ..x = sin(-angle)
       ..y = cos(-angle)
-      ..scale(world.downDirection.length)
+      ..scale(world.dragManager.downDirection.length)
       ..scale(-2 * radius)
       ..add(velocity);
     return _oneTimeVelocity;

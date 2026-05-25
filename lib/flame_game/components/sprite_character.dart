@@ -6,6 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
+import '../../utils/constants.dart';
 import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
 import '../pacman_game.dart';
@@ -46,7 +47,7 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
     collisionType: defaultCollisionType,
-  )..debugMode = kDebugMode && false;
+  )..debugMode = drawDebugBoxes;
 
   Future<Map<CharacterState, SpriteAnimation>> getSingleSprite([
     int size = 1,

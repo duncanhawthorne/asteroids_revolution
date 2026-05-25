@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import 'package:flame/components.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 mixin RemovalActions on Component {
   @mustCallSuper

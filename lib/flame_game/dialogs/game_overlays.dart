@@ -87,9 +87,12 @@ Widget _clockWidget(PacmanGame game) {
     },
     child: Padding(
       padding: const EdgeInsets.only(left: _clockSpacing, right: _clockSpacing),
-      child: StreamBuilder<dynamic>(
-        stream: Stream<dynamic>.periodic(const Duration(milliseconds: 100)),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      child: StreamBuilder<int>(
+        stream: Stream<int>.periodic(
+          const Duration(milliseconds: 100),
+          (int i) => i,
+        ),
+        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
           return Text(
             (game.stopwatchMilliSeconds / 1000)
                 .toStringAsFixed(1)

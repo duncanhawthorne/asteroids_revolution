@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'flame_game/game_screen.dart';
-import 'flame_game/maze.dart';
+import 'flame_game/maze/maze.dart';
 import 'level_selection/levels.dart';
 
 /// The router describes the game's navigational hierarchy, from the main

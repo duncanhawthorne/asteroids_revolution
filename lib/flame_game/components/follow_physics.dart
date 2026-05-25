@@ -42,7 +42,7 @@ class Physics extends Component
 
   double get speed => !_ball.isMounted ? 0 : _ballVel.length;
 
-  late final double _initialRadius = owner.size.x / 2;
+  late final double _invInitialRadius = 1 / (owner.size.x / 2);
 
   bool _isActive = true;
 
@@ -66,7 +66,7 @@ class Physics extends Component
         ..scale(spriteVsPhysicsScale);
   late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
 
-  Future<void> _initaliseFromOwner() async {
+  void _initaliseFromOwner() {
     assert(_ball.isLoaded);
     _ball.position = owner.position;
     _ball.velocity = owner.velocity;
@@ -96,7 +96,7 @@ class Physics extends Component
         owner.angle = _ball.angle;
       }
     } else {
-      owner.angle += speed * dt / _initialRadius * _spinParity;
+      owner.angle += speed * dt * _invInitialRadius * _spinParity;
     }
   }
 

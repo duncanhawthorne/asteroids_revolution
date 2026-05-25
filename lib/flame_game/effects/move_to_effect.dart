@@ -7,11 +7,10 @@ const int kResetPositionTimeMillis = 1000;
 class MoveToPositionEffect extends MoveToEffect {
   MoveToPositionEffect(
     Vector2 destination, {
-    Function()? onComplete,
+    Function()? super.onComplete,
     double duration = kResetPositionTimeMillis / 1000,
   }) : super(
          destination,
          EffectController(duration: duration, curve: Curves.easeOut),
-         onComplete: onComplete,
        );
 }

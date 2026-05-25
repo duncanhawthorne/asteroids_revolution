@@ -2,13 +2,14 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
+import '../../utils/constants.dart';
 import '../../utils/helper.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import 'removal_actions.dart';
+import 'scaled_body_render.dart';
 import 'space_body.dart';
 
 const bool openSpaceMovement = true;
@@ -23,7 +24,7 @@ const double _lubricationScaleFactor = 1;
 const bool _kVerticalPortalsEnabled = false;
 
 class PhysicsBall extends BodyComponent<PacmanGame>
-    with RemovalActions, ContactCallbacks, IgnoreEvents {
+    with RemovalActions, ContactCallbacks, IgnoreEvents, ScaledBodyRender {
   PhysicsBall({
     required Vector2 position,
     required double radius,
@@ -62,7 +63,7 @@ class PhysicsBall extends BodyComponent<PacmanGame>
 
   @override
   // ignore: overridden_fields
-  final bool renderBody = kDebugMode && true;
+  final bool renderBody = drawDebugBoxes;
 
   @override
   // ignore: overridden_fields
@@ -78,13 +79,16 @@ class PhysicsBall extends BodyComponent<PacmanGame>
   static final Vector2 _reusableVector = Vector2.zero();
 
   set position(Vector2 pos) => body.setTransform(
-    spriteVsPhysicsScaleConstant ? pos : pos / spriteVsPhysicsScale,
+    spriteVsPhysicsScaleConstant ? pos : _reusableVector
+      ..setFrom(pos)
+      ..scale(1 / spriteVsPhysicsScale),
     owner.angle,
   );
 
   bool get _outsideMazeBounds =>
-      position.x.abs() > maze.mazeHalfWidth ||
-      (_kVerticalPortalsEnabled && position.y.abs() > maze.mazeHalfHeight);
+      position.x.abs() > maze.dimensions.mazeHalfWidthPhysics ||
+      (_kVerticalPortalsEnabled &&
+          position.y.abs() > maze.dimensions.mazeHalfHeightPhysics);
 
   set velocity(Vector2 vel) => body.linearVelocity.setFrom(
     spriteVsPhysicsScaleConstant ? vel : vel / spriteVsPhysicsScale,
@@ -135,10 +139,13 @@ class PhysicsBall extends BodyComponent<PacmanGame>
 
   Vector2 _teleportedPosition() {
     _reusableVector.setValues(
-      _smallMod(position.x, maze.mazeWidth),
+      _smallMod(position.x * spriteVsPhysicsScale, maze.dimensions.mazeWidth),
       !_kVerticalPortalsEnabled
-          ? position.y
-          : _smallMod(position.y, maze.mazeHeight),
+          ? position.y * spriteVsPhysicsScale
+          : _smallMod(
+              position.y * spriteVsPhysicsScale,
+              maze.dimensions.mazeHeight,
+            ),
     );
     return _reusableVector;
   }

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../utils/constants.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'physics_ball.dart';
@@ -12,7 +13,7 @@ import 'space_dot_block.dart';
 import 'wrapper_no_events.dart';
 
 const bool _kPanTrackingCamera = true;
-const bool _kAutoZoomingCameraOnDebug = false;
+const bool _kAutoZoomingCameraOnDebug = !drawDebugBoxes;
 const bool _kAutoZoomingCamera = _kAutoZoomingCameraOnDebug || !kDebugMode;
 
 class CameraWrapper extends WrapperNoEvents

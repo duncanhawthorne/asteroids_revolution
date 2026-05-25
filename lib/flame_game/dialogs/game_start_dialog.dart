@@ -11,7 +11,7 @@ import '../../style/dialog.dart';
 import '../../style/palette.dart';
 import '../../utils/constants.dart';
 import '../game_screen.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 
 /// This dialog is shown before starting the game.

@@ -7,7 +7,7 @@ import '../../router.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
 import '../game_screen.dart';
-import '../maze.dart';
+import '../maze/maze.dart';
 import '../pacman_game.dart';
 import 'game_start_dialog.dart';
 

@@ -65,7 +65,8 @@ class Alien extends SpaceBody with OverlaySprite {
       logGlobal("not mounted");
       return null;
     }
-    final double bulletSpeed = world.downDirection.length * radius * 2;
+    final double bulletSpeed =
+        world.dragManager.downDirection.length * radius * 2;
     _pd
       ..setFrom(ship.position)
       ..sub(position); //position delta

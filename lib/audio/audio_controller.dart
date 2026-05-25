@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:logging/logging.dart';
@@ -15,9 +14,10 @@ import 'sounds.dart';
 
 const bool _isAudioSystemEnabled = false;
 
+// ignore: unused_element
 const bool _useSoLoudInDebug = true;
-final bool _platformForSoLoud = ((kDebugMode && _useSoLoudInDebug) || isiOSWeb);
-final bool detailedAudioLog = _platformForSoLoud;
+final bool _platformForSoLoud = true;
+final bool detailedAudioLog = _platformForSoLoud; //FIXME disable
 
 bool _soLoudCrashedOnLoad = false;
 
@@ -77,7 +77,7 @@ class AudioController {
   final bool _useSoLoud = _platformForSoLoud && !_soLoudCrashedOnLoad;
   late final bool _useAudioPlayers = !_useSoLoud;
   late final bool canDoVariableVolume = !(isiOSWeb && _useAudioPlayers);
-  late final bool _soLoudIsUnreliable = _useSoLoud;
+  late final bool _soLoudIsUnreliable = isiOSWeb;
 
   bool get isAudioOn =>
       _isAudioSystemEnabled && (_settings?.audioOn.value ?? true);
