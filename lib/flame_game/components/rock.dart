@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import '../../style/palette.dart';
-import '../../utils/helper.dart';
+import '../../utils/utils.dart';
 import 'heart.dart';
 import 'overlay_sprite.dart';
 import 'ship.dart';

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
+import '../components/sprite_character.dart';
+
 class StubSprites {
   Picture _stubRecorder() {
     final PictureRecorder recorder = PictureRecorder();
@@ -29,13 +31,3 @@ class StubSprites {
 }
 
 StubSprites stubSprites = StubSprites();
-
-enum CharacterState {
-  normal,
-  scared,
-  scaredIsh,
-  eating,
-  dead,
-  spawning,
-  accelerating,
-}

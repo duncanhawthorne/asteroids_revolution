@@ -38,9 +38,13 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   bool get stateTypical =>
       current != CharacterState.dead && current != CharacterState.spawning;
 
-  late final CollisionType defaultCollisionType = this is Ship || this is Bullet
-      ? CollisionType.active
-      : CollisionType.passive;
+  late final CollisionType defaultCollisionType = _getDefaultCollisionType();
+
+  CollisionType _getDefaultCollisionType() {
+    return this is Ship || this is Bullet
+        ? CollisionType.active
+        : CollisionType.passive;
+  }
 
   final bool isClone = false;
 
@@ -116,4 +120,14 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     }
     super.removalActions();
   }
+}
+
+enum CharacterState {
+  normal,
+  scared,
+  scaredIsh,
+  eating,
+  dead,
+  spawning,
+  accelerating,
 }

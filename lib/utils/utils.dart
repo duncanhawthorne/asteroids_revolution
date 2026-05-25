@@ -1,0 +1,62 @@
+import 'dart:async' as async;
+import 'dart:core';
+import 'dart:math';
+
+import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
+
+async.Timer makePeriodicTimer(
+  Duration duration,
+  void Function(async.Timer timer) callback, {
+  bool fireNow = false,
+}) {
+  final async.Timer timer = async.Timer.periodic(duration, callback);
+  if (fireNow) {
+    callback(timer);
+  }
+  return timer;
+}
+
+final Random random = Random();
+
+double centeredRandom() {
+  return random.nextDouble() - 0.5;
+}
+
+// ignore: unused_element
+double _centeredRandomNoMiddle() {
+  double a = 0;
+  a = centeredRandom() * 0.25;
+  a = a < 0 ? a - (1 - 0.25 / 2) : a + (1 - 0.25 / 2);
+  return a;
+}
+
+Vector2 noiseVector(double scale) {
+  final double ringRadius = (0.5 + random.nextDouble() * 0.5) * scale;
+  final double ringAngle = tau * random.nextDouble();
+  return Vector2(ringRadius * cos(ringAngle), ringRadius * sin(ringAngle));
+}
+
+final Vector2 _oneTimeVelocity = Vector2(0, 0);
+Vector2 randomVelocityOffset({double scale = 1}) {
+  _oneTimeVelocity.x = centeredRandom() * scale;
+  _oneTimeVelocity.y = centeredRandom() * scale;
+  return _oneTimeVelocity;
+}
+
+final Vector2 _oneTimePosition = Vector2(0, 0);
+Vector2 randomRThetaRing({
+  required Vector2 center,
+  required double ringWidth,
+  double ignoredRing = 0,
+  double overallScale = 1,
+}) {
+  final double ringRadius =
+      (ignoredRing + random.nextDouble() * ringWidth) * overallScale;
+  final double ringAngle = tau * random.nextDouble();
+  _oneTimePosition
+    ..setFrom(center)
+    ..x += ringRadius * cos(ringAngle)
+    ..y += ringRadius * sin(ringAngle);
+  return _oneTimePosition;
+}

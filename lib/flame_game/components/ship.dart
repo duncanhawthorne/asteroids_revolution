@@ -6,7 +6,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
-import '../icons/stub_sprites.dart';
 import '../maze/maze.dart';
 import 'alien_bomb.dart';
 import 'game_character.dart';
@@ -15,6 +14,7 @@ import 'heart.dart';
 import 'rock.dart';
 import 'space_body.dart';
 import 'space_layer.dart';
+import 'sprite_character.dart';
 import 'triple.dart';
 
 final double neutralShipRadius = maze.dimensions.spriteWidth / 2 * 0.4 * 2;

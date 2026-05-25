@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 
-import '../../utils/helper.dart';
+import '../../utils/utils.dart';
 import '../effects/remove_effects.dart';
 import '../maze/maze.dart';
 import 'follow_physics.dart';

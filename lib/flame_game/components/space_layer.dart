@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../utils/helper.dart';
+import '../../utils/utils.dart';
 import '../maze/maze.dart';
 import '../pacman_game.dart';
 import '../pacman_world.dart';
