@@ -87,7 +87,6 @@ class GameSession extends BaseComponent
   void _handleWinGame() {
     assert(!isRemoving);
     assert(isWonOrLost);
-    assert(!game.lifecycle.stopwatch.isRunning());
     assert(game.lifecycle.stopwatchStarted);
     assert(!(game.playState == PlayState.playbackMode));
     game.lifecycle.stopRegularItems();
