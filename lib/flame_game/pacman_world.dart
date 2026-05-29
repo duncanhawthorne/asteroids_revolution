@@ -1,93 +1,88 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/foundation.dart';
 
-import '../audio/sounds.dart';
+import '../utils/constants.dart';
+import 'components/base_component.dart';
 import 'components/pellet_layer.dart';
 import 'components/ship.dart';
 import 'components/space_layer.dart';
-import 'components/wall_layer.dart';
-import 'components/wrapper_no_events.dart';
-import 'mixins/world_drag_rotation_manager.dart';
+import 'managers/drag_rotation.dart';
 import 'pacman_game.dart';
 
-/// The world is where you place all the components that should live inside of
-/// the game, like the player, enemies, obstacles and points for example.
+/// The game world responsible for managing the lifecycle, physics, and hierarchy
+/// of all active gameplay elements in the Pacman game.
 ///
-/// The [PacmanWorld] has two mixins added to it:
-///  - The [DragCallbacks] that makes it possible to react to taps and drags
-///  (or mouse clicks) on the world.
-///  - The [HasGameReference] that gives the world access to a variable called
-///  `game`, which is a reference to the game class that the world is attached
-///  to.
-
+/// This includes the player, enemies, obstacles, and game state managers.
+///
+/// **Mixins:**
+/// * [DragCallbacks]: Enables the world to intercept and respond to user touch,
+///   drag, and mouse interactions.
+/// * [HasGameReference]: Provides direct access to the parent [PacmanGame]
+///   instance via the `game` property.
 class PacmanWorld extends Forge2DWorld
     with HasGameReference<PacmanGame>, DragCallbacks {
+  /// Private constructor to enforce the singleton pattern.
   PacmanWorld._();
 
+  /// Factory constructor that returns the single initialized instance of [PacmanWorld].
+  ///
+  /// Throws an [AssertionError] if an attempt is made to instantiate more than once.
   factory PacmanWorld() {
-    assert(_instance == null);
+    assert(
+      _instance == null,
+      'PacmanWorld is a singleton and can only be initialized once.',
+    );
     _instance ??= PacmanWorld._();
     return _instance!;
   }
 
-  ///ensures singleton [PacmanWorld]
+  /// The internal singleton instance of the world.
   static PacmanWorld? _instance;
 
-  static const bool enableMovingWalls = kDebugMode && false;
+  /// Vector tracking the directional sign of the world's gravity.
   final Vector2 gravitySign = Vector2.zero();
   final Vector2 gravZero = Vector2.zero();
 
-  late final WorldDragRotationManager dragManager = WorldDragRotationManager(
-    game: game,
-    world: this,
-  );
+  /// Internal tracking list containing all system managers and game wrappers.
+  final List<BaseComponent> _wrappers = <BaseComponent>[];
 
-  final WrapperNoEvents noEventsWrapper = WrapperNoEvents();
+  /// A passive visual container used to hold components that do not require
+  /// gesture event dispatching.
+  final BaseComponent _noEvents = BaseComponent();
+
+  // ==========================================
+  // Core Component & Manager Definitions
+  // ==========================================
+
   final PelletWrapper pellets = PelletWrapper();
-  final WallWrapper _walls = WallWrapper();
-  final List<WrapperNoEvents> wrappers = <WrapperNoEvents>[];
+  final SpaceWrapper space = SpaceWrapper();
+  late final DragRotation dragRotate = DragRotation()..world = this;
 
   double get everythingScale =>
       space.ship.radius / neutralShipRadius * 30 / flameGameZoom;
 
-  void play(SfxType type) {
-    const bool soundOn = false; //!(windows && !kIsWeb);
-    // ignore: dead_code
-    if (soundOn) {
-      game.audioController.playSfx(type);
-    }
-  }
-
-  void resetAfterGameWin() {
-    game.audioController.stopSound(SfxType.ghostsScared);
-    play(SfxType.endMusic);
-  }
-
+  /// Resets the game state for all managed wrappers.
+  ///
+  /// If [firstRun] is true, the reset cycle is skipped, as components are
+  /// expected to initialize to their default states natively during [onLoad].
   void reset({bool firstRun = false}) {
-    dragManager.reset();
-    game.audioController.stopSound(SfxType.ghostsScared);
-
     if (!firstRun) {
-      for (final WrapperNoEvents wrapper in wrappers) {
-        assert(wrapper.isLoaded, wrapper);
-        if (wrapper == _walls) {
-          continue; //no need to reset, stops a flash on screen
-        }
+      for (final BaseComponent wrapper in _wrappers) {
+        assert(
+          wrapper.isLoaded,
+          'Attempted to reset a component that has not finished loading: $wrapper',
+        );
         wrapper.reset();
       }
     }
   }
 
-  final SpaceWrapper space = SpaceWrapper();
-
+  /// Signals all tracked wrappers to begin their primary game execution routines.
   void start() {
-    play(SfxType.startMusic);
-    for (final WrapperNoEvents wrapper in wrappers) {
+    for (final BaseComponent wrapper in _wrappers) {
       wrapper.start();
     }
   }
@@ -96,42 +91,57 @@ class PacmanWorld extends Forge2DWorld
   Future<void> onLoad() async {
     super.onLoad();
     gravity = gravZero;
-    add(noEventsWrapper);
-    wrappers.addAll(<WrapperNoEvents>[space]);
-    for (final WrapperNoEvents wrapper in wrappers) {
-      noEventsWrapper.add(wrapper);
+
+    // Mount the non-event container directly to the world.
+    add(_noEvents);
+
+    // Register all core gameplay elements, configuration layers, and systems.
+    _wrappers.addAll(<BaseComponent>[
+      if (!enableRotationRaceMode) pellets,
+      dragRotate,
+      game.session,
+      game.lifecycle,
+      game.playback,
+      game.dialogs,
+      space,
+    ]);
+
+    for (final BaseComponent wrapper in _wrappers) {
+      /// Optimization: Nesting wrappers inside [_noEvents] keeps the flat count
+      /// of root-level world components minimal. This speeds up Flame's internal
+      /// element tree traversals, significantly optimizing gesture hit-testing
+      /// methods like `deliverAtPoint` during drag interactions.
+      _noEvents.add(wrapper);
     }
+
     reset(firstRun: true);
   }
 
   @override
   void onRemove() {
-    dragManager.clear();
-    wrappers.clear();
+    _wrappers.clear();
     super.onRemove();
   }
 
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    dragManager.canvasRadius = min(game.canvasSize.x, game.canvasSize.y) / 2;
-  }
+  // ==========================================
+  // Drag Input Event Handlers
+  // ==========================================
 
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    dragManager.onDragStart(event);
+    dragRotate.onDragStart(event);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    dragManager.onDragUpdate(event);
+    dragRotate.onDragUpdate(event);
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    dragManager.onDragEnd(event);
+    dragRotate.onDragEnd(event);
   }
 }

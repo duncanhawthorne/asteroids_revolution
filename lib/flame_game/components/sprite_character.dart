@@ -18,7 +18,8 @@ import 'ship.dart';
 
 // ignore: unused_element
 final Paint _highQualityPaint = Paint()
-  ..filterQuality = FilterQuality.high
+  // FIXME revert code change to work around flutter 3.45 sprite render issue
+  ..filterQuality = flameGameZoom == 30 ? FilterQuality.low : FilterQuality.high
   //..color = const Color.fromARGB(255, 255, 255, 255)
   ..isAntiAlias = true;
 

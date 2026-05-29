@@ -4,5 +4,6 @@ const String appTitle = "Asteroids Revolution";
 final bool isiOSWeb = defaultTargetPlatform == TargetPlatform.iOS && kIsWeb;
 
 const bool enableRotationRaceMode = kDebugMode && false;
+const bool enableMovingWalls = kDebugMode && false;
 
 const bool drawDebugBoxes = kDebugMode && false;

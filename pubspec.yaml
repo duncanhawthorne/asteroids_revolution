@@ -41,7 +41,7 @@ dependencies:
       ref: main
 
 dev_dependencies:
-#  flame_test: ^1.15.3
+  #  flame_test: ^1.15.3
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
@@ -54,9 +54,9 @@ flutter:
   assets:
     - assets/images/
     #    - assets/images/dash/
-#    - assets/images/enemies/
-#    - assets/images/scenery/
-#    - assets/music/
+    #    - assets/images/enemies/
+    #    - assets/images/scenery/
+    #    - assets/music/
     - assets/sfx/
     - assets/fonts/Press_Start_2P/
 
@@ -64,8 +64,8 @@ flutter:
     - family: Press Start 2P
       fonts:
         - asset: assets/fonts/Press_Start_2P/PressStart2P-Regular.ttf
-  
-  
+
+
 flutter_native_splash:
 
   # This package generates native code to customize Flutter's default white native splash screen
@@ -79,7 +79,7 @@ flutter_native_splash:
   # of your splash screen to a solid color.  Use background_image to set the background of your
   # splash screen to a png image.  This is useful for gradients. The image will be stretch to the
   # size of the app. Only one parameter can be used, color and background_image cannot both be set.
-  color: "#222222"
+  color: "#000000"
   #background_image: "assets/background.png"
 
   # Optional parameters are listed below.  To enable a parameter, uncomment the line by removing
@@ -111,27 +111,27 @@ flutter_native_splash:
   # https://developer.android.com/guide/topics/ui/splash-screen
   # Following are Android 12 specific parameter.
   android_12:
-    # The image parameter sets the splash screen icon image.  If this parameter is not specified,
-    # the app's launcher icon will be used instead.
-    # Please note that the splash screen will be clipped to a circle on the center of the screen.
-    # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
-    # 640 pixels in diameter.
-    # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
-    # 768 pixels in diameter.
-    #image: assets/android12splash.png
+  # The image parameter sets the splash screen icon image.  If this parameter is not specified,
+  # the app's launcher icon will be used instead.
+  # Please note that the splash screen will be clipped to a circle on the center of the screen.
+  # App icon with an icon background: This should be 960×960 pixels, and fit within a circle
+  # 640 pixels in diameter.
+  # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
+  # 768 pixels in diameter.
+  #image: assets/android12splash.png
 
-    # Splash screen background color.
-    #color: "#42a5f5"
+  # Splash screen background color.
+  #color: "#42a5f5"
 
-    # App icon background color.
-    #icon_background_color: "#111111"
+  # App icon background color.
+  #icon_background_color: "#111111"
 
-    # The image_dark parameter and icon_background_color_dark set the image and icon background
-    # color when the device is in dark mode. If they are not specified, the app will use the
-    # parameters from above.
-    #image_dark: assets/android12splash-invert.png
-    #color_dark: "#042a49"
-    #icon_background_color_dark: "#eeeeee"
+  # The image_dark parameter and icon_background_color_dark set the image and icon background
+  # color when the device is in dark mode. If they are not specified, the app will use the
+  # parameters from above.
+  #image_dark: assets/android12splash-invert.png
+  #color_dark: "#042a49"
+  #icon_background_color_dark: "#eeeeee"
 
   # The android, ios and web parameters can be used to disable generating a splash screen on a given
   # platform.
@@ -182,14 +182,14 @@ flutter_launcher_icons:
   ios: false
   image_path: "assets/Icon-512.png"
   image_path_android: "assets/Icon-512.png"
-  adaptive_icon_background: "#222222" # only available for Android 8.0 devices and above
+  adaptive_icon_background: "#000000" # only available for Android 8.0 devices and above
   adaptive_icon_foreground: "assets/Icon-512-adaptive.png" # only available for Android 8.0 devices and above
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
     image_path: "assets/Icon-512.png"
-    background_color: "#222222"
-    theme_color: "#222222"
+    background_color: "#000000"
+    theme_color: "#000000"
   windows:
     generate: false
     image_path: "assets/Icon-512.png"

@@ -4,10 +4,10 @@ import 'package:flame/components.dart';
 
 import '../pacman_game.dart';
 import '../pacman_world.dart';
+import 'base_component.dart';
 import 'bullet.dart';
-import 'wrapper_no_events.dart';
 
-class BulletWrapper extends WrapperNoEvents
+class BulletWrapper extends BaseComponent
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
   @override
   final int priority = -1;

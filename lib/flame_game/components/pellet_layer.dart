@@ -4,16 +4,22 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../pacman_game.dart';
-import 'wrapper_no_events.dart';
+import 'base_component.dart';
 
 /// Use wrappers to minimise number of components directly in main world
 /// Helps due to loops running through all child components
 /// Especially on drag events deliverAtPoint
 /// Also set IgnoreEvents to speed up deliverAtPoint for all components queried
 
-class PelletWrapper extends WrapperNoEvents
+class PelletWrapper extends BaseComponent
     with HasGameReference<PacmanGame>, Snapshot {
-  final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier<int>(1);
+  @override
+  final int priority = -2;
+
+  bool get winState =>
+      ((!kDebugMode || isMounted) && pelletsRemainingNotifier.value <= 0);
+
+  final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier<int>(0);
 
   @override
   Future<void> reset() async {}

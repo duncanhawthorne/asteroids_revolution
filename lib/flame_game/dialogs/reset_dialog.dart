@@ -34,8 +34,9 @@ class ResetDialog extends StatelessWidget {
             TextButton(
               style: buttonStyle(borderColor: Palette.warning.color),
               onPressed: () {
-                game.playerProgress.reset();
                 game.overlays.remove(GameScreen.resetDialogKey);
+                game.playerProgress.reset();
+                game.playState = PlayState.playbackMode;
                 context.go('/');
               },
               child: const Text("Reset completed levels", style: textStyleBody),

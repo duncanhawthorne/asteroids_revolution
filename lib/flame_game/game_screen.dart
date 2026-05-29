@@ -70,7 +70,8 @@ class GameScreen extends StatelessWidget {
                   wonDialogKey: (BuildContext context, PacmanGame game) {
                     return GameWonDialog(
                       level: level,
-                      levelCompletedInMillis: game.stopwatchMilliSeconds,
+                      levelCompletedInMillis:
+                          game.session.stopwatchMilliSeconds,
                       game: game,
                     );
                   },

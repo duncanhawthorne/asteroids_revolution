@@ -10,6 +10,7 @@ import '../pacman_game.dart';
 import '../pacman_world.dart';
 import 'alien_bomb.dart';
 import 'alien_gun.dart';
+import 'base_component.dart';
 import 'bullet.dart';
 import 'bullet_layer.dart';
 import 'camera_layer.dart';
@@ -20,13 +21,12 @@ import 'rock_layer.dart';
 import 'ship.dart';
 import 'space_body.dart';
 import 'triple.dart';
-import 'wrapper_no_events.dart';
 
 const double _kHubbleLimitMult = 1.4;
 
 const bool contactActionsEnabled = !kDebugMode || true;
 
-class SpaceWrapper extends WrapperNoEvents
+class SpaceWrapper extends BaseComponent
     with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);
 

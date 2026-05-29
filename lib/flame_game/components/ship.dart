@@ -119,12 +119,12 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
   @override
   void update(double dt) {
     angle = -atan2(
-      world.dragManager.downDirection.x,
-      world.dragManager.downDirection.y,
+      world.dragRotate.downDirection.x,
+      world.dragRotate.downDirection.y,
     );
     if (accelerating) {
       acceleration
-        ..setFrom(world.dragManager.downDirection)
+        ..setFrom(world.dragRotate.downDirection)
         ..scale(-radius); //* 1.4
     } else {
       acceleration.setAll(0);

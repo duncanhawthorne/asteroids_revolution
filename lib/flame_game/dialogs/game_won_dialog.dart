@@ -69,6 +69,7 @@ class GameWonDialog extends StatelessWidget {
               ),
               onPressed: () {
                 game.overlays.remove(GameScreen.wonDialogKey);
+                game.playState = PlayState.gaming;
                 game.resetAndStart();
               },
               child: const Text('Retry', style: textStyleBody),
@@ -78,6 +79,7 @@ class GameWonDialog extends StatelessWidget {
                 : TextButton(
                     style: buttonStyle(),
                     onPressed: () {
+                      game.playState = PlayState.levelChooseScreen;
                       context.go(
                         '/?$levelUrlKey=${game.level.number + 1}&$mazeUrlKey=${maze.mazeId}',
                       );

@@ -22,7 +22,7 @@ class GameLoseDialog extends StatelessWidget {
         titleText(text: 'Game Over'),
         bodyWidget(
           child: Text(
-            "Dots left: ${game.world.pellets.pelletsRemainingNotifier.value}",
+            "Dots left: ${game.session.itemsRemainingNotifier.value}",
             style: textStyleBody,
           ),
         ),
@@ -34,7 +34,9 @@ class GameLoseDialog extends StatelessWidget {
               style: buttonStyle(),
               onPressed: () {
                 game.overlays.remove(GameScreen.loseDialogKey);
-                game.resetAndStart();
+                game
+                  ..resetAndStart()
+                  ..playState = PlayState.gaming;
               },
               child: const Text('Retry', style: textStyleBody),
             ),

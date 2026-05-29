@@ -21,17 +21,8 @@ class Levels {
   }
 
   GameLevel getLevel(int levelNum) {
-    assert(
-      levelNum <= maxLevel && levelNum >= minLevel ||
-          levelNum == playbackModeLevel,
-    );
-    bool playbackMode = false;
-    if (levelNum == playbackModeLevel) {
-      levelNum = firstRealLevel;
-      playbackMode = true;
-    }
     final GameLevel result = (
-      number: playbackMode ? playbackModeLevel : levelNum,
+      number: levelNum,
       maxAllowedDeaths: 1,
       superPelletsEnabled: levelNum <= 1 ? true : false,
       multipleSpawningGhosts: levelNum <= 2 ? false : true,
@@ -46,11 +37,7 @@ class Levels {
       levelSpeed: _levelSpeedFactor * 0.25 * pow(1.1, levelNum).toDouble(),
       ghostScaredTimeFactor: _tutorialFactor(levelNum),
       spinSpeedFactor: _tutorialFactor(levelNum),
-      numStartingGhosts: levelNum >= 0
-          ? 3
-          : levelNum == minLevel
-          ? 3
-          : (levelNum - 1) % 3 + 1, //not possible
+      numStartingGhosts: 3,
       levelString: levelNum > 0
           ? "L$levelNum"
           : "Tutorial", //${levelNum - minLevel + 1}",
