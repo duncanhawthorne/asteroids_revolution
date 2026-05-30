@@ -135,6 +135,14 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
   /// The current direction of gravity based on the maze rotation.
   final Vector2 downDirection = Vector2.zero();
 
+  static final Vector2 _reusableVector = Vector2.zero();
+
+  Vector2 get _downDirectionPhysics => _reusableVector
+    ..setFrom(downDirection)
+    ..scale(1 / spriteVsPhysicsScale);
+
+  double get downAngle => -atan2(downDirection.x, downDirection.y);
+
   static const bool _updateGravityOnRotation = false;
 
   static const bool _reversedRotation = true;
@@ -162,13 +170,13 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
     cameraAngle = angle;
     downDirection
       ..setValues(-sin(angle), cos(angle))
-      ..scale(game.level.levelSpeed / spriteVsPhysicsScale);
+      ..scale(game.level.levelSpeed);
 
     if (_updateGravityOnRotation) {
       /// The gravity is defined in virtual pixels per second squared.
       /// These pixels are in relation to how big the [FixedResolutionViewport] is.
 
-      world.gravity = downDirection;
+      world.gravity = _downDirectionPhysics;
       world.gravitySign.setValues(
         world.gravity.x.sign,
         world.gravity.y.sign,

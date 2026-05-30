@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/collisions.dart';
@@ -118,10 +117,7 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
 
   @override
   void update(double dt) {
-    angle = -atan2(
-      world.dragRotate.downDirection.x,
-      world.dragRotate.downDirection.y,
-    );
+    angle = world.dragRotate.downAngle;
     if (accelerating) {
       acceleration
         ..setFrom(world.dragRotate.downDirection)
