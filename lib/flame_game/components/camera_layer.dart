@@ -61,9 +61,7 @@ class CameraWrapper extends BaseComponent
   void fixSpaceDots() {
     if (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast) {
       _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
-      spriteVsPhysicsScale =
-          // ignore: dead_code
-          kDebugMode && true ? 1 : ship.radius / defaultShipRadius * 1.5;
+      spriteVsPhysicsScale = ship.radius / defaultShipRadius * 1.5;
       world.space.resetSpriteVsPhysicsScale();
     }
     _smallDots.tidyUpdate(
