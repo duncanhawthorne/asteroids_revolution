@@ -21,6 +21,7 @@ final bool detailedAudioLog = _platformForSoLoud; //FIXME disable
 
 bool _soLoudCrashedOnLoad = false;
 
+/// Performs the initial setup of the SoLoud audio engine.
 Future<void> firstInitialiseSoLoud() async {
   if (!_isAudioSystemEnabled) {
     return;
@@ -33,6 +34,7 @@ Future<void> firstInitialiseSoLoud() async {
   }
 }
 
+/// Global instance of the SoLoud audio engine.
 final SoLoud soLoud = SoLoud.instance;
 
 final ValueNotifier<bool> flagOnUserInteractionPlaySilence =
@@ -47,6 +49,7 @@ final ValueNotifier<bool> flagPlaySilenceOnSoLoudEnsureInitialised =
 final ValueNotifier<bool> flagSoLoudInitialisedAsPartOfCanPlayForAPSounds =
     ValueNotifier<bool>(true);
 
+/// Map of debugging flags for UI testing.
 Map<String, ValueNotifier<bool>> checkboxes = <String, ValueNotifier<bool>>{
   "flagOnUserInteractionPlaySilence": flagOnUserInteractionPlaySilence,
   "flagOnUserInteractionEnsureSoLoudInitialised":
@@ -60,11 +63,16 @@ Map<String, ValueNotifier<bool>> checkboxes = <String, ValueNotifier<bool>>{
       flagSoLoudInitialisedAsPartOfCanPlayForAPSounds,
 };
 
+/// Global audio controller that manages sound effects and music.
+///
+/// It supports both [AudioPlayers] and [SoLoud] backends, with logic to handle
+/// platform-specific quirks (like iOS Web touch requirements).
 class AudioController {
   AudioController._() {
     unawaited(_preloadSfx());
   }
 
+  /// Returns the singleton instance of the [AudioController].
   factory AudioController() {
     assert(_instance == null);
     _instance ??= AudioController._();
@@ -79,6 +87,7 @@ class AudioController {
   late final bool canDoVariableVolume = !(isiOSWeb && _useAudioPlayers);
   late final bool _soLoudIsUnreliable = isiOSWeb;
 
+  /// Checks if audio is enabled and not muted.
   bool get isAudioOn =>
       _isAudioSystemEnabled && (_settings?.audioOn.value ?? true);
 
@@ -86,11 +95,13 @@ class AudioController {
   SettingsController? _settings;
   ValueNotifier<AppLifecycleState>? _lifecycleNotifier;
 
+  /// Caches for SoLoud audio sources, handles, and AudioPlayers instances.
   final Map<SfxType, Future<AudioSource>> _soLoudSources =
       <SfxType, Future<AudioSource>>{};
   final Map<SfxType, SoundHandle> _soLoudHandles = <SfxType, SoundHandle>{};
   final Map<SfxType, AudioPlayer> _apPlayers = <SfxType, AudioPlayer>{};
 
+  /// Loads or retrieves a SoLoud sound source.
   Future<AudioSource> _getSoLoudSound(
     SfxType type, {
     bool preload = false,
@@ -116,6 +127,7 @@ class AudioController {
     }
   }
 
+  /// Validates if a sound can be played based on current settings and state.
   Future<bool> _canPlay(
     SfxType type, {
     bool forceUseAudioPlayersOnce = false,
@@ -158,6 +170,7 @@ class AudioController {
     return true;
   }
 
+  /// Plays a specific sound effect.
   Future<void> playSfx(
     SfxType type, {
     bool forceUseAudioPlayersOnce = false,
@@ -242,6 +255,7 @@ class AudioController {
     }
   }
 
+  /// Safari workaround: triggers audio activation on a user-initiated event.
   Future<void> workaroundiOSSafariAudioOnUserInteraction() async {
     //ideally replaced by ensureSilencePlaying
     //FIXME requires testing
@@ -253,12 +267,14 @@ class AudioController {
     }
   }
 
+  /// Returns true if the silent track is currently playing via AudioPlayers.
   bool silencePlayingOnAp() {
     final SfxType type = SfxType.silence;
     return _apPlayers.containsKey(type) &&
         _apPlayers[type]!.state == PlayerState.playing;
   }
 
+  /// Plays a silent track to keep the audio session active.
   Future<void> playSilence() async {
     if (!_isAudioSystemEnabled) {
       return;
@@ -270,6 +286,7 @@ class AudioController {
     }
   }
 
+  /// Plays the ghost-eating sound via AudioPlayers (fallback mechanism).
   Future<void> playEatGhostAP() async {
     if (_useSoLoud) {
       _log.fine("playEatGhostAP");
@@ -277,6 +294,7 @@ class AudioController {
     }
   }
 
+  /// Checks if the app's current lifecycle state should block audio playback.
   bool _hiddenBlockPlay() {
     return _lifecycleNotifier == null ||
         _lifecycleNotifier!.value == AppLifecycleState.hidden;
@@ -302,6 +320,7 @@ class AudioController {
     return targetVolume;
   }
 
+  /// Dynamically adjusts the volume of the ghost roaming siren.
   Future<void> setSirenVolume(
     double normalisedAverageGhostSpeed, {
     bool gradual = false,
@@ -346,6 +365,7 @@ class AudioController {
     }
   }
 
+  /// Stops a specific sound effect if it is playing.
   Future<void> stopSound(SfxType type) async {
     if (!_isAudioSystemEnabled) {
       return;
@@ -375,6 +395,7 @@ class AudioController {
     }
   }
 
+  /// Stops all currently playing sounds.
   Future<void> stopAllSounds() async {
     if (!_isAudioSystemEnabled) {
       return;
@@ -419,6 +440,7 @@ class AudioController {
   /// Makes sure the audio controller is listening to changes
   /// of both the app lifecycle (e.g. suspended app) and to changes
   /// of settings (e.g. muted sound).
+  /// Attaches external dependencies for lifecycle and settings tracking.
   void attachDependencies(
     AppLifecycleStateNotifier lifecycleNotifier,
     SettingsController settingsController,
@@ -506,6 +528,7 @@ class AudioController {
     }
   }
 
+  /// Ensures that the SoLoud engine is initialized and ready for use.
   Future<void> soLoudEnsureInitialised() async {
     if (!_isAudioSystemEnabled) {
       return;
@@ -561,6 +584,7 @@ class AudioController {
     }
   }
 
+  /// Disposes of all audio resources and shut downs the controllers.
   Future<void> dispose() async {
     //don't call manually
     _log.info("Dispose - don't call manually");
@@ -582,6 +606,7 @@ class AudioController {
     }
   }
 
+  /// Disposes of all active SoLoud audio sources.
   Future<void> soLoudDisposeAllSources() async {
     _log.fine("soLoudDisposeAllSources and clear");
     clearSources();
@@ -601,6 +626,7 @@ class AudioController {
     }
   }
 
+  /// Shuts down the SoLoud engine without clearing internal source caches.
   void soLoudDeInitOnly() {
     //don't call directly
     _log.fine("soLoudDeInitOnly");
@@ -609,6 +635,7 @@ class AudioController {
     soLoud.deinit();
   }
 
+  /// Clears the cached SoLoud audio sources.
   void clearSources() {
     _log.fine("clearSources");
     clearHandles();
@@ -617,6 +644,7 @@ class AudioController {
     assert(_soLoudHandles.isEmpty);
   }
 
+  /// Clears the cached SoLoud sound handles.
   void clearHandles() {
     _log.fine("clearHandles");
     _soLoudHandles.clear();
@@ -624,6 +652,7 @@ class AudioController {
     assert(_soLoudHandles.isEmpty);
   }
 
+  /// Shuts down the SoLoud engine completely to prepare for a reset.
   Future<void> soLoudPowerDownForReset() async {
     if (!_isAudioSystemEnabled) {
       return;

@@ -1,8 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+/// A [ValueNotifier] that tracks the [AppLifecycleState].
 typedef AppLifecycleStateNotifier = ValueNotifier<AppLifecycleState>;
 
+/// A widget that observes the application's lifecycle states and provides
+/// a [AppLifecycleStateNotifier] to its descendants.
 class AppLifecycleObserver extends StatefulWidget {
   const AppLifecycleObserver({required this.child, super.key});
 

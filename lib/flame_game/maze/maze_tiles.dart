@@ -1,12 +1,30 @@
+/// Enum representing different types of tiles in the maze layout.
 enum Tile {
+  /// A small pellet for Pacman to eat.
   miniPellet(_kMiniPellet),
+
+  /// A solid, static wall.
   wall(_kWall),
+
+  /// A dynamic or moving wall.
   movingWall(_kMovingWall),
+
+  /// The ghost's home or lair area.
   lair(_kLair),
+
+  /// A larger power-up pellet.
   superPellet(_kSuperPellet),
+
+  /// An empty space.
   empty(_kEmpty),
+
+  /// The starting position for ghosts.
   ghostStart(_kGhostStart),
+
+  /// The starting position for Pacman.
   pacmanStart(_kPacmanStart),
+
+  /// The cage area where ghosts wait.
   cage(_kCage);
 
   const Tile(this.code);

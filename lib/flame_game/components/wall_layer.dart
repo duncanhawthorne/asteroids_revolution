@@ -6,6 +6,7 @@ import '../maze/maze.dart';
 import '../pacman_game.dart';
 import 'base_component.dart';
 
+/// A container component that manages and renders all static walls in the maze.
 class WallWrapper extends BaseComponent
     with HasGameReference<PacmanGame>, Snapshot {
   int _mazeIdLast = -100;

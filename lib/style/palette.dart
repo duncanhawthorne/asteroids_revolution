@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 /// A palette of colors to be used in the game.
 
+/// A palette of colors and [PaletteEntry] definitions used throughout the game.
 class Palette {
   static const PaletteEntry seed = PaletteEntry(seedColor);
   static const PaletteEntry text = PaletteEntry(textColor);

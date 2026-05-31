@@ -1,47 +1,28 @@
-String _soundTypeToFilename(SfxType type) => switch (type) {
-  SfxType.ghostsScared => 'ghosts_runaway.mp3',
-  SfxType.endMusic => 'win.mp3',
-  SfxType.eatGhost => 'eat_ghost.mp3',
-  SfxType.pacmanDeath => 'pacman_death.mp3',
-  SfxType.waka => 'pacman_waka_waka.mp3',
-  SfxType.startMusic => 'pacman_beginning.mp3',
-  SfxType.ghostsRoamingSiren => 'ghosts_siren.mp3',
-  SfxType.silence => 'quiet.mp3',
-};
-
+/// Multiplier applied to all game sounds.
 const double volumeScalar = 0.5;
 
-/// Allows control over loudness of different SFX types.
-double _soundTypeToVolume(SfxType type) {
-  switch (type) {
-    case SfxType.waka:
-    case SfxType.startMusic:
-    case SfxType.ghostsScared:
-    case SfxType.endMusic:
-    case SfxType.pacmanDeath:
-    case SfxType.eatGhost:
-      return 1 * volumeScalar;
-    case SfxType.ghostsRoamingSiren:
-      return 0 * volumeScalar;
-    case SfxType.silence:
-      return 0.01 * volumeScalar;
-  }
-}
-
+/// Definitions of all sound effects used in the game.
 enum SfxType {
-  waka,
-  startMusic,
-  ghostsScared,
-  endMusic,
-  eatGhost,
-  pacmanDeath,
-  ghostsRoamingSiren,
-  silence,
-}
+  waka('pacman_waka_waka.mp3', 1.0),
+  startMusic('pacman_beginning.mp3', 1.0),
+  ghostsScared('ghosts_runaway.mp3', 1.0),
+  endMusic('win.mp3', 1.0),
+  eatGhost('eat_ghost.mp3', 1.0),
+  pacmanDeath('pacman_death.mp3', 1.0),
+  ghostsRoamingSiren('ghosts_siren.mp3', 0.0),
+  silence('quiet.mp3', 0.01);
 
-/// Extension to provide helper functions for SfxType
-extension SfxTypeExtension on SfxType {
-  String get filename => "sfx/${_soundTypeToFilename(this)}";
+  const SfxType(this._filename, this._relativeVolume);
 
-  double get targetVolume => _soundTypeToVolume(this);
+  // The base filename for the asset
+  final String _filename;
+
+  // The raw volume multiplier for this specific sound
+  final double _relativeVolume;
+
+  /// Returns the full asset path for the sound effect.
+  String get filename => 'sfx/$_filename';
+
+  /// Returns the final calculated target volume.
+  double get targetVolume => _relativeVolume * volumeScalar;
 }

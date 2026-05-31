@@ -16,10 +16,11 @@ import '../pacman_game.dart';
 
 /// This dialog is shown before starting the game.
 
+/// Main menu and level/maze selection dialog shown before a game session begins.
 class StartDialog extends StatelessWidget {
   const StartDialog({super.key, required this.level, required this.game});
 
-  /// The properties of the level that was just finished.
+  /// The level configuration for the current game session.
   final GameLevel level;
 
   final PacmanGame game;
@@ -67,6 +68,7 @@ class StartDialog extends StatelessWidget {
   }
 }
 
+/// Widget that allows the user to select a game level.
 Widget levelSelector(BuildContext context, PacmanGame game) {
   return ListenableBuilder(
     listenable: game.playerProgress,
@@ -152,6 +154,7 @@ Widget levelButtonSingle(BuildContext context, PacmanGame game, int levelNum) {
   );
 }
 
+/// Widget that allows the user to select a maze layout.
 Widget mazeSelector(BuildContext context, PacmanGame game) {
   return ListenableBuilder(
     listenable: game.playerProgress,

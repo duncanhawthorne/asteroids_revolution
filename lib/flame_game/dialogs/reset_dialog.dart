@@ -12,6 +12,7 @@ import '../pacman_game.dart';
 /// It shows what time the level was completed
 /// and a comparison vs the leaderboard
 
+/// A confirmation dialog shown when the user chooses to reset their progress.
 class ResetDialog extends StatelessWidget {
   const ResetDialog({super.key, required this.game});
 

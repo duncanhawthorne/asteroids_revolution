@@ -1,5 +1,7 @@
 // ignore_for_file: always_specify_types
 
+/// Pre-recorded maze rotation moves for use in playback mode.
+/// Each entry is a [timestamp_ms, angle_radians] pair.
 List<List<double>> storedMoves = [
   [0, 0],
   [0, 0],

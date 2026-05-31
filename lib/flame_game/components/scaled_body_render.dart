@@ -6,6 +6,7 @@ import '../../utils/constants.dart';
 import '../pacman_game.dart';
 import 'physics_ball.dart';
 
+/// Mixin to handle coordinate scaling when rendering physics bodies.
 mixin ScaledBodyRender on BodyComponent<PacmanGame> {
   @override
   void render(Canvas canvas) {

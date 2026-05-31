@@ -10,6 +10,7 @@ import 'game_start_dialog.dart';
 
 /// This first dialog shown during playback mode
 
+/// The initial dialog shown during the playback mode sequence.
 class BeginDialog extends StatelessWidget {
   const BeginDialog({super.key, required this.game});
 

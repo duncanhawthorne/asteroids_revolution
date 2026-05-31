@@ -10,11 +10,13 @@ import '../firebase_options.dart';
 
 /// This file has utilities for loading and saving the leaderboard in firebase
 
+/// Manages Firebase interactions, specifically for high scores and player progress.
 class FBase {
   FBase._() {
     //unawaited(fBase.initialize());
   }
 
+  /// Returns the singleton instance of [FBase].
   factory FBase() {
     assert(_instance == null);
     _instance ??= FBase._();
@@ -34,6 +36,7 @@ class FBase {
 
   FirebaseFirestore? _db;
 
+  /// Initializes the Firebase app and the Firestore instance.
   Future<void> initialize() async {
     if (firebaseOn) {
       await Firebase.initializeApp(
@@ -45,6 +48,7 @@ class FBase {
     }
   }
 
+  /// Uploads a single score record to the global leaderboard.
   Future<void> firebasePushSingleScore(
     String recordID,
     Map<String, dynamic> state,
@@ -73,6 +77,7 @@ class FBase {
     }
   }
 
+  /// Calculates the user's performance percentile compared to other players.
   Future<double> firebasePercentile({
     required int levelNum,
     required int levelCompletedInMillis,

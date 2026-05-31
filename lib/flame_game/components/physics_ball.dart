@@ -23,6 +23,7 @@ final Paint _inactivePaint = Paint()..color = Palette.warning.color;
 const double _lubricationScaleFactor = 1;
 const bool _kVerticalPortalsEnabled = false;
 
+/// A physical body representing a character in the Forge2D physics world.
 class PhysicsBall extends BodyComponent<PacmanGame>
     with RemovalActions, ContactCallbacks, IgnoreEvents, ScaledBodyRender {
   PhysicsBall({
@@ -78,6 +79,7 @@ class PhysicsBall extends BodyComponent<PacmanGame>
 
   static final Vector2 _reusableVector = Vector2.zero();
 
+  /// Synchronizes the physical body's position with the character's visual position.
   set position(Vector2 pos) => body.setTransform(
     spriteVsPhysicsScaleConstant ? pos : _reusableVector
       ..setFrom(pos)
@@ -85,24 +87,29 @@ class PhysicsBall extends BodyComponent<PacmanGame>
     owner.angle,
   );
 
+  /// Checks if the ball has moved outside the maze boundaries (e.g., into a portal).
   bool get _outsideMazeBounds =>
       position.x.abs() > maze.dimensions.mazeHalfWidthPhysics ||
       (_kVerticalPortalsEnabled &&
           position.y.abs() > maze.dimensions.mazeHalfHeightPhysics);
 
+  /// Synchronizes the physical body's linear velocity.
   set velocity(Vector2 vel) => body.linearVelocity.setFrom(
     spriteVsPhysicsScaleConstant ? vel : vel / spriteVsPhysicsScale,
   );
 
+  /// Applies a force to the physical body.
   set acceleration(Vector2 acceleration) => body.applyForce(
     _reusableVector
       ..setFrom(acceleration)
       ..scale(body.mass / spriteVsPhysicsScale),
   );
 
+  /// Updates the radius of the physical fixture.
   set radius(double rad) =>
       body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;
 
+  /// Activates the physical body in the simulation.
   void setActive() {
     paint = _activePaint;
     if (isRemoving) {
@@ -118,6 +125,7 @@ class PhysicsBall extends BodyComponent<PacmanGame>
     _bodyIsActive = true;
   }
 
+  /// Deactivates the physical body to stop it from being affected by or affecting other bodies.
   void setInactive() {
     paint = _inactivePaint;
     if (isRemoving) {
@@ -185,6 +193,6 @@ class PhysicsBall extends BodyComponent<PacmanGame>
 
 double _smallMod(double value, double mod) {
   //produces number between -mod / 2 and +mod / 2
-  value = value % mod;
-  return value > mod / 2 ? value - mod : value;
+  final double remainder = value % mod;
+  return remainder > mod / 2 ? remainder - mod : remainder;
 }

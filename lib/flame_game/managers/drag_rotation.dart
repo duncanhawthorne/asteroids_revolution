@@ -27,14 +27,8 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
 
   final Map<int, bool> _boostFingers = <int, bool>{};
 
-  /// Clears any tracked drag information.
-  void _clear() {
-    _fingersLastDragAngle.clear();
-    _boostFingers.clear();
-  }
-
   /// Initiates a sliding reset of the maze angle to its default.
-  void resetSlide(Function() callback) {
+  void resetSlide(VoidCallback callback) {
     assert(game.playState == PlayState.flourish);
     _cameraRotatable = false;
     resetSlideAngle(game.camera.viewfinder, onComplete: callback);
@@ -48,7 +42,6 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
     removeEffects(game.camera.viewfinder);
     setMazeAngle(0, noStartRegularItems: true);
     _cameraRotatable = true;
-    _clear();
   }
 
   @override
@@ -137,10 +130,12 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
 
   static final Vector2 _reusableVector = Vector2.zero();
 
+  /// Direction of gravity in physics units.
   Vector2 get _downDirectionPhysics => _reusableVector
     ..setFrom(downDirection)
     ..scale(1 / spriteVsPhysicsScale);
 
+  /// Current angle pointing towards "down" in the maze.
   double get downAngle => -atan2(downDirection.x, downDirection.y);
 
   static const bool _updateGravityOnRotation = false;

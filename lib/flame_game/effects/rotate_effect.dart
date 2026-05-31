@@ -6,6 +6,7 @@ import 'package:flutter/animation.dart';
 
 import 'move_to_effect.dart';
 
+/// Gradually rotates a component back to its default zero angle.
 void resetSlideAngle(Component component, {Function()? onComplete}) {
   assert(component is PositionComponent || component is Viewfinder);
   if (component is PositionComponent) {
@@ -33,6 +34,7 @@ Effect _rotateToAngleEffect(double angle, {Function()? onComplete}) {
   );
 }
 
+/// Normalizes an angle to be within the range of [-tau / 2, tau / 2].
 double smallAngle(double angleDelta) {
   //produces number between -tau / 2 and +tau / 2
   //avoids +2*pi-delta jump when go around the circle, instead give -delta

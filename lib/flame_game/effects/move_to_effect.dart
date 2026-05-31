@@ -4,6 +4,7 @@ import 'package:flutter/animation.dart';
 
 const int kResetPositionTimeMillis = 1000;
 
+/// An effect that moves a component to a target position over a set duration.
 class MoveToPositionEffect extends MoveToEffect {
   MoveToPositionEffect(
     Vector2 destination, {

@@ -16,6 +16,7 @@ import 'game_start_dialog.dart';
 /// It shows what time the level was completed
 /// and a comparison vs the leaderboard
 
+/// Dialog displayed when the user successfully completes a level.
 class GameWonDialog extends StatelessWidget {
   const GameWonDialog({
     super.key,
@@ -29,7 +30,7 @@ class GameWonDialog extends StatelessWidget {
 
   final PacmanGame game;
 
-  /// How many seconds that the level was completed in.
+  /// How many milliseconds the level took to complete.
   final int levelCompletedInMillis;
 
   @override

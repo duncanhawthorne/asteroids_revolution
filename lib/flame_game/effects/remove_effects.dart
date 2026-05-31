@@ -3,6 +3,8 @@ import 'dart:core';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 
+/// Utility function to remove all active [Effect]s from a component,
+/// stopping them synchronously and removing them from the component tree.
 void removeEffects(Component component) {
   component.children
       .whereType<Effect>()

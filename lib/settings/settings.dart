@@ -45,11 +45,13 @@ class SettingsController {
   /// Whether or not the music is on.
   ValueNotifier<bool> defunctMusicOn = ValueNotifier<bool>(true);
 
+  /// Updates the player's name and persists it.
   void setPlayerName(String name) {
     playerName.value = name;
     _store.savePlayerName(playerName.value);
   }
 
+  /// Toggles the global audio setting and persists the change.
   void toggleAudioOn() {
     audioOn.value = !audioOn.value;
     _store.saveAudioOn(audioOn.value);

@@ -1,3 +1,4 @@
+/// Web-specific workarounds, primarily targeting iOS Safari/Chrome behavior.
 import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -17,6 +18,7 @@ void titleFixPermReal() {
   }
 }
 
+/// Custom [PathUrlStrategy] to fix title issues on iOS mobile web.
 class CustomPathStrategy extends PathUrlStrategy {
   CustomPathStrategy({required this.appTitle});
 

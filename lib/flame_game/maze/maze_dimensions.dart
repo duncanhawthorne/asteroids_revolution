@@ -7,22 +7,40 @@ import '../pacman_game.dart';
 import 'maze_layout.dart';
 import 'maze_tiles.dart';
 
+/// Calculates and stores spatial dimensions and key positions for the maze.
 class MazeDimensions {
   MazeDimensions({required MazeLayout layout}) : _layout = layout;
 
   final MazeLayout _layout;
 
+  /// Starting position for ghosts.
   late final Vector2 ghostStart = _vectorOfMazeTile(Tile.ghostStart);
+
+  /// Starting position for Pacman.
   late final Vector2 pacmanStart = _vectorOfMazeTile(Tile.pacmanStart);
+
   late final Vector2 _cage = _vectorOfMazeTile(Tile.cage);
+
+  /// Total width of the maze in game units.
   late final double mazeWidth = blockWidth * _layout.lengthHBuffered;
+
+  /// Total height of the maze in game units.
   late final double mazeHeight = blockWidth * _layout.length;
+
+  /// Width of a single grid block.
   late final double blockWidth = _blockWidth();
+
+  /// Width of game characters (sprites).
   late final double spriteWidth = _spriteWidth();
+
+  /// Threshold for wrapping clones around the maze edges.
   late final double cloneThreshold = mazeWidth / 2 - spriteWidth / 2;
+
   late final double mazeHalfWidthPhysics = mazeWidth / 2 / spriteVsPhysicsScale;
   late final double mazeHalfHeightPhysics =
       mazeHeight / 2 / spriteVsPhysicsScale;
+
+  /// Size of game characters as a Vector2.
   late final Vector2 spriteSize = Vector2.zero()..setAll(spriteWidth);
   late final Map<int, Vector2> _ghostStartForIdMap = <int, Vector2>{
     0: _ghostStartForId(0),
@@ -40,6 +58,7 @@ class MazeDimensions {
     return blockWidth * 2;
   }
 
+  /// Converts grid coordinates (i, j) to world coordinates.
   Vector2 locationOfIJ(
     int icore,
     int jcore, {
@@ -66,6 +85,7 @@ class MazeDimensions {
     return locationOfIJ(i, j, ioffset: 0.5, output: out);
   }
 
+  /// Returns the starting position for a ghost based on its ID.
   Vector2 ghostStartForId(int idNum) {
     return _ghostStartForIdMap[idNum % 3]!;
   }
@@ -74,10 +94,12 @@ class MazeDimensions {
     return ghostStart.clone()..x += spriteWidth * (idNum % 3 - 1);
   }
 
+  /// Returns the spawn position for a ghost based on its ID.
   Vector2 ghostSpawnForId(int idNum) {
     return idNum <= 2 ? ghostStartForId(idNum) : _cage;
   }
 
+  /// Calculates the sprite width in screen pixels.
   int spriteWidthOnScreen(Vector2 size) {
     return (spriteWidth /
             (kVirtualGameSize / flameGameZoom) *

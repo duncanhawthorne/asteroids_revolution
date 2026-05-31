@@ -8,10 +8,11 @@ import 'game_start_dialog.dart';
 
 /// This dialog is shown when a level is lost.
 
+/// Dialog displayed when the user loses the game.
 class GameLoseDialog extends StatelessWidget {
   const GameLoseDialog({super.key, required this.level, required this.game});
 
-  /// The properties of the level that was just finished.
+  /// The properties of the level that was just lost.
   final GameLevel level;
   final PacmanGame game;
 

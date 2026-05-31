@@ -7,6 +7,7 @@ import '../../style/palette.dart';
 
 final Paint _wallVisualPaint = Paint()..color = Palette.seed.color;
 
+/// Visual representation of a rectangular wall section.
 class WallRectangleVisual extends RectangleComponent with IgnoreEvents {
   WallRectangleVisual({required super.position, required super.size})
     : super(anchor: Anchor.center, paint: _wallVisualPaint);
@@ -26,6 +27,7 @@ class WallRectangleVisual extends RectangleComponent with IgnoreEvents {
   }
 }
 
+/// Visual representation of a circular wall section.
 class WallCircleVisual extends CircleComponent with IgnoreEvents {
   WallCircleVisual({required super.radius, required super.position})
     : super(anchor: Anchor.center, paint: _wallVisualPaint);

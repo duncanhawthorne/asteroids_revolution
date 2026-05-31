@@ -5,11 +5,13 @@ import 'package:flame/components.dart';
 import '../pacman_world.dart';
 import 'game_character.dart';
 
+/// A component that handles basic kinematics for characters when full physics is disabled.
 class SimplePhysics extends Component with HasWorldReference<PacmanWorld> {
   SimplePhysics({required this.owner});
 
   late final GameCharacter owner;
 
+  /// Applies basic kinematic equations (velocity, acceleration, friction) to the character.
   void _oneFrameOfSimpleMovement(double dt) {
     if (owner.canAccelerate) {
       owner.velocity.addScaled(owner.acceleration, dt);

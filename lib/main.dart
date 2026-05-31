@@ -22,6 +22,7 @@ import 'utils/src/workarounds.dart';
 
 //firebase_options.dart as per direct download from google, not included in repo
 
+/// Entry point of the application.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   unawaited(fBase.initialize());
@@ -35,6 +36,8 @@ void main() async {
   runApp(const MyGame());
 }
 
+/// The root widget of the application, responsible for setting up providers,
+/// themes, and the router.
 class MyGame extends StatelessWidget {
   const MyGame({super.key});
 

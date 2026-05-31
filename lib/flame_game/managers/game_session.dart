@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../audio/sounds.dart';
 import '../../firebase/firebase_saves.dart';
+import '../../utils/helper.dart';
 import '../../utils/string_helper.dart';
 import '../components/base_component.dart';
 import '../game_screen.dart';
@@ -90,7 +91,7 @@ class GameSession extends BaseComponent
     assert(game.lifecycle.stopwatchStarted);
     assert(!(game.playState == PlayState.playbackMode));
     game.lifecycle.stopRegularItems();
-    game.play(SfxType.endMusic);
+    game.audioController.playSfx(SfxType.endMusic);
     const int minRecordableWinTimeMillis = 10 * 1000;
     if (stopwatchMilliSeconds > minRecordableWinTimeMillis &&
         !game.level.isTutorial) {
@@ -114,7 +115,7 @@ class GameSession extends BaseComponent
 
   @override
   Future<void> reset() async {
-    _userString = getRandomString(game.random, 15);
+    _userString = getRandomString(random, 15);
   }
 
   @override

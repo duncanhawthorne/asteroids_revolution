@@ -8,9 +8,18 @@ import 'level_selection/levels.dart';
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
 
+/// Key for the level parameter in the URL.
 const String levelUrlKey = "level";
+
+/// Key for the maze parameter in the URL.
 const String mazeUrlKey = "maze";
 
+final Map<String, int> _reversedMazeNames = <String, int>{
+  for (final MapEntry<int, String> entry in mazeNames.entries)
+    entry.value: entry.key,
+};
+
+/// Main router configuration for the application.
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
@@ -33,23 +42,11 @@ final GoRouter router = GoRouter(
 );
 
 GameLevel _parseGameLevel(String? levelString) {
-  int levelNumberRaw = Levels.defaultLevelNum;
-  try {
-    levelNumberRaw = int.parse(levelString ?? levelNumberRaw.toString());
-  } catch (e) {
-    //stick with default
-  }
-  return levels.getLevel(levelNumberRaw);
+  final int levelNumber =
+      int.tryParse(levelString ?? '') ?? Levels.defaultLevelNum;
+  return levels.getLevel(levelNumber);
 }
 
 int _parseMazeId(String? mazeString) {
-  final String? mazeIdRaw = mazeString ?? mazeNames[Maze.defaultMazeId];
-  return !mazeNames.containsValue(mazeIdRaw)
-      ? Maze.defaultMazeId
-      : _reverseMap(mazeNames)[mazeIdRaw] as int;
+  return _reversedMazeNames[mazeString ?? ''] ?? Maze.defaultMazeId;
 }
-
-Map<dynamic, dynamic> _reverseMap(Map<dynamic, dynamic> map) =>
-    <dynamic, dynamic>{
-      for (final MapEntry<dynamic, dynamic> e in map.entries) e.value: e.key,
-    };

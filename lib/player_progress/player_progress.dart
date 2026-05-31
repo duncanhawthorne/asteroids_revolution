@@ -10,11 +10,16 @@ import '../firebase/firebase_saves.dart';
 import '../google/google.dart';
 import '../level_selection/levels.dart';
 
+/// Manages the player's progress through the game's levels.
+///
+/// It handles saving and loading progress both locally (via [SharedPreferences])
+/// and remotely (via [Firebase]).
 class PlayerProgress extends ChangeNotifier {
   PlayerProgress._() {
     _userChangeListener();
   }
 
+  /// Returns the singleton instance of [PlayerProgress].
   factory PlayerProgress() {
     assert(_instance == null);
     _instance ??= PlayerProgress._();
@@ -45,10 +50,12 @@ class PlayerProgress extends ChangeNotifier {
       ? Levels.minLevel - 1
       : _levelNumsCompleted.reduce(max);
 
+  /// Checks if a specific level has been completed.
   bool isComplete(int levelNum) {
     return _levelNumsCompleted.contains(levelNum);
   }
 
+  /// Saves the completion of a level and synchronizes with storage.
   void saveLevelComplete(Map<String, dynamic> currentGameState) {
     _log.info("saveWin");
     final Map<String, int> win = _cleanupWin(currentGameState);
@@ -56,6 +63,7 @@ class PlayerProgress extends ChangeNotifier {
     _saveToFirebaseAndFilesystem();
   }
 
+  /// Clears all saved progress.
   void reset() {
     _playerProgressLevels.clear();
     _saveToFirebaseAndFilesystem();

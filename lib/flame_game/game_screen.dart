@@ -27,7 +27,10 @@ import 'pacman_game.dart';
 class GameScreen extends StatelessWidget {
   const GameScreen({required this.level, required this.mazeId, super.key});
 
+  /// The level configuration for this session.
   final GameLevel level;
+
+  /// The ID of the maze to load.
   final int mazeId;
 
   static const String loseDialogKey = 'lose_dialog';

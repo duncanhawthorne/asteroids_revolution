@@ -6,19 +6,17 @@ import 'package:flutter/foundation.dart';
 import '../pacman_game.dart';
 import 'base_component.dart';
 
-/// Use wrappers to minimise number of components directly in main world
-/// Helps due to loops running through all child components
-/// Especially on drag events deliverAtPoint
-/// Also set IgnoreEvents to speed up deliverAtPoint for all components queried
-
+/// A container component that manages and renders all pellets in the maze.
 class PelletWrapper extends BaseComponent
     with HasGameReference<PacmanGame>, Snapshot {
   @override
   final int priority = -2;
 
+  /// Indicates if the player has collected all pellets (win condition).
   bool get winState =>
       ((!kDebugMode || isMounted) && pelletsRemainingNotifier.value <= 0);
 
+  /// Tracks the total number of pellets remaining in the maze.
   final ValueNotifier<int> pelletsRemainingNotifier = ValueNotifier<int>(0);
 
   @override

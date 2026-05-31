@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/camera.dart';
@@ -115,28 +114,23 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
   /// Component mapping user persistent state progress records.
   final PlayerProgress playerProgress;
 
+  /// Manages the scoring, win/loss conditions, and session data.
   final GameSession session = GameSession();
+
+  /// Manages the game lifecycle, pausing/resuming, and stopwatch.
   final GameLifecycle lifecycle = GameLifecycle();
+
+  /// Handles recording and replaying of maze rotations.
   late final Playback playback = Playback()..game = this;
+
+  /// Manages game overlays and dialog visibility.
   late final DialogManager dialogs = DialogManager()..game = this;
 
   /// Evaluates whether the simulation frame is ready, running, and active inside the widget tree.
   bool get isLive => !paused && isLoaded && isMounted;
 
-  /// Universal source for random calculations.
-  final Random random = Random();
-
   @override
   Color backgroundColor() => Palette.background.color;
-
-  /// Plays audio through the global [audioController].
-  void play(SfxType type) {
-    const bool soundOn = false;
-    // ignore: dead_code
-    if (soundOn) {
-      audioController.playSfx(type);
-    }
-  }
 
   @override
   void onGameResize(Vector2 size) {
@@ -163,20 +157,18 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     start();
   }
 
+  /// Begins primary gameplay activities, including audio and world updates.
   void start() {
-    audioController.workaroundiOSSafariAudioOnUserInteraction();
-    play(SfxType.startMusic);
+    audioController
+      ..workaroundiOSSafariAudioOnUserInteraction()
+      ..playSfx(SfxType.startMusic);
     world.start();
-  }
-
-  void _bugFixes() {
-    setStatusBarColor(Palette.background.color);
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    _bugFixes();
+    bugFixes();
     reset(firstRun: true, showStartDialog: true);
   }
 
@@ -188,8 +180,10 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
 
   PlayState _playState = PlayState.gaming;
 
+  /// Returns the current high-level state of the game.
   PlayState get playState => _playState;
 
+  /// Updates the game state and handles transition logic (e.g., showing/hiding overlays).
   set playState(PlayState s) => _setState(s);
 
   /// State handler managing state shifts.

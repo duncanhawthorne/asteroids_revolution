@@ -12,6 +12,7 @@ import 'sprite_character.dart';
 
 double get playerSize => maze.dimensions.spriteWidth / 2;
 
+/// Base class for interactive characters with physics and animations.
 class GameCharacter extends SpriteCharacter {
   GameCharacter({
     super.position,
@@ -55,14 +56,17 @@ class GameCharacter extends SpriteCharacter {
     _physics.setBallRadius(x);
   }
 
+  /// Determines if the character is in a typical state (active and not dying/spawning).
   bool get typical => state == PhysicsState.full && stateTypical;
 
   late final Physics _physics = Physics(owner: this);
   late final SimplePhysics _simplePhysics = SimplePhysics(owner: this);
 
+  /// Current state of the character's physics (Full, Partial, or None).
   PhysicsState state = PhysicsState.unset;
 
   @override
+  /// Transitions the character between different physics simulation modes.
   void setPhysicsState(PhysicsState targetState, {bool starting = false}) {
     super.setPhysicsState(targetState);
     if (targetState == PhysicsState.full) {
@@ -91,16 +95,19 @@ class GameCharacter extends SpriteCharacter {
     setPositionStillActive(position);
   }
 
+  /// Resets the character's position and sets it to an active physics state.
   void setPositionStillActive(Vector2 targetLoc) {
     _setStill(targetLoc);
     setPhysicsState(PhysicsState.full);
   }
 
+  /// Resets the character's position and disables its physics.
   void setPositionStillStatic(Vector2 targetLoc) {
     setPhysicsState(PhysicsState.none);
     _setStill(targetLoc);
   }
 
+  /// Helper to stop all character movement and set a new position.
   void _setStill(Vector2 targetLoc) {
     position.setFrom(targetLoc);
     velocity.setAll(0);

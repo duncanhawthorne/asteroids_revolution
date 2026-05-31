@@ -4,6 +4,7 @@ import '../components/wall.dart';
 import 'maze_dimensions.dart';
 import 'maze_layout.dart';
 
+/// Factory for creating visual components and positions for maze items.
 class MazeItemFactory {
   MazeItemFactory({
     required MazeLayout layout,
@@ -14,6 +15,7 @@ class MazeItemFactory {
   final MazeLayout _layout;
   final MazeDimensions _dimensions;
 
+  /// Creates visual boundaries for the edges of the maze.
   List<Component> blockingWalls() {
     final List<Component> result = <Component>[];
     final double scale = _dimensions.blockWidth;
@@ -31,6 +33,7 @@ class MazeItemFactory {
     return result;
   }
 
+  /// Generates world positions for all mini pellets.
   Iterable<Vector2> miniPelletPositions(bool superPelletsEnabled) sync* {
     /// [center] safely instantly consumed by receiving function
     final Vector2 center = Vector2.zero();
@@ -53,6 +56,7 @@ class MazeItemFactory {
     }
   }
 
+  /// Generates world positions for all super pellets.
   Iterable<Vector2> superPelletPositions() sync* {
     /// [center] safely instantly consumed by receiving function
     final Vector2 center = Vector2.zero();

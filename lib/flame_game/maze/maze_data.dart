@@ -1,7 +1,9 @@
 import 'maze.dart';
 import 'maze_tiles.dart';
 
+/// Provides the raw encoded layout data for different maze configurations.
 class MazeData {
+  /// Returns the tile layout for a specific maze ID.
   static List<List<Tile>> getLayout(int id, {required bool raceMode}) {
     return switch (id) {
       Maze.tutorialMazeId => _tutorial,

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+/// Manages the configuration of different game levels.
 class Levels {
   static const int firstRealLevel = 1;
   static const int maxLevel = 15;
@@ -20,6 +21,7 @@ class Levels {
         : 0.75; //not possible
   }
 
+  /// Returns the [GameLevel] configuration for a specific level number.
   GameLevel getLevel(int levelNum) {
     final GameLevel result = (
       number: levelNum,
@@ -47,8 +49,10 @@ class Levels {
   }
 }
 
+/// Global instance of the level manager.
 final Levels levels = Levels();
 
+/// Type definition for a level's configuration properties.
 typedef GameLevel = ({
   int number,
   int maxAllowedDeaths,

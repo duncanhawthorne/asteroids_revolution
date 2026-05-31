@@ -10,6 +10,7 @@ import '../pacman_game.dart';
 
 /// This first dialog shown during playback mode
 
+/// A dialog providing various debugging tools and logs for game state and audio.
 class DebugDialog extends StatelessWidget {
   const DebugDialog({super.key, required this.game});
 
