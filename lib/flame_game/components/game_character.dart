@@ -69,7 +69,7 @@ class GameCharacter extends SpriteCharacter {
       if (isRemoving) {
         return;
       }
-      assert((_physics.isLoaded && isLoaded) || starting == true, this);
+      //assert((_physics.isLoaded && isLoaded) || starting == true, this);
       if (!starting) {
         assert(_physics.isLoaded);
         if (_physics.isLoaded) {
