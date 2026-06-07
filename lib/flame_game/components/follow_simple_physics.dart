@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:flame/components.dart';
 
 import '../pacman_world.dart';

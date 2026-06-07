@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:flame/components.dart';
 
 import '../../utils/helper.dart';
@@ -78,7 +76,7 @@ class Physics extends Component
   }
 
   /// Resynchronizes the physical ball's state with the owner's current state and activates it.
-  void initaliseFromOwnerAndSetDynamic() {
+  void initialiseFromOwnerAndSetDynamic() {
     assert(_ball.isLoaded);
     _initaliseFromOwner();
     _ball.setActive();

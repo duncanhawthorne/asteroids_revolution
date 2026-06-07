@@ -145,7 +145,6 @@ class AudioController {
       return false;
     }
 
-    // ignore: dead_code
     if (flagSoLoudInitialisedAsPartOfCanPlayForAPSounds.value ||
         !playWithAudioPlayers) {
       //FIXME requires testing

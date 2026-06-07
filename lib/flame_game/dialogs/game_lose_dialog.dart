@@ -4,7 +4,7 @@ import '../../level_selection/levels.dart';
 import '../../style/dialog.dart';
 import '../game_screen.dart';
 import '../pacman_game.dart';
-import 'game_start_dialog.dart';
+import 'level_choose.dart';
 
 /// This dialog is shown when a level is lost.
 

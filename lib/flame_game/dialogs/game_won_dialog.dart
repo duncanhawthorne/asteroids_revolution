@@ -9,7 +9,7 @@ import '../../style/palette.dart';
 import '../game_screen.dart';
 import '../maze/maze.dart';
 import '../pacman_game.dart';
-import 'game_start_dialog.dart';
+import 'level_choose.dart';
 
 /// This dialog is shown when a level is won.
 ///

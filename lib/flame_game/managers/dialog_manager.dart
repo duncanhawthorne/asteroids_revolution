@@ -24,6 +24,11 @@ class DialogManager extends BaseComponent with HasWorldReference<PacmanWorld> {
       ..remove(GameScreen.debugDialogKey);
   }
 
+  void switchTo(String overlayKey) {
+    clean();
+    game.overlays.add(overlayKey);
+  }
+
   /// Toggles the visibility of a specific dialog overlay.
   ///
   /// If the dialog is currently visible, it will be removed. Otherwise,
@@ -32,8 +37,7 @@ class DialogManager extends BaseComponent with HasWorldReference<PacmanWorld> {
     if (game.overlays.activeOverlays.contains(overlayKey)) {
       game.overlays.remove(overlayKey);
     } else {
-      clean();
-      game.overlays.add(overlayKey);
+      switchTo(overlayKey);
     }
   }
 

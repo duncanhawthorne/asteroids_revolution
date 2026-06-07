@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:flutter/services.dart';
 
 import '../../style/palette.dart';

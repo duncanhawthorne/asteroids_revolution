@@ -1,4 +1,3 @@
-/// Web-specific workarounds, primarily targeting iOS Safari/Chrome behavior.
 import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';

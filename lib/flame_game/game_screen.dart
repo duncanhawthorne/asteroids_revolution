@@ -8,12 +8,12 @@ import '../level_selection/levels.dart';
 import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../utils/src/workarounds.dart';
-import 'dialogs/begin_dialog.dart';
 import 'dialogs/debug_dialog.dart';
 import 'dialogs/game_lose_dialog.dart';
 import 'dialogs/game_overlays.dart';
-import 'dialogs/game_start_dialog.dart';
 import 'dialogs/game_won_dialog.dart';
+import 'dialogs/level_choose.dart';
+import 'dialogs/playback_dialog.dart';
 import 'dialogs/reset_dialog.dart';
 import 'dialogs/tutorial_dialog.dart';
 import 'pacman_game.dart';
@@ -79,7 +79,7 @@ class GameScreen extends StatelessWidget {
                     );
                   },
                   startDialogKey: (BuildContext context, PacmanGame game) {
-                    return StartDialog(level: level, game: game);
+                    return LevelChooseDialog(level: level, game: game);
                   },
                   tutorialDialogKey: (BuildContext context, PacmanGame game) {
                     return TutorialDialog(game: game);
@@ -88,7 +88,7 @@ class GameScreen extends StatelessWidget {
                     return ResetDialog(game: game);
                   },
                   beginDialogKey: (BuildContext context, PacmanGame game) {
-                    return BeginDialog(game: game);
+                    return PlaybackDialog(game: game);
                   },
                   debugDialogKey: (BuildContext context, PacmanGame game) {
                     return DebugDialog(game: game);

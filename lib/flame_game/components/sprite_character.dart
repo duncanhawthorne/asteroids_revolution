@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'dart:ui';
 
 import 'package:flame/collisions.dart';

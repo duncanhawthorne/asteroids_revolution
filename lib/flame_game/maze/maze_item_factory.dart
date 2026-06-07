@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 
-import '../components/wall.dart';
+import '../components/wall_visual.dart';
 import 'maze_dimensions.dart';
 import 'maze_layout.dart';
 

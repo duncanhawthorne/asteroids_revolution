@@ -111,13 +111,11 @@ class PacmanWorld extends Forge2DWorld
       space,
     ]);
 
-    for (final BaseComponent wrapper in _wrappers) {
-      /// Optimization: Nesting wrappers inside [_noEvents] keeps the flat count
-      /// of root-level world components minimal. This speeds up Flame's internal
-      /// element tree traversals, significantly optimizing gesture hit-testing
-      /// methods like `deliverAtPoint` during drag interactions.
-      _noEvents.add(wrapper);
-    }
+    /// Optimization: Nesting wrappers inside [_noEvents] keeps the flat count
+    /// of root-level world components minimal. This speeds up Flame's internal
+    /// element tree traversals, significantly optimizing gesture hit-testing
+    /// methods like `deliverAtPoint` during drag interactions.
+    _wrappers.forEach(_noEvents.add);
 
     reset(firstRun: true);
   }

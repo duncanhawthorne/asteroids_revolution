@@ -16,10 +16,10 @@ class WallWrapper extends BaseComponent
 
   @override
   Future<void> reset() async {
-    if (game.mazeId == _mazeIdLast) {
+    if (maze.mazeId == _mazeIdLast) {
       return;
     }
-    _mazeIdLast = game.mazeId;
+    _mazeIdLast = maze.mazeId;
     if (children.isNotEmpty) {
       removeAll(children);
     }

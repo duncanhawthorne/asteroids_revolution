@@ -20,8 +20,7 @@ import 'playback.dart';
 class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
   late final PacmanWorld world;
 
-  final Vector2 _eventOffset = Vector2.zero();
-  double _canvasRadius = 1.0;
+  double _canvasRadiusInv = 1.0;
   final Map<int, double?> _fingersLastDragAngle = <int, double?>{};
   bool _cameraRotatable = true;
 
@@ -47,7 +46,7 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    _canvasRadius = min(game.canvasSize.x, game.canvasSize.y) / 2;
+    _canvasRadiusInv = 1 / (min(game.canvasSize.x, game.canvasSize.y) / 2);
   }
 
   /// Handles the start of a drag event to begin rotating the maze.
@@ -62,11 +61,13 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
     }
 
     if (isiOSWeb) {
+      /// Enter null as first angle is unreliable
+      /// And fix in [onDragUpdate] below where angle is reliable
       _fingersLastDragAngle[event.pointerId] = null;
     } else {
       _fingersLastDragAngle[event.pointerId] = atan2(
-        event.canvasPosition.x - game.canvasSize.x / 2,
-        event.canvasPosition.y - game.canvasSize.y / 2,
+        event.canvasPosition.x - game.canvasSize.x * 0.5,
+        event.canvasPosition.y - game.canvasSize.y * 0.5,
       );
     }
   }
@@ -77,30 +78,26 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
       return;
     }
     game.lifecycle.resumeGame();
-    _eventOffset.setValues(
-      event.canvasStartPosition.x - game.canvasSize.x / 2,
-      event.canvasStartPosition.y - game.canvasSize.y / 2,
-    );
-    final double eventVectorLengthProportion =
-        _eventOffset.length / _canvasRadius;
-    final double fingerCurrentDragAngle = atan2(_eventOffset.x, _eventOffset.y);
-    // Need separate contains and null check due to isiOSWeb approach in onDragStart
-    if (_fingersLastDragAngle.containsKey(event.pointerId)) {
-      final double? lastAngle = _fingersLastDragAngle[event.pointerId];
-      if (lastAngle != null) {
-        final double angleDelta = smallAngle(
-          fingerCurrentDragAngle - lastAngle,
-        );
-        const double maxSpinMultiplierRadius = 0.75;
-        final double spinMultiplier =
-            4 *
-            game.level.spinSpeedFactor *
-            min(1, eventVectorLengthProportion / maxSpinMultiplierRadius);
-
-        _moveMazeAngleByDelta(angleDelta * spinMultiplier);
-      }
-      _fingersLastDragAngle[event.pointerId] = fingerCurrentDragAngle;
+    final double dx = event.canvasStartPosition.x - game.canvasSize.x * 0.5;
+    final double dy = event.canvasStartPosition.y - game.canvasSize.y * 0.5;
+    final double fingerCurrentDragAngle = atan2(dx, dy);
+    final double? lastAngle = _fingersLastDragAngle[event.pointerId];
+    if (lastAngle != null) {
+      final double eventVectorLengthProportion =
+          sqrt(dx * dx + dy * dy) * _canvasRadiusInv;
+      final double angleDelta = smallAngle(fingerCurrentDragAngle - lastAngle);
+      const double maxSpinMultiplierRadiusInv = 1 / 0.75;
+      final double spinMultiplier =
+          4 *
+          game.level.spinSpeedFactor *
+          min(1, eventVectorLengthProportion * maxSpinMultiplierRadiusInv);
+      _moveMazeAngleByDelta(angleDelta * spinMultiplier);
     }
+
+    /// For iOSWeb first entry is [onDragStart] enters null,
+    /// so now switch null to current angle to track going forward
+    /// like on other platforms
+    _fingersLastDragAngle[event.pointerId] = fingerCurrentDragAngle;
   }
 
   /// Handles the end of a drag event.
@@ -120,7 +117,7 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
         (game.playState == PlayState.gaming ||
             game.playState == PlayState.flourish)) {
       setMazeAngle(
-        cameraAngle + (_reversedRotation ? -angleDelta : angleDelta),
+        _cameraAngle + (_reversedRotation ? -angleDelta : angleDelta),
       );
     }
   }
@@ -145,11 +142,11 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
   static const bool _kRotatingCamera = !kDebugMode || true;
 
   /// Gets the current camera (maze) angle.
-  double get cameraAngle =>
+  double get _cameraAngle =>
       _kRotatingCamera ? game.camera.viewfinder.angle : _debugFakeAngle;
 
   /// Sets the current camera (maze) angle.
-  set cameraAngle(double z) =>
+  set _cameraAngle(double z) =>
       _kRotatingCamera ? game.camera.viewfinder.angle = z : _debugFakeAngle = z;
 
   double _debugFakeAngle = 0;
@@ -162,7 +159,7 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
       game.lifecycle.startRegularItems();
     }
     Playback.recordMode ? game.playback.recordAngle(angle) : null; //disabled
-    cameraAngle = angle;
+    _cameraAngle = angle;
     downDirection
       ..setValues(-sin(angle), cos(angle))
       ..scale(game.level.levelSpeed);

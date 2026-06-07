@@ -1,16 +1,11 @@
-import 'dart:core';
-
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 
 import '../../utils/utils.dart';
 import '../effects/remove_effects.dart';
-import '../maze/maze.dart';
 import 'follow_physics.dart';
 import 'follow_simple_physics.dart';
 import 'sprite_character.dart';
-
-double get playerSize => maze.dimensions.spriteWidth / 2;
 
 /// Base class for interactive characters with physics and animations.
 class GameCharacter extends SpriteCharacter {
@@ -77,7 +72,7 @@ class GameCharacter extends SpriteCharacter {
       if (!starting) {
         assert(_physics.isLoaded);
         if (_physics.isLoaded) {
-          _physics.initaliseFromOwnerAndSetDynamic();
+          _physics.initialiseFromOwnerAndSetDynamic();
         }
       }
       state = PhysicsState.full;

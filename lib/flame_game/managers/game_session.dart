@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -98,8 +97,7 @@ class GameSession extends BaseComponent
       fBase.firebasePushSingleScore(_userString, _getCurrentGameState());
     }
     game.playerProgress.saveLevelComplete(_getCurrentGameState());
-    game.dialogs.clean();
-    game.overlays.add(GameScreen.wonDialogKey);
+    game.dialogs.switchTo(GameScreen.wonDialogKey);
   }
 
   /// Handles the game lose state, including stopping sounds and showing the lose dialog.
@@ -109,8 +107,7 @@ class GameSession extends BaseComponent
     assert(game.lifecycle.stopwatchStarted);
     game.lifecycle.stopRegularItems();
     game.audioController.stopAllSounds();
-    game.dialogs.clean();
-    game.overlays.add(GameScreen.loseDialogKey);
+    game.dialogs.switchTo(GameScreen.loseDialogKey);
   }
 
   @override
