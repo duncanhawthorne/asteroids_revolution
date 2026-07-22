@@ -59,13 +59,17 @@ class Physics extends Component
       spriteVsPhysicsScaleConstant ? _ballPosUnscaled : _reusableVector
         ..setFrom(_ballPosUnscaled)
         ..scale(spriteVsPhysicsScale);
-  late final Vector2 _ballPosUnscaled = _ball.position;
+
+  // Before Forge2D 0.15, could do late final Vector2 here
+  Vector2 get _ballPosUnscaled => _ball.position;
 
   Vector2 get _ballVel =>
       spriteVsPhysicsScaleConstant ? _ballVelUnscaled : _reusableVector
         ..setFrom(_ballVelUnscaled)
         ..scale(spriteVsPhysicsScale);
-  late final Vector2 _ballVelUnscaled = _ball.body.linearVelocity;
+
+  // Before Forge2D 0.15, could do late final Vector2 here
+  Vector2 get _ballVelUnscaled => _ball.body.linearVelocity;
 
   void _initaliseFromOwner() {
     assert(_ball.isLoaded);

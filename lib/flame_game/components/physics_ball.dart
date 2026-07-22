@@ -36,24 +36,16 @@ class PhysicsBall extends BodyComponent<PacmanGame>
     bool active = true,
     required this.owner,
   }) : super(
-         fixtureDefs: <FixtureDef>[
-           FixtureDef(
-             restitution: openSpaceMovement ? 1 : 0,
-             friction: damping != 0 ? 1 : 0,
-             density: density,
-             CircleShape(
-               radius: radius * _lubricationScaleFactor / spriteVsPhysicsScale,
-             ),
-           ),
-         ],
+         shapeSpecs: <ShapeSpec>[_buildShape(radius, density, damping)],
          bodyDef: BodyDef(
+           enableSleep: false,
            angularDamping: openSpaceMovement ? 0 : 0,
            position: position / spriteVsPhysicsScale,
            linearVelocity: velocity / spriteVsPhysicsScale,
            linearDamping: damping * 20,
            angularVelocity: angularVelocity,
            type: BodyType.dynamic,
-           active: active,
+           isEnabled: active,
            fixedRotation: !openSpaceMovement,
          ),
        ) {
@@ -73,18 +65,32 @@ class PhysicsBall extends BodyComponent<PacmanGame>
   @override
   int priority = -100;
 
-  ///[_bodyIsActive] is a mirror variable to [body.isActive]
+  ///[_bodyIsActive] is a mirror variable to [body.isEnabled]
   ///for use when body not yet initialised
   late bool _bodyIsActive;
 
   static final Vector2 _reusableVector = Vector2.zero();
+
+  static ShapeSpec _buildShape(double radius, double density, double damping) {
+    return ShapeSpec(
+      Circle(radius: radius * _lubricationScaleFactor / spriteVsPhysicsScale),
+      ShapeDef(
+        material: SurfaceMaterial(
+          restitution: openSpaceMovement ? 1 : 0,
+          friction: damping != 0 ? 1 : 0,
+        ),
+        density: density,
+        enableContactEvents: false, // Opt in required for contact callbacks
+      ),
+    );
+  }
 
   /// Synchronizes the physical body's position with the character's visual position.
   set position(Vector2 pos) => body.setTransform(
     spriteVsPhysicsScaleConstant ? pos : _reusableVector
       ..setFrom(pos)
       ..scale(1 / spriteVsPhysicsScale),
-    owner.angle,
+    Rot.fromAngle(owner.angle),
   );
 
   /// Checks if the ball has moved outside the maze boundaries (e.g., into a portal).
@@ -106,8 +112,24 @@ class PhysicsBall extends BodyComponent<PacmanGame>
   );
 
   /// Updates the radius of the physical fixture.
-  set radius(double rad) =>
-      body.fixtures.first.shape.radius = rad / spriteVsPhysicsScale;
+  set radius(double rad) {
+    // Forge2D 0.15: Shapes are value-like handles over native ids.
+    // To change geometry, destroy the old shape and attach a new one.
+    if (body.shapes.isEmpty) return;
+
+    final double currentDensity = body.shapes.first.density;
+    final double currentDamping = body.linearDamping / 20;
+    body.shapes.first.destroy();
+    final ShapeSpec shapeSpec = _buildShape(
+      rad,
+      currentDensity,
+      currentDamping,
+    );
+    body.createShape(
+      shapeSpec.geometry,
+      shapeSpec.definition,
+    ); // may need applyMassFromShapes()
+  }
 
   /// Activates the physical body in the simulation.
   void setActive() {
@@ -115,13 +137,13 @@ class PhysicsBall extends BodyComponent<PacmanGame>
     if (isRemoving) {
       return;
     }
-    if (body.isActive == true && _bodyIsActive == true) {
+    if (body.isEnabled == true && _bodyIsActive == true) {
       //no action required
       return;
     }
     assert(isMounted);
     assert(isLoaded);
-    body.setActive(true);
+    body.isEnabled = true;
     _bodyIsActive = true;
   }
 
@@ -135,13 +157,13 @@ class PhysicsBall extends BodyComponent<PacmanGame>
       //just test subConnectedBall as body not yet initialised
       return;
     }
-    if (body.isActive == false && _bodyIsActive == false) {
+    if (body.isEnabled == false && _bodyIsActive == false) {
       //no action required
       return;
     }
     assert(isMounted);
     assert(isLoaded);
-    body.setActive(false);
+    body.isEnabled = false;
     _bodyIsActive = false;
   }
 

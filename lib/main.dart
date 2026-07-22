@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/flame.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ios_web_touch_override/flutter_ios_web_touch_override.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -25,6 +26,7 @@ import 'utils/src/workarounds.dart';
 /// Entry point of the application.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeForge2D();
   unawaited(fBase.initialize());
   GoogleFonts.config.allowRuntimeFetching = false;
   FlutterNativeSplash.remove();

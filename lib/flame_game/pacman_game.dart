@@ -60,8 +60,8 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
          camera: CameraComponent.withFixedResolution(
            width: kVirtualGameSize,
            height: kVirtualGameSize,
-         ),
-         zoom: flameGameZoom * _visualZoomMultiplier,
+         ), //..viewfinder.zoom = flameGameZoom * _visualZoomMultiplier,
+         metersToPixels: 1, //flameGameZoom * _visualZoomMultiplier,
        ) {
     maze.mazeId = mazeId;
   }

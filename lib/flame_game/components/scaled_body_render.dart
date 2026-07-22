@@ -10,7 +10,7 @@ import 'physics_ball.dart';
 mixin ScaledBodyRender on BodyComponent<PacmanGame> {
   @override
   void render(Canvas canvas) {
-    if (spriteVsPhysicsScaleConstant) {
+    if (spriteVsPhysicsScaleConstant && spriteVsPhysicsScale == 1) {
       super.render(canvas);
       return;
     }
