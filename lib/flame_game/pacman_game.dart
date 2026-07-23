@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/camera.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
@@ -48,7 +49,8 @@ class PacmanGame extends Forge2DGame<PacmanWorld>
     with
         HasCollisionDetection<Broadphase<ShapeHitbox>>,
         SingleGameInstance,
-        HasTimeScale {
+        HasTimeScale,
+        HasKeyboardHandlerComponents<PacmanWorld> {
   /// Private generative constructor initialized by the singleton factory wrapper.
   PacmanGame._({
     required this.level,

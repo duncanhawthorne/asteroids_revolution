@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../../utils/constants.dart';
 import '../components/base_component.dart';
@@ -17,7 +18,8 @@ import 'playback.dart';
 ///
 /// This class handles the conversion of drag events into maze rotation,
 /// which in turn affects the gravity in the game world.
-class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
+class DragRotation extends BaseComponent
+    with HasGameReference<PacmanGame>, KeyboardHandler {
   late final PacmanWorld world;
 
   double _canvasRadiusInv = 1.0;
@@ -25,6 +27,28 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
   bool _cameraRotatable = true;
 
   final Map<int, bool> _boostFingers = <int, bool>{};
+
+  bool _isBoosting = false;
+
+  @override
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (event.logicalKey == LogicalKeyboardKey.space) {
+      if (event is KeyDownEvent) {
+        if (!_isBoosting) {
+          // Ignore OS key-repeat events
+          _isBoosting = true;
+          world.space.ship.accel(true);
+          game.lifecycle.resumeGame();
+          _moveMazeAngleByDelta(0); // to start timer
+        }
+      } else if (event is KeyUpEvent) {
+        _isBoosting = false;
+        world.space.ship.accel(false);
+      }
+      return true; // CONSUME THE EVENT: Prevents browser/UI from treating Space as a click
+    }
+    return super.onKeyEvent(event, keysPressed);
+  }
 
   /// Initiates a sliding reset of the maze angle to its default.
   void resetSlide(VoidCallback callback) {

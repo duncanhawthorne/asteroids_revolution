@@ -54,6 +54,7 @@ class GameScreen extends StatelessWidget {
             child: Scaffold(
               backgroundColor: Palette.background.color,
               body: GameWidget<PacmanGame>(
+                autofocus: true,
                 key: const Key('play session'),
                 game: PacmanGame(
                   level: level,
