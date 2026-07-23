@@ -22,7 +22,7 @@ const bool kPhysicsScaleLockedAtOne = false;
 final Paint _activePaint = Paint()..color = Palette.pacman.color;
 final Paint _inactivePaint = Paint()..color = Palette.warning.color;
 
-const double _lubricationScaleFactor = 1;
+const double _lubricationScaleFactor = 0.95;
 const bool _kVerticalPortalsEnabled = false;
 
 /// A physical body representing a character in the Forge2D physics world.
