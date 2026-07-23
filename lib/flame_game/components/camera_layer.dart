@@ -42,7 +42,7 @@ class CameraWrapper extends BaseComponent
 
   Ship get ship => world.space.ship;
 
-  bool get tooZoomedOut => overZoomError < 0.75;
+  bool get tooZoomedOut => overZoomError < 0.5;
 
   final SpaceDotWrapper _smallDots = SpaceDotWrapper(
     position: Vector2(0, 0),
@@ -89,7 +89,7 @@ class CameraWrapper extends BaseComponent
   @override
   void update(double dt) {
     if (zoom < _optimalZoom * 0.95 || zoom > _optimalZoom * 1.05) {
-      zoom *= pow(1 / overZoomError, dt / 30);
+      zoom *= pow(1 / overZoomError, dt / 10);
     }
   }
 }
