@@ -277,9 +277,8 @@ class SpaceWrapper extends BaseComponent
     add(_cameraManager);
     add(bullets);
     add(rocks);
-    //add(world.walls);
     // ignore: dead_code
-    if (false && kDebugMode) {
+    if (kDebugMode && false) {
       add(DebugCircle(type: "full")); //full universe
       add(DebugCircle(type: "mapped")); //mapped universe
       add(DebugCircle(type: "visiblePlus")); //visible universe

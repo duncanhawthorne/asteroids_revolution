@@ -54,7 +54,7 @@ class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
   late final CircleHitbox hitBox = CircleHitbox(
     isSolid: true,
     collisionType: defaultCollisionType,
-  )..debugMode = drawDebugBoxes;
+  )..debugMode = drawDebugBoxes && false;
 
   /// Returns a map with a single sprite animation for the current state.
   Future<Map<CharacterState, SpriteAnimation>> getSingleSprite([

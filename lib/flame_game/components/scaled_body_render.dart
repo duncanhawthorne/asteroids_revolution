@@ -25,7 +25,8 @@ mixin ScaledBodyRender on BodyComponent<PacmanGame> {
     super.render(canvas);
     canvas.restore();
 
-    if (drawDebugBoxes) {
+    // ignore: dead_code
+    if (drawDebugBoxes && false) {
       super.render(canvas);
     }
   }

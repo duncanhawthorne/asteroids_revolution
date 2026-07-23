@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/palette.dart';
 
 import '../../style/palette.dart';
 import '../pacman_game.dart';
@@ -28,13 +29,13 @@ class DebugCircle extends CircleComponent
   Future<void> onLoad() async {
     await super.onLoad();
     if (type == "mapped") {
-      paint = Paint()..color = Palette.warning.color;
+      paint = Paint()..color = Palette.warning.color.brighten(0.5);
     } else if (type == "full") {
-      paint = Paint()..color = Palette.dull.color;
+      paint = Paint()..color = Palette.dull.color.brighten(0.5);
     } else if (type == "visiblePlus") {
-      paint = Paint()..color = Palette.background.color;
+      paint = Paint()..color = Palette.background.color.brighten(0.5);
     } else {
-      paint = Paint()..color = Palette.pacman.color;
+      paint = Paint()..color = Palette.pacman.color.brighten(0.5);
     }
   }
 

@@ -70,7 +70,7 @@ class GameCharacter extends SpriteCharacter {
       }
       //assert((_physics.isLoaded && isLoaded) || starting == true, this);
       if (!starting) {
-        assert(_physics.isLoaded);
+        //assert(_physics.isLoaded);
         if (_physics.isLoaded) {
           _physics.initialiseFromOwnerAndSetDynamic();
         }
