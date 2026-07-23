@@ -24,6 +24,18 @@ class DialogManager extends BaseComponent with HasWorldReference<PacmanWorld> {
       ..remove(GameScreen.debugDialogKey);
   }
 
+  bool anyDialogShowing() {
+    const List<String> dialogKeys = <String>[
+      GameScreen.startDialogKey,
+      GameScreen.loseDialogKey,
+      GameScreen.wonDialogKey,
+      GameScreen.tutorialDialogKey,
+      GameScreen.resetDialogKey,
+      GameScreen.debugDialogKey,
+    ];
+    return dialogKeys.any(game.overlays.isActive);
+  }
+
   void switchTo(String overlayKey) {
     clean();
     game.overlays.add(overlayKey);

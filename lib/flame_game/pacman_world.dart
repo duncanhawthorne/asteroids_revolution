@@ -10,6 +10,7 @@ import 'components/pellet_layer.dart';
 import 'components/ship.dart';
 import 'components/space_layer.dart';
 import 'managers/drag_rotation.dart';
+import 'managers/mouse_move.dart';
 import 'pacman_game.dart';
 
 /// The game world responsible for managing the lifecycle, physics, and hierarchy
@@ -66,6 +67,9 @@ class PacmanWorld extends Forge2DWorld
   /// Handler for maze rotation gestures.
   late final DragRotation dragRotate = DragRotation()..world = this;
 
+  /// Handler for mouse move maze rotation gestures.
+  late final MouseMove mouseMove = MouseMove();
+
   double get everythingScale =>
       space.ship.radius / neutralShipRadius * mapSizeScale;
 
@@ -104,6 +108,7 @@ class PacmanWorld extends Forge2DWorld
     _wrappers.addAll(<BaseComponent>[
       if (!enableRotationRaceMode) pellets,
       dragRotate,
+      mouseMove,
       game.session,
       game.lifecycle,
       game.playback,

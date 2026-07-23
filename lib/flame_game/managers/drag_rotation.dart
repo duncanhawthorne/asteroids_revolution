@@ -49,6 +49,18 @@ class DragRotation extends BaseComponent with HasGameReference<PacmanGame> {
     _canvasRadiusInv = 1 / (min(game.canvasSize.x, game.canvasSize.y) / 2);
   }
 
+  /// Handles the locked cursor moving to rotate the maze.
+  void onLockedCursorMove(double dx, double dy) {
+    game.lifecycle.resumeGame();
+
+    final double mouseDelta = dx + dy;
+    const double mouseSensitivity = 0.005;
+
+    if (mouseDelta != 0) {
+      _moveMazeAngleByDelta(mouseDelta * mouseSensitivity);
+    }
+  }
+
   /// Handles the start of a drag event to begin rotating the maze.
   void onDragStart(DragStartEvent event) {
     if (event.canvasPosition.y > game.canvasSize.y * 3 / 4 &&
