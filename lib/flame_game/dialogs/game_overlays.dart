@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +64,7 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
       _mainMenuButtonWidget(context, game),
       _audioOnOffButtonWidget(context, game),
       g.loginLogoutWidget(context, gIconSize, Palette.textColor),
+      if (kIsWeb && _isDesktop) _mouseLockButtonWidget(context, game),
     ],
   );
 }
@@ -189,4 +191,20 @@ Widget _audioOnOffButtonWidget(BuildContext context, PacmanGame game) {
       );
     },
   );
+}
+
+Widget _mouseLockButtonWidget(BuildContext context, PacmanGame game) {
+  const Color color = Palette.textColor;
+  return IconButton(
+    onPressed: () {
+      game.world.mouseMove.requestPointerLockIfAllowed();
+    },
+    icon: const Icon(Icons.mouse, color: color),
+  );
+}
+
+bool get _isDesktop {
+  return defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.linux;
 }

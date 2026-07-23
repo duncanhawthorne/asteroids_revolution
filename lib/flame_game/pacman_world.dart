@@ -15,6 +15,7 @@ import 'components/wall_layer.dart';
 import 'managers/death_reset.dart';
 import 'managers/drag_rotation.dart';
 import 'managers/engine_auto_pauser.dart';
+import 'managers/mouse_move.dart';
 import 'pacman_game.dart';
 
 /// The game world responsible for managing the lifecycle, physics, and hierarchy
@@ -88,6 +89,9 @@ class PacmanWorld extends Forge2DWorld
   /// Handler for maze rotation gestures.
   late final DragRotation dragRotate = DragRotation()..world = this;
 
+  /// Handler for mouse move maze rotation gestures.
+  late final MouseMove mouseMove = MouseMove();
+
   /// Resets the game state for all managed wrappers.
   ///
   /// If [firstRun] is true, the reset cycle is skipped, as components are
@@ -129,6 +133,7 @@ class PacmanWorld extends Forge2DWorld
       deathReset,
       autoPauser,
       dragRotate,
+      mouseMove,
       game.session,
       game.lifecycle,
       game.playback,
