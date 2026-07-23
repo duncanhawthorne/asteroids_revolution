@@ -102,9 +102,8 @@ class PhysicsBall extends BodyComponent<PacmanGame>
           position.y.abs() > maze.dimensions.mazeHalfHeightPhysics);
 
   /// Synchronizes the physical body's linear velocity.
-  set velocity(Vector2 vel) => body.linearVelocity.setFrom(
-    kPhysicsScaleLockedAtOne ? vel : vel * physicsScale,
-  );
+  set velocity(Vector2 vel) =>
+      body.linearVelocity = kPhysicsScaleLockedAtOne ? vel : vel * physicsScale;
 
   /// Applies a force to the physical body.
   set acceleration(Vector2 acceleration) => body.applyForce(

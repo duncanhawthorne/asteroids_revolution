@@ -73,18 +73,19 @@ class Physics extends Component
 
   void _initaliseFromOwner() {
     assert(_ball.isLoaded);
+    _ball.radius = owner.radius;
     _ball.position = owner.position;
     _ball.velocity = owner.velocity;
-    _ball.radius = owner.radius;
     _ball.body.angularVelocity = owner.angularVelocity;
   }
 
   /// Resynchronizes the physical ball's state with the owner's current state and activates it.
   void initialiseFromOwnerAndSetDynamic() {
     assert(_ball.isLoaded);
-    _initaliseFromOwner();
     _ball.setActive();
     _isActive = true;
+    // ball must be active before can initialise
+    _initaliseFromOwner();
   }
 
   /// One frame of physics synchronization, updating the owner's visual properties from the ball's simulation.
