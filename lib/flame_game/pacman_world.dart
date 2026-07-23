@@ -67,7 +67,7 @@ class PacmanWorld extends Forge2DWorld
   late final DragRotation dragRotate = DragRotation()..world = this;
 
   double get everythingScale =>
-      space.ship.radius / neutralShipRadius * 30 / flameGameZoom;
+      space.ship.radius / neutralShipRadius * mapSizeScale;
 
   /// Resets the game state for all managed wrappers.
   ///

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -35,7 +36,7 @@ class CameraWrapper extends BaseComponent
     fixSpaceDots();
   }
 
-  double get _optimalZoom => 30 / world.everythingScale;
+  double get _optimalZoom => 1 / world.everythingScale;
 
   double get overZoomError => zoom / _optimalZoom;
 
@@ -55,13 +56,13 @@ class CameraWrapper extends BaseComponent
   );
 
   int get _zoomOrderOfMagnitude =>
-      logOrder(1 / zoom * flameGameZoom * 75).floor();
+      logOrder(1 / zoom * (1 / mapSizeScale) * 75).floor();
 
   int _zoomOrderOfMagnitudeLast = -1;
   void fixSpaceDots() {
     if (_zoomOrderOfMagnitude != _zoomOrderOfMagnitudeLast) {
       _zoomOrderOfMagnitudeLast = _zoomOrderOfMagnitude;
-      spriteVsPhysicsScale = ship.radius / defaultShipRadius * 1.5;
+      physicsScale = 1 / (ship.radius / defaultShipRadius * 1.5);
       world.space.resetSpriteVsPhysicsScale();
     }
     _smallDots.tidyUpdate(

@@ -78,8 +78,7 @@ class SpaceWrapper extends BaseComponent
 
   double get _mappedUniverseRadius =>
       maze.dimensions.mazeWidth *
-      flameGameZoom /
-      30 *
+      (1 / mapSizeScale) *
       ship.radius /
       _cameraManager.overZoomError *
       _kHubbleLimitMult;

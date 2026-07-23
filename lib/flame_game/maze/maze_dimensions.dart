@@ -36,9 +36,8 @@ class MazeDimensions {
   /// Threshold for wrapping clones around the maze edges.
   late final double cloneThreshold = mazeWidth / 2 - spriteWidth / 2;
 
-  late final double mazeHalfWidthPhysics = mazeWidth / 2 / spriteVsPhysicsScale;
-  late final double mazeHalfHeightPhysics =
-      mazeHeight / 2 / spriteVsPhysicsScale;
+  late final double mazeHalfWidthPhysics = mazeWidth / 2 * physicsScale;
+  late final double mazeHalfHeightPhysics = mazeHeight / 2 * physicsScale;
 
   /// Size of game characters as a Vector2.
   late final Vector2 spriteSize = Vector2.zero()..setAll(spriteWidth);
@@ -49,9 +48,7 @@ class MazeDimensions {
   };
 
   double _blockWidth() {
-    return kVirtualGameSize /
-        flameGameZoom /
-        max(_layout.lengthHBuffered, _layout.length);
+    return worldSquareSize / max(_layout.lengthHBuffered, _layout.length);
   }
 
   double _spriteWidth() {
@@ -101,9 +98,6 @@ class MazeDimensions {
 
   /// Calculates the sprite width in screen pixels.
   int spriteWidthOnScreen(Vector2 size) {
-    return (spriteWidth /
-            (kVirtualGameSize / flameGameZoom) *
-            min(size.x, size.y))
-        .toInt();
+    return (spriteWidth / worldSquareSize * min(size.x, size.y)).toInt();
   }
 }

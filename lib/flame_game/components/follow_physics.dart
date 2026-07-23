@@ -56,17 +56,17 @@ class Physics extends Component
   late final Vector2 _gravitySign = world.gravitySign;
 
   Vector2 get _ballPos =>
-      spriteVsPhysicsScaleConstant ? _ballPosUnscaled : _reusableVector
+      kPhysicsScaleLockedAtOne ? _ballPosUnscaled : _reusableVector
         ..setFrom(_ballPosUnscaled)
-        ..scale(spriteVsPhysicsScale);
+        ..scale(invPhysicsScale);
 
   // Before Forge2D 0.15, could do late final Vector2 here
   Vector2 get _ballPosUnscaled => _ball.position;
 
   Vector2 get _ballVel =>
-      spriteVsPhysicsScaleConstant ? _ballVelUnscaled : _reusableVector
+      kPhysicsScaleLockedAtOne ? _ballVelUnscaled : _reusableVector
         ..setFrom(_ballVelUnscaled)
-        ..scale(spriteVsPhysicsScale);
+        ..scale(invPhysicsScale);
 
   // Before Forge2D 0.15, could do late final Vector2 here
   Vector2 get _ballVelUnscaled => _ball.body.linearVelocity;

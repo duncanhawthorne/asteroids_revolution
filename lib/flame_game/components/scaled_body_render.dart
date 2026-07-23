@@ -10,17 +10,16 @@ import 'physics_ball.dart';
 mixin ScaledBodyRender on BodyComponent<PacmanGame> {
   @override
   void render(Canvas canvas) {
-    if (spriteVsPhysicsScaleConstant && spriteVsPhysicsScale == 1) {
+    if (kPhysicsScaleLockedAtOne) {
       super.render(canvas);
       return;
     }
 
-    final double s = spriteVsPhysicsScale;
     canvas
       ..save()
       ..rotate(-body.angle)
       ..translate(-position.x, -position.y)
-      ..scale(s)
+      ..scale(invPhysicsScale)
       ..translate(position.x, position.y)
       ..rotate(body.angle);
     super.render(canvas);
