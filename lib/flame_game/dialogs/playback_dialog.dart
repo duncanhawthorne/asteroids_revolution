@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../router.dart';
 import '../../style/dialog.dart';
+import '../custom_game.dart';
 import '../game_screen.dart';
 import '../maze/maze.dart';
-import '../pacman_game.dart';
 import 'level_choose.dart';
 
 /// This first dialog shown during playback mode
@@ -14,7 +14,7 @@ import 'level_choose.dart';
 class PlaybackDialog extends StatelessWidget {
   const PlaybackDialog({super.key, required this.game});
 
-  final PacmanGame game;
+  final CustomGame game;
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,8 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../utils/constants.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 import 'base_component.dart';
 import 'physics_ball.dart';
 import 'ship.dart';
@@ -18,7 +18,7 @@ const bool _kAutoZoomingCameraOnDebug = !drawDebugBoxes;
 const bool _kAutoZoomingCamera = _kAutoZoomingCameraOnDebug || !kDebugMode;
 
 class CameraWrapper extends BaseComponent
-    with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
+    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
   @override
   final int priority = -100;
 

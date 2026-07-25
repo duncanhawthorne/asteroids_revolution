@@ -4,13 +4,13 @@ import 'package:flame/components.dart';
 import 'package:flame/palette.dart';
 
 import '../../style/palette.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 
 class DebugCircle extends CircleComponent
     with
-        HasWorldReference<PacmanWorld>,
-        HasGameReference<PacmanGame>,
+        HasWorldReference<CustomWorld>,
+        HasGameReference<CustomGame>,
         IgnoreEvents {
   DebugCircle({required this.type})
     : super(

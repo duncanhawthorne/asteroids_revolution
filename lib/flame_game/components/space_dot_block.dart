@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 
+import '../custom_game.dart';
+import '../custom_world.dart';
 import '../maze/maze.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
 import 'space_dot.dart';
 
 const int _kOrderBase = 5; //maze.mazeAcross; //number of dot in grid
@@ -14,8 +14,8 @@ double logOrder(num x) => log(x) / logkOrderBase;
 class SpaceDotWrapper extends PositionComponent
     with
         IgnoreEvents,
-        HasWorldReference<PacmanWorld>,
-        HasGameReference<PacmanGame> {
+        HasWorldReference<CustomWorld>,
+        HasGameReference<CustomGame> {
   SpaceDotWrapper({
     required super.position,
     required this.orderMagnitude,

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../flame_game/pacman_game.dart';
+import '../flame_game/custom_game.dart';
 
 /// Manages the configuration of different game levels.
 class Levels {

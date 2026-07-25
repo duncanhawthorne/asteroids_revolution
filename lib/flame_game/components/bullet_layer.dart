@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 
-import '../pacman_game.dart';
-import '../pacman_world.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 import 'base_component.dart';
 import 'bullet.dart';
 
 class BulletWrapper extends BaseComponent
-    with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
+    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
   @override
   final int priority = -1;
 

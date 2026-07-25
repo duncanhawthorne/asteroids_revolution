@@ -4,14 +4,14 @@ import 'package:flame/components.dart';
 
 import '../components/base_component.dart';
 import '../game_screen.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 
 /// Manages the display and cleaning of game dialog overlays.
 ///
 /// This includes start, lose, won, tutorial, reset, and debug dialogs.
-class DialogManager extends BaseComponent with HasWorldReference<PacmanWorld> {
-  late final PacmanGame game;
+class DialogManager extends BaseComponent with HasWorldReference<CustomWorld> {
+  late final CustomGame game;
 
   /// Removes all active game dialog overlays.
   void clean() {

@@ -6,10 +6,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../style/palette.dart';
 import '../../utils/constants.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 import '../effects/remove_effects.dart';
 import '../icons/stub_sprites.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
 import 'bullet.dart';
 import 'game_character.dart';
 import 'removal_actions.dart';
@@ -24,8 +24,8 @@ final Paint _highQualityPaint = Paint()
 /// Component that handles the visual animation and collision hitbox for game characters.
 class SpriteCharacter extends SpriteAnimationGroupComponent<CharacterState>
     with
-        HasWorldReference<PacmanWorld>,
-        HasGameReference<PacmanGame>,
+        HasWorldReference<CustomWorld>,
+        HasGameReference<CustomGame>,
         RemovalActions,
         IgnoreEvents {
   SpriteCharacter({super.position, super.paint, this.original})

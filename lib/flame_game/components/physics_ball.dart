@@ -6,8 +6,8 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import '../../style/palette.dart';
 import '../../utils/constants.dart';
 import '../../utils/helper.dart';
+import '../custom_game.dart';
 import '../maze/maze.dart';
-import '../pacman_game.dart';
 import 'removal_actions.dart';
 import 'scaled_body_render.dart';
 import 'space_body.dart';
@@ -26,7 +26,7 @@ const double _lubricationScaleFactor = 0.95;
 const bool _kVerticalPortalsEnabled = false;
 
 /// A physical body representing a character in the Forge2D physics world.
-class PhysicsBall extends BodyComponent<PacmanGame>
+class PhysicsBall extends BodyComponent<CustomGame>
     with RemovalActions, ContactCallbacks, IgnoreEvents, ScaledBodyRender {
   PhysicsBall({
     required Vector2 position,

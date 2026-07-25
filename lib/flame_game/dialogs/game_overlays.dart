@@ -8,7 +8,7 @@ import '../../settings/settings.dart';
 import '../../style/dialog.dart';
 import '../../style/palette.dart';
 import '../game_screen.dart';
-import '../pacman_game.dart';
+import '../custom_game.dart';
 
 const double _statusWidgetHeightFactor = 1.0;
 const double _widgetSpacing = 8 * _statusWidgetHeightFactor;
@@ -18,7 +18,7 @@ const double gIconSize = pacmanIconSize * 4 / 3;
 const double circleIconSize = 10 * _statusWidgetHeightFactor;
 
 /// Top-level status widget displayed over the game.
-Widget topOverlayWidget(BuildContext context, PacmanGame game) {
+Widget topOverlayWidget(BuildContext context, CustomGame game) {
   return Center(
     child: Padding(
       padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -50,7 +50,7 @@ Widget topOverlayWidget(BuildContext context, PacmanGame game) {
   );
 }
 
-Widget _topLeftWidget(BuildContext context, PacmanGame game) {
+Widget _topLeftWidget(BuildContext context, CustomGame game) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.start,
@@ -63,7 +63,7 @@ Widget _topLeftWidget(BuildContext context, PacmanGame game) {
   );
 }
 
-Widget _topRightWidget(BuildContext context, PacmanGame game) {
+Widget _topRightWidget(BuildContext context, CustomGame game) {
   return const Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisAlignment: MainAxisAlignment.end,
@@ -73,7 +73,7 @@ Widget _topRightWidget(BuildContext context, PacmanGame game) {
   );
 }
 
-Widget _mainMenuButtonWidget(BuildContext context, PacmanGame game) {
+Widget _mainMenuButtonWidget(BuildContext context, CustomGame game) {
   return IconButton(
     onPressed: () {
       game.overlays.activeOverlays.contains(GameScreen.beginDialogKey)
@@ -85,7 +85,7 @@ Widget _mainMenuButtonWidget(BuildContext context, PacmanGame game) {
 }
 
 // ignore: unused_element
-Widget _clockWidget(PacmanGame game) {
+Widget _clockWidget(CustomGame game) {
   return GestureDetector(
     onLongPress: () {
       if (detailedAudioLog) {
@@ -113,7 +113,7 @@ Widget _clockWidget(PacmanGame game) {
 }
 
 // ignore: unused_element
-Widget _audioOnOffButtonWidget(BuildContext context, PacmanGame game) {
+Widget _audioOnOffButtonWidget(BuildContext context, CustomGame game) {
   const Color color = Palette.textColor;
   final SettingsController settingsController = context
       .watch<SettingsController>();
@@ -130,7 +130,7 @@ Widget _audioOnOffButtonWidget(BuildContext context, PacmanGame game) {
   );
 }
 
-Widget _mouseLockButtonWidget(BuildContext context, PacmanGame game) {
+Widget _mouseLockButtonWidget(BuildContext context, CustomGame game) {
   const Color color = Palette.textColor;
   return IconButton(
     onPressed: () {

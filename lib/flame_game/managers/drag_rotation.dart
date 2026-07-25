@@ -8,10 +8,10 @@ import 'package:flutter/services.dart';
 import '../../utils/constants.dart';
 import '../components/base_component.dart';
 import '../components/physics_ball.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 import '../effects/remove_effects.dart';
 import '../effects/rotate_effect.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
 import 'playback.dart';
 
 /// Manages the rotation of the maze based on user drag input.
@@ -19,8 +19,8 @@ import 'playback.dart';
 /// This class handles the conversion of drag events into maze rotation,
 /// which in turn affects the gravity in the game world.
 class DragRotation extends BaseComponent
-    with HasGameReference<PacmanGame>, KeyboardHandler {
-  late final PacmanWorld world;
+    with HasGameReference<CustomGame>, KeyboardHandler {
+  late final CustomWorld world;
 
   double _canvasRadiusInv = 1.0;
   final Map<int, double?> _fingersLastDragAngle = <int, double?>{};

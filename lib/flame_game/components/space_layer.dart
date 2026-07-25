@@ -5,9 +5,9 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../utils/utils.dart';
+import '../custom_game.dart';
+import '../custom_world.dart';
 import '../maze/maze.dart';
-import '../pacman_game.dart';
-import '../pacman_world.dart';
 import 'alien_bomb.dart';
 import 'alien_gun.dart';
 import 'base_component.dart';
@@ -27,7 +27,7 @@ const double _kHubbleLimitMult = 1.4;
 const bool contactActionsEnabled = !kDebugMode || true;
 
 class SpaceWrapper extends BaseComponent
-    with HasWorldReference<PacmanWorld>, HasGameReference<PacmanGame> {
+    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);
 
   final Ship ship = Ship(position: Vector2(0, 0), velocity: Vector2(0, 0));
