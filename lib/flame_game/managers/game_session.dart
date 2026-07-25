@@ -12,8 +12,6 @@ import '../custom_game.dart';
 import '../custom_world.dart';
 import '../game_screen.dart';
 import '../maze/maze.dart';
-import '../custom_game.dart';
-import '../custom_world.dart';
 
 /// Manages the current game session's state, including scoring, winning, and losing.
 ///
