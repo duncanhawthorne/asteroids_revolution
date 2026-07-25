@@ -205,6 +205,9 @@ class MazePhysicsFactory {
     if (!includeVisualWalls) {
       result.clear();
     }
+    if (includeGround) {
+      //removed
+    }
     return result;
   }
 }

@@ -72,7 +72,6 @@ flutter:
     #    - assets/images/enemies/
     #    - assets/images/scenery/
     #    - assets/music/
-    - assets/sfx/
     - assets/fonts/Press_Start_2P/
 
   fonts:

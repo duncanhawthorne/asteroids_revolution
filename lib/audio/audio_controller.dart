@@ -555,6 +555,8 @@ class AudioController {
 
   /// Preloads all sound effects.
   Future<void> _preloadSfx() async {
+    return;
+    // ignore: dead_code
     _log.fine('Preloading sounds');
     if (_hiddenBlockPlay()) {
       return;
