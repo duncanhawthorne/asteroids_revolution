@@ -33,7 +33,6 @@ void main() async {
   await Flame.device.fullScreen();
   setupGlobalLogger();
   fixTitlePerm();
-  await firstInitialiseSoLoud();
   blockTouchDefault(true);
   runApp(const MyGame());
 }
@@ -55,13 +54,12 @@ class MyGame extends StatelessWidget {
           Provider<SettingsController>(
             create: (BuildContext context) => SettingsController(),
           ),
-          // Set up audio.
+          // Set up audio as a persistent singleton.
           ProxyProvider2<
             SettingsController,
             AppLifecycleStateNotifier,
             AudioController
           >(
-            // Ensures that music starts immediately.
             lazy: false,
             create: (BuildContext context) => AudioController(),
             update:
@@ -74,30 +72,33 @@ class MyGame extends StatelessWidget {
                   audio!.attachDependencies(lifecycleNotifier, settings);
                   return audio;
                 },
-            dispose: (BuildContext context, AudioController audio) =>
-                audio.dispose(),
+            // REMOVED dispose callback so Provider does not destroy singleton instance
           ),
         ],
         child: Builder(
           builder: (BuildContext context) {
-            //context.watch<Palette>();
-
-            return MaterialApp.router(
-              title: appTitle,
-              theme: flutterNesTheme().copyWith(
-                scaffoldBackgroundColor: Palette.background.color,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Palette.seed.color,
-                  surface: Palette.background.color,
+            return Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) {
+                // Re-enforces WebAudio playback and restarts background silence loop on user touch.
+              },
+              child: MaterialApp.router(
+                title: appTitle,
+                theme: flutterNesTheme().copyWith(
+                  scaffoldBackgroundColor: Palette.background.color,
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: Palette.seed.color,
+                    surface: Palette.background.color,
+                  ),
+                  textTheme: GoogleFonts.pressStart2pTextTheme().apply(
+                    bodyColor: Palette.text.color,
+                    displayColor: Palette.text.color,
+                  ),
                 ),
-                textTheme: GoogleFonts.pressStart2pTextTheme().apply(
-                  bodyColor: Palette.text.color,
-                  displayColor: Palette.text.color,
-                ),
+                routeInformationProvider: router.routeInformationProvider,
+                routeInformationParser: router.routeInformationParser,
+                routerDelegate: router.routerDelegate,
               ),
-              routeInformationProvider: router.routeInformationProvider,
-              routeInformationParser: router.routeInformationParser,
-              routerDelegate: router.routerDelegate,
             );
           },
         ),
