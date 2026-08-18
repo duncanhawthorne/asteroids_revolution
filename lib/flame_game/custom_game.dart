@@ -161,7 +161,7 @@ class CustomGame extends Forge2DGame<CustomWorld>
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     bugFixes();
     reset(firstRun: true, showStartDialog: true);
   }

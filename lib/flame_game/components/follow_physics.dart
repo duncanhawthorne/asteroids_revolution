@@ -19,8 +19,13 @@ class Physics extends Component
   final int priority = 1000;
 
   late final GameCharacter owner;
+
+  /// Single static vector buffer shared across classes to eliminate per-frame allocations.
+  /// Getters referencing this buffer be consumed immediately
   static final Vector2 _reusableVector = Vector2.zero();
 
+  /// Initialized as [late final] to prevent construction crashes that occur if [owner] properties
+  /// or dependencies are not yet fully resolved at object instantiation time.
   late final PhysicsBall _ball = PhysicsBall(
     position: owner.position,
     radius: owner.radius,
@@ -31,10 +36,6 @@ class Physics extends Component
     active: _isActive,
     owner: owner as SpaceBody,
   );
-
-  double get _spinParity => _ballVel.x.abs() > _ballVel.y.abs()
-      ? _gravitySign.y * _ballVel.x.sign
-      : -_gravitySign.x * _ballVel.y.sign;
 
   late final bool _freeRotation =
       owner is! Ship && owner is! Alien && owner is! Bullet;
@@ -53,6 +54,8 @@ class Physics extends Component
     }
   }
 
+  /// Cached from [world] to bypass Flame's tree lookup in [HasWorldReference] during
+  /// high-frequency [update] loops
   late final Vector2 _gravitySign = world.gravitySign;
 
   Vector2 get _ballPos =>
@@ -71,7 +74,7 @@ class Physics extends Component
   // Before Forge2D 0.15, could do late final Vector2 here
   Vector2 get _ballVelUnscaled => _ball.body.linearVelocity;
 
-  void _initaliseFromOwner() {
+  void _initializeFromOwner() {
     assert(_ball.isLoaded);
     _ball.radius = owner.radius;
     _ball.position = owner.position;
@@ -80,12 +83,12 @@ class Physics extends Component
   }
 
   /// Resynchronizes the physical ball's state with the owner's current state and activates it.
-  void initialiseFromOwnerAndSetDynamic() {
+  void initializeFromOwnerAndSetDynamic() {
     assert(_ball.isLoaded);
     _ball.setActive();
     _isActive = true;
-    // ball must be active before can initialise
-    _initaliseFromOwner();
+    // ball must be active before can initialize
+    _initializeFromOwner();
   }
 
   /// One frame of physics synchronization, updating the owner's visual properties from the ball's simulation.
@@ -96,15 +99,19 @@ class Physics extends Component
     if (owner.canAccelerate) {
       _ball.acceleration = owner.acceleration;
     }
-    owner.position = _ballPos;
-    owner.velocity = _ballVel;
+    owner.position = _ballPos; //setter, so instantly consumed
+    owner.velocity = _ballVel; //setter, so instantly consumed
     owner.angularVelocity = _ball.body.angularVelocity;
     if (openSpaceMovement) {
       if (_freeRotation) {
         owner.angle = _ball.angle;
       }
     } else {
-      owner.angle += speed * dt * _invInitialRadius * _spinParity;
+      final Vector2 v = owner.velocity;
+      final double spinParity = v.x.abs() > v.y.abs()
+          ? _gravitySign.y * v.x.sign
+          : -_gravitySign.x * v.y.sign;
+      owner.angle += v.length * dt * _invInitialRadius * spinParity;
     }
   }
 
@@ -128,6 +135,8 @@ class Physics extends Component
       return;
     }
     await world.add(_ball);
+    // Explicitly waiting for _ball mounting ensures this component completes onLoad
+    // only when the physical body is completely mounted and ready for synchronization.
     await _ball.mounted;
   }
 
@@ -142,7 +151,7 @@ class Physics extends Component
   /// Deactivates the physical ball and stops physics synchronization.
   void deactivate() {
     // disable _isActive before _ball first reference
-    // as _ball is initialised by referencing _ball as late final
+    // as _ball is initialized by referencing _ball as late final
     _isActive = false;
     _ball.setInactive();
   }

@@ -102,7 +102,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
   }
 
   void resetSpriteVsPhysicsScale() {
-    forceReinitialisePhysics();
+    forceReinitializePhysics();
   }
 
   void _setUpdateMode() {
