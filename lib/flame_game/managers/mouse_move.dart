@@ -8,7 +8,9 @@ import '../components/base_component.dart';
 import '../custom_game.dart';
 
 /// Captures web pointer lock click triggers and delegates mouse movement deltas to [DragRotation].
-class MouseMove extends BaseComponent with HasGameReference<CustomGame> {
+class MouseMove extends BaseComponent with HasGameRef<CustomGame> {
+  late final CustomGame game = gameRef;
+
   void requestPointerLockIfAllowed() {
     if (!kIsWeb) return;
     if (game.dialogs.anyDialogShowing()) return;

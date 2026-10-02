@@ -8,7 +8,7 @@ import 'base_component.dart';
 import 'rock.dart';
 
 class RockWrapper extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
   @override
   final int priority = -1;
 
@@ -19,7 +19,7 @@ class RockWrapper extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     unawaited(reset());
   }
 }

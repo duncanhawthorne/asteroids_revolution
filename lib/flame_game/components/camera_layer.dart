@@ -18,7 +18,10 @@ const bool _kAutoZoomingCameraOnDebug = !drawDebugBoxes;
 const bool _kAutoZoomingCamera = _kAutoZoomingCameraOnDebug || !kDebugMode;
 
 class CameraWrapper extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
+  late final CustomGame game = gameRef;
+  late final CustomWorld world = worldRef;
+
   @override
   final int priority = -100;
 
@@ -77,7 +80,7 @@ class CameraWrapper extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     if (!kDebugMode || _kPanTrackingCamera) {
       game.camera.follow(ship);
     }

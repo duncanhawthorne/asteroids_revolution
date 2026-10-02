@@ -12,10 +12,7 @@ final double logkOrderBase = log(_kOrderBase);
 double logOrder(num x) => log(x) / logkOrderBase;
 
 class SpaceDotWrapper extends PositionComponent
-    with
-        IgnoreEvents,
-        HasWorldReference<CustomWorld>,
-        HasGameReference<CustomGame> {
+    with IgnoreEvents, HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
   SpaceDotWrapper({
     required super.position,
     required this.orderMagnitude,
@@ -70,7 +67,7 @@ class SpaceDotWrapper extends PositionComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     reset();
   }
 }

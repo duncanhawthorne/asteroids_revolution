@@ -38,7 +38,7 @@ mixin Gun on SpaceBody {
     super.reset();
   }
 
-  final Timer _multiGunTimer = Timer(15);
+  final Timer _multiGunTimer = Timer(period: 15);
 
   final Vector2 _oneTimeVelocity = Vector2(0, 0);
   Vector2 _fBulletVelocity() {

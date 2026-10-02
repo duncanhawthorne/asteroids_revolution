@@ -12,8 +12,10 @@ import 'space_body.dart';
 
 /// A component that syncs a character's position and angle with its physical [PhysicsBall].
 class Physics extends Component
-    with HasWorldReference<CustomWorld>, RemovalActions, IgnoreEvents {
+    with HasWorldRef<CustomWorld>, RemovalActions, IgnoreEvents {
   Physics({required this.owner});
+
+  late final CustomWorld world = worldRef;
 
   @override
   final int priority = 1000;
@@ -54,7 +56,7 @@ class Physics extends Component
     }
   }
 
-  /// Cached from [world] to bypass Flame's tree lookup in [HasWorldReference] during
+  /// Cached from [world] to bypass Flame's tree lookup in [HasWorldRef] during
   /// high-frequency [update] loops
   late final Vector2 _gravitySign = world.gravitySign;
 
@@ -108,10 +110,16 @@ class Physics extends Component
       }
     } else {
       final Vector2 v = owner.velocity;
-      final double spinParity = v.x.abs() > v.y.abs()
-          ? _gravitySign.y * v.x.sign
-          : -_gravitySign.x * v.y.sign;
-      owner.angle += v.length * dt * _invInitialRadius * spinParity;
+      if (v.x != 0 || v.y != 0) {
+        //final double spinParity = v.x.abs() > v.y.abs()
+        //    ? _gravitySign.y * v.x.sign
+        //    : -_gravitySign.x * v.y.sign;
+        //final double rollingSpeed = v.length * spinParity;
+        /// v is almost always axis aligned so either v.x == 0 or v.y == 0
+        /// so [rollingSpeed] simply selects whichever one is non-zero
+        final double rollingSpeed = _gravitySign.y * v.x - _gravitySign.x * v.y;
+        owner.angle += rollingSpeed * dt * _invInitialRadius;
+      }
     }
   }
 
@@ -130,11 +138,11 @@ class Physics extends Component
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     if (owner.isClone) {
       return;
     }
-    await world.add(_ball);
+    world.add(_ball);
     // Explicitly waiting for _ball mounting ensures this component completes onLoad
     // only when the physical body is completely mounted and ready for synchronization.
     await _ball.mounted;

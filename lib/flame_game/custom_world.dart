@@ -21,10 +21,10 @@ import 'managers/mouse_move.dart';
 /// **Mixins:**
 /// * [DragCallbacks]: Enables the world to intercept and respond to user touch,
 ///   drag, and mouse interactions.
-/// * [HasGameReference]: Provides direct access to the parent [CustomGame]
+/// * [HasGameRef]: Provides direct access to the parent [CustomGame]
 ///   instance via the `game` property.
 class CustomWorld extends Forge2DWorld
-    with HasGameReference<CustomGame>, DragCallbacks {
+    with HasGameRef<CustomGame>, DragCallbacks {
   /// Private constructor to enforce the singleton pattern.
   CustomWorld._();
 
@@ -39,6 +39,8 @@ class CustomWorld extends Forge2DWorld
     _instance ??= CustomWorld._();
     return _instance!;
   }
+
+  late final CustomGame game = gameRef;
 
   /// The internal singleton instance of the world.
   static CustomWorld? _instance;
@@ -77,14 +79,11 @@ class CustomWorld extends Forge2DWorld
   ///
   /// If [firstRun] is true, the reset cycle is skipped, as components are
   /// expected to initialize to their default states natively during [onLoad].
-  void reset({bool firstRun = false}) {
+  Future<void> reset({bool firstRun = false}) async {
     if (!firstRun) {
       for (final BaseComponent wrapper in _wrappers) {
-        assert(
-          wrapper.isLoaded,
-          'Attempted to reset a component that has not finished loading: $wrapper',
-        );
-        wrapper.reset();
+        await wrapper.loaded;
+        await wrapper.reset();
       }
     }
   }
@@ -98,13 +97,14 @@ class CustomWorld extends Forge2DWorld
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     gravity = gravZero;
 
     // Mount the non-event container directly to the world.
     add(_noEvents);
 
     // Register all core gameplay elements, configuration layers, and systems.
+    //FIXME ordering workaround to priority being ineffective
     _wrappers.addAll(<BaseComponent>[
       if (!enableRotationRaceMode) pellets,
       dragRotate,
@@ -122,7 +122,7 @@ class CustomWorld extends Forge2DWorld
     /// methods like `deliverAtPoint` during drag interactions.
     _wrappers.forEach(_noEvents.add);
 
-    reset(firstRun: true);
+    await reset(firstRun: true);
   }
 
   @override

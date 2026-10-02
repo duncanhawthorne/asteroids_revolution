@@ -18,7 +18,7 @@ class WallRectangleVisual extends RectangleComponent with IgnoreEvents {
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     add(
       RectangleHitbox(
         isSolid: true,

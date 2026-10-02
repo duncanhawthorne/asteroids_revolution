@@ -19,7 +19,8 @@ import 'playback.dart';
 /// This class handles the conversion of drag events into maze rotation,
 /// which in turn affects the gravity in the game world.
 class DragRotation extends BaseComponent
-    with HasGameReference<CustomGame>, KeyboardHandler {
+    with HasGameRef<CustomGame>, KeyboardHandler {
+  late final CustomGame game = gameRef;
   late final CustomWorld world;
 
   double _canvasRadiusInv = 1.0;

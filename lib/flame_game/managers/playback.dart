@@ -11,8 +11,9 @@ import '../custom_world.dart';
 /// Manages the recording and playback of maze rotation moves.
 ///
 /// This is used for a special "playback mode" level.
-class Playback extends BaseComponent with HasWorldReference<CustomWorld> {
+class Playback extends BaseComponent with HasWorldRef<CustomWorld> {
   late final CustomGame game;
+  late final CustomWorld world = worldRef;
 
   int _counter = 0;
   bool _playbackModeEverDismissed = false;

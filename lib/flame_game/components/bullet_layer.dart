@@ -8,7 +8,7 @@ import 'base_component.dart';
 import 'bullet.dart';
 
 class BulletWrapper extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
   @override
   final int priority = -1;
 
@@ -19,7 +19,7 @@ class BulletWrapper extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     unawaited(reset());
   }
 }

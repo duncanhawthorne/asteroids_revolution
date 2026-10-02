@@ -8,10 +8,7 @@ import '../custom_game.dart';
 import '../custom_world.dart';
 
 class DebugCircle extends CircleComponent
-    with
-        HasWorldReference<CustomWorld>,
-        HasGameReference<CustomGame>,
-        IgnoreEvents {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame>, IgnoreEvents {
   DebugCircle({required this.type})
     : super(
         paint: Paint()..color = Palette.warning.color,
@@ -19,6 +16,9 @@ class DebugCircle extends CircleComponent
         position: Vector2(0, 0),
         anchor: Anchor.center,
       );
+
+  late final CustomGame game = gameRef;
+  late final CustomWorld world = worldRef;
 
   @override
   int priority = -10000;

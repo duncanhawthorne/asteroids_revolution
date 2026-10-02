@@ -16,7 +16,10 @@ import '../maze/maze.dart';
 ///
 /// Tracks the number of deaths, items remaining, and game time.
 class GameSession extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
+  late final CustomGame game = gameRef;
+  late final CustomWorld world = worldRef;
+
   String _userString = "";
 
   static const int _deathPenaltyMillis = 5000;
@@ -117,7 +120,7 @@ class GameSession extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     _winOrLoseGameListener(); //isn't disposed so run once, not on start()
   }
 

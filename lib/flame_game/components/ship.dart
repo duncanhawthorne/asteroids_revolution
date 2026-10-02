@@ -86,10 +86,10 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
   ]) async {
     return <CharacterState, SpriteAnimation>{
       CharacterState.normal: SpriteAnimation.spriteList(<Sprite>[
-        await game.loadSprite("ship.png"),
+        await game.loadSprite("assets/images/ship.png"),
       ], stepTime: double.infinity),
       CharacterState.accelerating: SpriteAnimation.spriteList(<Sprite>[
-        await game.loadSprite('ship_flame.png'),
+        await game.loadSprite('assets/images/ship_flame.png'),
       ], stepTime: double.infinity),
     };
   }
@@ -130,7 +130,7 @@ class Ship extends SpaceBody with CollisionCallbacks, Gun {
 
   @override
   void onCollisionStart(
-    Set<Vector2> intersectionPoints,
+    List<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);

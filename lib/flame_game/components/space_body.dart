@@ -8,7 +8,7 @@ import 'ship.dart';
 const double greyThreshold = 0.5;
 const double transpThreshold = 0.5 * 0.2;
 
-class SpaceBody extends GameCharacter with IgnoreEvents {
+class SpaceBody extends GameCharacter with IgnoreEvents, CustomTraversal {
   SpaceBody({
     required super.position,
     required super.velocity,
@@ -122,7 +122,7 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
 
   double _dtCache = 0;
   @override
-  void updateTree(double dt) {
+  void updateSubtree(double dt) {
     //FIXME move into follow_simple_physics
     if (isOutsideVisiblePlusUniverseCache && state != PhysicsState.full) {
       bool oneFrameDue = true;
@@ -134,11 +134,11 @@ class SpaceBody extends GameCharacter with IgnoreEvents {
         _dtCache = 0;
       }
       if (oneFrameDue) {
-        super.updateTree(dt);
+        super.updateSubtree(dt);
       }
     } else {
       _dtCache = 0;
-      super.updateTree(dt);
+      super.updateSubtree(dt);
     }
   }
 

@@ -38,7 +38,7 @@ mixin OverlaySprite on SpaceBody {
   Future<void> _addOverlaySprite() async {
     if (overlaySprite == null) {
       overlaySprite = SpriteComponent(
-        sprite: await Sprite.load(overlaySpritePath!),
+        sprite: await Sprite.load('assets/images/${overlaySpritePath!}'),
         //angle: -tau / 4,
         anchor: Anchor.center,
         position: Vector2.all(radius),

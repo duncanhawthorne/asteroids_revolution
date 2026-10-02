@@ -124,7 +124,7 @@ class CustomGame extends Forge2DGame<CustomWorld>
   late final DialogManager dialogs = DialogManager()..game = this;
 
   /// Evaluates whether the simulation frame is ready, running, and active inside the widget tree.
-  bool get isLive => !paused && isLoaded && isMounted && timeScale != 0;
+  bool get isLive => !isPaused && isLoaded && isMounted && timeScale != 0;
 
   @override
   Color backgroundColor() => Palette.background.color;
@@ -141,10 +141,13 @@ class CustomGame extends Forge2DGame<CustomWorld>
   ///
   /// * Set [firstRun] to `true` on initial canvas allocation to avoid resetting unbuilt items.
   /// * Set [showStartDialog] to `true` to push standard overlays over the current viewport layer.
-  void reset({bool firstRun = false, bool showStartDialog = false}) {
+  Future<void> reset({
+    bool firstRun = false,
+    bool showStartDialog = false,
+  }) async {
     if (!firstRun) {
-      assert(world.isLoaded);
-      world.reset();
+      await world.loaded;
+      await world.reset();
     }
   }
 
@@ -163,7 +166,7 @@ class CustomGame extends Forge2DGame<CustomWorld>
   Future<void> onLoad() async {
     await super.onLoad();
     bugFixes();
-    reset(firstRun: true, showStartDialog: true);
+    await reset(firstRun: true, showStartDialog: true);
   }
 
   @override

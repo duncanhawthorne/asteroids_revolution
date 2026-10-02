@@ -11,7 +11,10 @@ import '../custom_world.dart';
 /// Handles application lifecycle changes and coordinates the starting/stopping
 /// of game elements.
 class GameLifecycle extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
+  late final CustomGame game = gameRef;
+  late final CustomWorld world = worldRef;
+
   VoidCallback? _lifecycleListenerRef;
   bool _regularItemsStarted = false;
 
@@ -21,7 +24,7 @@ class GameLifecycle extends BaseComponent
   bool get stopwatchStarted => _stopwatchStarted;
 
   /// The stopwatch tracking active play time.
-  final Timer stopwatch = Timer(double.infinity);
+  final Timer stopwatch = Timer(period: double.infinity);
 
   /// Resets the flag indicating regular items are active.
   void noteThatSomeRegularItemHasStopped() {
@@ -31,7 +34,7 @@ class GameLifecycle extends BaseComponent
 
   /// Pauses the game engine and time scale.
   void pauseGame() {
-    game
+    gameRef
       ..pause() //timeScale = 0;
       ..pauseEngine();
     noteThatSomeRegularItemHasStopped();
@@ -40,10 +43,10 @@ class GameLifecycle extends BaseComponent
 
   /// Resumes the game engine and time scale if it was paused.
   void resumeGame() {
-    if (game.paused || game.timeScale == 0) {
+    if (game.isPaused || game.timeScale == 0) {
       noteThatSomeRegularItemHasStopped();
       game.timeScale = 1;
-      game
+      gameRef
         ..resume() //timeScale = 1.0;
         ..resumeEngine();
     }
@@ -90,7 +93,7 @@ class GameLifecycle extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
     _lifecycleChangeListener(); //isn't disposed so run once, not on start()
   }
 

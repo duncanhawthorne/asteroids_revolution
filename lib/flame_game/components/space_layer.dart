@@ -27,7 +27,10 @@ const double _kHubbleLimitMult = 1.4;
 const bool contactActionsEnabled = !kDebugMode || true;
 
 class SpaceWrapper extends BaseComponent
-    with HasWorldReference<CustomWorld>, HasGameReference<CustomGame> {
+    with HasWorldRef<CustomWorld>, HasGameRef<CustomGame> {
+  late final CustomGame game = gameRef;
+  late final CustomWorld world = worldRef;
+
   final ValueNotifier<int> numberOfDeathsNotifier = ValueNotifier<int>(0);
 
   final Ship ship = Ship(position: Vector2(0, 0), velocity: Vector2(0, 0));
@@ -36,7 +39,7 @@ class SpaceWrapper extends BaseComponent
   final RockWrapper rocks = RockWrapper();
 
   late final Timer _timerTopUpSpaceBodies = Timer(
-    1,
+    period: 1,
     repeat: true,
     onTick: _topUpSpaceBodies,
   );
@@ -47,7 +50,7 @@ class SpaceWrapper extends BaseComponent
   }
 
   late final Timer _timerTidySpaceBodies = Timer(
-    1,
+    period: 1,
     repeat: true,
     onTick: _tidySpaceBodies,
   );
@@ -160,7 +163,7 @@ class SpaceWrapper extends BaseComponent
   }
 
   void _topUpSpaceBodies({bool initial = false}) {
-    if (game.paused) {
+    if (game.isPaused) {
       return;
     }
     if (_cameraManager.tooZoomedOut) {
@@ -272,9 +275,10 @@ class SpaceWrapper extends BaseComponent
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
-    add(ship);
+    await super.onLoad();
+    //FIXME ordering workaround to priority being ineffective
     add(_cameraManager);
+    add(ship);
     add(bullets);
     add(rocks);
     // ignore: dead_code
